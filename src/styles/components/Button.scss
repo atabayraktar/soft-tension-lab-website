@@ -1,0 +1,56 @@
+@use 'tokens' as *;
+
+.btn {
+  @include label(.75rem, .16em);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;                // 48px touch target
+  border-radius: $r-pill;
+  color: $ink;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+
+  .btn__inner {
+    display: inline-flex;
+    align-items: center;
+    gap: .55em;
+    padding: .95rem 1.6rem;
+  }
+  .btn__arrow {
+    display: inline-block;
+    font-family: $font-display;
+    font-weight: 500;
+    font-size: 1.1em;
+    line-height: 1;
+    transition: transform $dur-fast $ease-out-expo;
+  }
+  @include hover {
+    color: $signal;
+    .btn__arrow { transform: translate(4px, -2px); }
+  }
+  &:active .btn__arrow { transform: translate(2px, -1px); }
+}
+
+.btn--outline {
+  border: 1px solid $ink-15;
+  @include hover { border-color: $signal; }
+  .page--dark &, .on-dark & {
+    color: $paper;
+    border-color: $paper-15;
+  }
+}
+
+.btn--solid {
+  background: $ink;
+  color: $paper;
+  @include hover { color: $paper; background: $signal; }
+}
+
+.btn--glass {
+  // GlassCard renders the layers; here only shape + text colour
+  color: $ink;
+  .on-dark & { color: $paper; }
+  .on-dark:hover & { color: $signal; }
+}

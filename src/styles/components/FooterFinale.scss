@@ -1,0 +1,94 @@
+@use 'tokens' as *;
+
+.finale {
+  position: relative;
+  background: $black;
+  color: $paper;
+  padding-block: clamp(6rem, 16vw, 12rem);
+  overflow: hidden;
+  isolation: isolate;
+  ::selection { background: $paper; color: $black; }
+}
+
+.finale__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(2.5rem, 6vw, 4rem);
+}
+
+.finale__lines {
+  display: grid;
+  justify-items: center;
+  gap: .15em;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.05;
+}
+
+.finale__line {
+  &--xl { font-size: clamp(2.35rem, 8.6vw, 6.5rem); margin-bottom: .35em; }
+  &--md { font-size: clamp(1.35rem, 3.4vw, 2.6rem); font-weight: 700; }
+  &--sm { font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 500; margin-top: 1.2em; letter-spacing: -.01em; }
+  h2, p, a { font: inherit; letter-spacing: inherit; line-height: inherit; color: inherit; }
+  @include short-landscape {
+    &--xl { font-size: clamp(1.8rem, 7vh, 3rem); }
+    &--md { font-size: clamp(1rem, 4vh, 1.5rem); }
+  }
+}
+
+.finale__mail {
+  @include focus-ring;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .18em;
+  text-decoration-color: $paper-45;
+  @include hover { text-decoration-color: $signal; }
+}
+
+// Glitch hover: two offset copies of the line (transform + opacity only) flicker in
+// short steps behind the hovered line. Nothing else on the block moves.
+.glitch {
+  position: relative;
+  display: inline-block;
+  &::before,
+  &::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    color: $signal;
+  }
+  &::after { color: $paper; }
+  @include fine-pointer {
+    &:hover::before { animation: glitch-a 420ms steps(2, end) 1; }
+    &:hover::after  { animation: glitch-b 420ms steps(2, end) 1; }
+    &:hover { color: $signal; }
+  }
+}
+@keyframes glitch-a {
+  0%   { opacity: .9; transform: translate(-6px, -2px); clip-path: inset(0 0 55% 0); }
+  25%  { opacity: .9; transform: translate(5px, 1px);  clip-path: inset(40% 0 20% 0); }
+  50%  { opacity: .9; transform: translate(-3px, 2px); clip-path: inset(70% 0 0 0); }
+  75%  { opacity: .9; transform: translate(4px, -1px); clip-path: inset(10% 0 60% 0); }
+  100% { opacity: 0;  transform: none; }
+}
+@keyframes glitch-b {
+  0%   { opacity: .9; transform: translate(5px, 2px);   clip-path: inset(50% 0 0 0); }
+  25%  { opacity: .9; transform: translate(-4px, -1px); clip-path: inset(0 0 65% 0); }
+  50%  { opacity: .9; transform: translate(3px, -2px);  clip-path: inset(30% 0 35% 0); }
+  75%  { opacity: .9; transform: translate(-5px, 1px);  clip-path: inset(60% 0 10% 0); }
+  100% { opacity: 0;  transform: none; }
+}
+@include reduced-motion {
+  .glitch::before, .glitch::after { animation: none !important; }
+}
+
+.finale__cta {
+  .btn { color: $paper; }
+  .btn:hover { color: $signal; }
+  .lg__tint { background: $glass-clear; }  // clear tint reads better on true black
+}

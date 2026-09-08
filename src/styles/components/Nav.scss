@@ -1,0 +1,174 @@
+@use 'tokens' as *;
+
+.nav {
+  position: fixed;
+  top: var(--nav-top);
+  left: var(--gutter);
+  right: var(--gutter);
+  z-index: 120;
+  color: $ink;
+  pointer-events: none;                  // only the bar and sheet catch input
+  > * { pointer-events: auto; }
+
+  &--dark { color: $paper; }
+  &.is-open { color: $paper; }           // the bar sits on the dark sheet while the menu is open
+}
+
+// ---------------------------------------------------------------------------
+// The pill bar
+// ---------------------------------------------------------------------------
+.nav__bar {
+  height: var(--nav-h);
+  border: 1px solid $ink-15;             // hairline: on flat Paper glass needs an edge
+  .nav--dark & { border-color: $paper-15; }
+
+  // GlassCard's content layer becomes the flex row
+  .nav__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 1.05rem .5rem;
+    @include up($bp-lg) { padding-inline: 1.5rem 1.6rem; }
+  }
+}
+
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  color: inherit;
+  border-radius: $r-pill;
+  .nav__logotype { display: none; height: 2.3rem; width: auto; }   // ≈ 85px wide lockup
+  .nav__ana { height: 1.5rem; width: auto; }   // ≈ 42px wide (≥ 40px min size for the primary mark)
+  @include up($bp-md) {
+    .nav__logotype { display: block; }
+    .nav__ana { display: none; }
+  }
+}
+
+.nav__links {
+  display: none;
+  @include up($bp-lg) { display: block; }
+  ul { display: flex; align-items: center; gap: clamp(1.5rem, 2.6vw, 2.75rem); }
+}
+
+.nav__link {
+  @include label(.6875rem, .2em);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: .15rem;
+  color: inherit;
+  transition: transform $dur-fast $ease-out-expo;
+  @include hover { color: $signal; }
+  &.is-active { color: $signal; transform: scale(1.04); }
+  &:active { transform: scale(.98); }
+}
+
+// Mobile toggle
+.nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0 .55rem 0 .8rem;
+  border-radius: $r-pill;
+  color: inherit;
+  @include label(.6875rem, .2em);
+  @include up($bp-lg) { display: none; }
+
+  .nav__toggle-icon {
+    position: relative;
+    width: 1.1rem;
+    height: .75rem;
+    i {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: currentColor;
+      transition: transform $dur-base $ease-out-expo;
+      &:first-child { top: 1px; }
+      &:last-child  { bottom: 1px; }
+    }
+  }
+  .is-open & .nav__toggle-icon i:first-child { transform: translateY(5px) rotate(45deg); }
+  .is-open & .nav__toggle-icon i:last-child  { transform: translateY(-5px) rotate(-45deg); }
+}
+
+// ---------------------------------------------------------------------------
+// The glass menu sheet
+// ---------------------------------------------------------------------------
+.nav__sheet {
+  position: fixed;
+  inset: 0;
+  z-index: -1;                           // under the bar, over the page
+  border-radius: 0 !important;
+  color: $paper;
+  @include up($bp-lg) { display: none !important; }
+
+  .nav__sheet-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 2rem;
+    padding: calc(var(--nav-top) + var(--nav-h) + 1.5rem) var(--gutter) max(1.5rem, env(safe-area-inset-bottom));
+    overflow-y: auto;
+  }
+  // stronger blur so the sheet reads as a surface even on a busy page
+  .lg__effect {
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+  }
+  .lg__tint { background: rgba(3, 23, 58, .62); }   // tint variant, deepened for legibility (≥ 4.5:1)
+}
+
+.nav__sheet-list { display: grid; gap: .25rem; }
+
+.nav__sheet-item {
+  overflow: hidden;
+  .nav__sheet-link {
+    display: inline-block;
+    font-family: $font-display;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 11vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -.03em;
+    text-transform: uppercase;
+    color: $paper;
+    transform: translateY(110%);
+    transition: transform 700ms $ease-out-expo;
+    padding-block: .1em;
+    @include hover { color: $signal; }
+    &.is-active { color: $signal; }
+  }
+  @for $i from 1 through 4 {
+    &--#{$i} .nav__sheet-link { transition-delay: 60ms * $i; }
+  }
+  .is-open & .nav__sheet-link { transform: none; }
+
+  @include short-landscape {
+    .nav__sheet-link { font-size: clamp(1.5rem, 6vh, 2.25rem); }
+  }
+}
+
+.nav__sheet-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid $paper-15;
+  font-size: .95rem;
+  .nav__sheet-mail { color: $paper; text-decoration-color: $paper-45; }
+  .nav__sheet-ig { @include label; color: $paper-70; @include hover { color: $signal; } }
+}
+
+@include reduced-motion {
+  .nav__sheet-item .nav__sheet-link { transform: none; transition: none; }
+}

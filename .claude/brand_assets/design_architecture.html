@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soft Tension Lab — Design Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #F0EEE9;
+  --ink: #03173A;
+  --accent: #FF5700;
+  --mute: rgba(3,23,58,.65);
+  --faint: rgba(3,23,58,.40);
+  --line: rgba(3,23,58,.15);
+  --hair: rgba(3,23,58,.08);
+  --ph: rgba(3,23,58,.05);
+  
+  --s1:6px; --s2:12px; --s3:18px; --s4:26px; --s5:38px; --s6:56px;
+  --wrap:1000px;
+  --col:150px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family: 'Whyte Inktrap', system-ui, sans-serif;
+  font-size:14px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+.label{
+  font-family:'Archivo',system-ui,sans-serif;
+  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);
+  font-weight: bold;
+}
+.mast{padding:var(--s6) 0 var(--s4);border-bottom:1px solid var(--ink)}
+.mast .label{display:block;margin-bottom:var(--s4)}
+.mast h1{
+  font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.02em;
+}
+.sec{display:grid;grid-template-columns:var(--col) 1fr;gap:var(--s4);padding:var(--s5) 0;border-bottom:1px solid var(--hair)}
+.sec:last-of-type{border-bottom:none}
+.sec-head{position:sticky;top:var(--s4);align-self:start}
+.sec-head .label{display:block}
+.sec-head h2{
+  font-size:15px;line-height:1.3;letter-spacing:-.005em;margin-top:var(--s1);
+}
+.sec-head p{font-size:12px;color:var(--mute);line-height:1.55;margin-top:var(--s2)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:var(--s2)}
+.tags span{font-family:'Archivo';font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border:1px solid var(--line);color:var(--mute)}
+.sec-body>*+*{margin-top:var(--s3)}
+p.lead{font-size:16px;line-height:1.55;color:var(--ink);max-width:70ch}
+.note{font-size:12px;color:var(--faint);line-height:1.55;max-width:76ch}
+a {color: var(--accent); text-decoration: none;}
+a:hover {text-decoration: underline;}
+
+.page-div{padding:var(--s5) 0 0;border-top:2px solid var(--ink);margin-top:var(--s5)}
+.page-div .label{display:block}
+.page-div h2{font-size:clamp(20px,3vw,30px);letter-spacing:-.015em;margin-top:var(--s1)}
+
+/* ---------- wireframe dili ---------- */
+.wf{border:1px solid var(--line);background:#fff;padding:var(--s3)}
+.wf.dark{background:var(--ink); border-color:var(--ink); color:var(--bg);}
+.wf.dark .wf-lbl{color:var(--bg); opacity: 0.7;}
+.wf.dark .ph{background:rgba(240,238,233,0.1); border-color:rgba(240,238,233,0.2);}
+
+.wf-lbl{font-family:'Archivo';font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.ph{background:var(--ph);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;color:var(--faint)}
+.bar{display:flex;align-items:center;gap:var(--s2)}
+.pill{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-family:'Archivo';font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute); background:transparent;}
+.lineado{height:6px;background:var(--ph);border-radius:3px}
+
+/* Mobile Optimizasyonu Vurgusu */
+@media (max-width:820px){
+  :root{--s5:28px;--s6:40px}
+  .sec{grid-template-columns:1fr;gap:var(--s2)}
+  .sec-head{position:static}
+  .wrap{padding:0 var(--s3)}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <!-- ATA'YA ÖZEL NOTLAR & MOBİL VURGUSU -->
+  <header class="mast" style="background-color: var(--ph); padding: 20px; border-radius: 8px; margin-bottom: 40px; border-bottom: none;">
+    <h3 style="color: var(--accent); margin-bottom: 10px;">Ata'ya Özel Not (Önemli!):</h3>
+    <p style="font-size: 13px; color: var(--ink); margin-bottom: 15px;">
+      1. Sitenin ziyaretçi trafiğinin neredeyse tamamı Instagram üzerinden gelecek. Bu yüzden tüm bu tasarım mimarisindeki <b>"Mobile-First" (Mobil Öncelikli)</b> yaklaşım bizim için hayati önem taşıyor. Mobildeki başparmak ergonomisi ve sayfa hızı her şeyden önemli.<br><br>
+      2. Buradaki yerleşim ve interaktif öneriler UX/UI uzmanlığı olmadan, stüdyonun vizyonunu aktarmak amacıyla sunulmuştur. Bu yapıları mobilde en kusursuz şekilde çalıştırmak, değiştirmek veya uyarlamak konusundaki nihai karar tamamen sana aittir. 
+    </p>
+  </header>
+
+  <header class="mast">
+    <span class="label">Design Architecture · NİHAİ (Mobile-First)</span>
+    <h1>Soft Tension Lab Web Sitesi</h1>
+  </header>
+
+  <!-- REFERANSLAR PANOSU -->
+  <div style="margin-top:30px; padding:20px; background: #fff; border: 1px dashed var(--line); border-radius: 8px; margin-bottom: 40px;">
+    <p class="label" style="margin-bottom:10px;">🔗 İlham & Referans Panosu (Ata İçin)</p>
+    <ul style="list-style: none; font-size: 13px;">
+      <li style="margin-bottom: 5px;"><strong>Geçici Pre-launch (Zarach) Düzeni:</strong> <a href="https://zarach.pl" target="_blank">zarach.pl ↗</a></li>
+      <li style="margin-bottom: 5px;"><strong>GSAP Etkileşimli Footer & Pre-launch Animasyonu:</strong> <a href="https://codepen.io/Andrea-Catanzaro/pen/bNgyqbp" target="_blank">codepen.io/Andrea-Catanzaro ↗</a></li>
+      <li style="margin-bottom: 5px;"><strong>İletişim Formu Soruları:</strong> <a href="https://tally.so/r/LZ5Qlp" target="_blank">tally.so/r/LZ5Qlp ↗</a></li>
+      <li style="margin-bottom: 5px;"><strong>Layout, Typo & Yıkılan Harfler:</strong> <a href="https://www.olhalazarieva.com" target="_blank">olhalazarieva.com ↗</a></li>
+      <li style="margin-bottom: 5px;"><strong>Blur-in Sayfa Geçişleri:</strong> <a href="https://emelecollab.com" target="_blank">emelecollab.com ↗</a></li>
+      <li style="margin-bottom: 5px;"><strong>Kayan Bant (Marquee):</strong> <a href="https://mondragon.framer.website/demo-1" target="_blank">mondragon.framer.website ↗</a></li>
+    </ul>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">Site Yapısı</span>
+      <h2>Genel Akış &amp; Animasyon Kuralları</h2>
+    </div>
+    <div class="sec-body">
+      <div style="display:grid;gap:var(--s1);margin-top:var(--s2)">
+        <div class="bar" style="align-items:baseline;gap:var(--s2);flex-wrap:wrap"><span class="label" style="min-width:24px">01</span><span style="font-size:13px;color:var(--ink);min-width:110px">Ana Sayfa</span><span style="font-size:12px;color:var(--faint)">Liquid Header → Typographic Hero → Kayan Hizmet Bandı → Asimetrik Vitrin → GSAP Footer</span></div>
+        <div class="bar" style="align-items:baseline;gap:var(--s2);flex-wrap:wrap"><span class="label" style="min-width:24px">02</span><span style="font-size:13px;color:var(--ink);min-width:110px">ABOUT</span><span style="font-size:12px;color:var(--faint)">Manifesto → Stüdyo Görselleri → Minimalist Servis Listesi</span></div>
+        <div class="bar" style="align-items:baseline;gap:var(--s2);flex-wrap:wrap"><span class="label" style="min-width:24px">03</span><span style="font-size:13px;color:var(--ink);min-width:110px">WORKS</span><span style="font-size:12px;color:var(--faint)">Siyah Zemin (Dark Mode) → Beyaz Logolar (Grid 2/3 Sütun) → Köprüsüz Temiz Yapı</span></div>
+        <div class="bar" style="align-items:baseline;gap:var(--s2);flex-wrap:wrap"><span class="label" style="min-width:24px">04</span><span style="font-size:13px;color:var(--ink);min-width:110px">CONTACT</span><span style="font-size:12px;color:var(--faint)">Olha Lazarieva Layout Mimarisi → Sadece E-Posta → Tally Form</span></div>
+        <div class="bar" style="align-items:baseline;gap:var(--s2);flex-wrap:wrap"><span class="label" style="min-width:24px">05</span><span style="font-size:13px;color:var(--ink);min-width:110px">SHOP</span><span style="font-size:12px;color:var(--faint)">Coming Soon Empty State → Organik İllüstrasyon → Animasyonlu Tipografi</span></div>
+      </div>
+      <p class="label" style="margin-top:var(--s4)">Animasyon &amp; Etkileşim Kuralları</p>
+      <div style="display:grid;gap:var(--s2);margin-top:var(--s2)">
+        <div class="bar" style="align-items:baseline;gap:var(--s2)"><span class="label" style="min-width:110px">Custom Cursor</span><span style="font-size:13px;color:var(--mute)">Masaüstünde minik nokta (dot) imleci. İnceleme alanlarında büyür. Mobilde iptal.</span></div>
+        <div class="bar" style="align-items:baseline;gap:var(--s2)"><span class="label" style="min-width:110px">Sayfa Geçişleri</span><span style="font-size:13px;color:var(--mute)">Ekran yenilenmesi bulanıklık (blur-in/blur-out) maskesi altından pürüzsüzce gerçekleşir.</span></div>
+        <div class="bar" style="align-items:baseline;gap:var(--s2)"><span class="label" style="min-width:110px">Yıkılan Harfler</span><span style="font-size:13px;color:var(--mute)">Scroll anında devrilen dinamik tipografi.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Sayfa 1</span>
+    <h2>Ana Sayfa (Home)</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">00</span>
+      <h2>Header &amp; Hero</h2>
+      <p>Liquid Glass panelli navigasyon. Hero bölümünde devasa bir tipografi ve kasmayacak kadar hafif TouchDesigner video blur zemini bulunur.</p>
+      <div class="tags"><span>Liquid Nav</span><span>Big Typography</span><span>Blur Video BG</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf" style="background:var(--ph);padding:var(--s2) var(--s3) var(--s4)">
+        <div class="bar" style="justify-content:space-between;background:rgba(240,238,233,0.7);border:1px solid var(--line);border-radius:999px;padding:10px var(--s3);box-shadow:0 4px 14px rgba(3,23,58,.05)">
+          <span class="wf-lbl" style="color:var(--ink); font-weight:bold;">STL LOGO</span>
+          <div class="bar wf-hide-m" style="gap:var(--s3)">
+            <span class="wf-lbl" style="color:var(--ink)">ABOUT</span>
+            <span class="wf-lbl" style="color:var(--ink)">WORKS</span>
+            <span class="wf-lbl" style="color:var(--ink)">CONTACT</span>
+            <span class="wf-lbl" style="color:var(--ink)">SHOP</span>
+          </div>
+        </div>
+        <div style="margin-top: 60px; padding-bottom: 40px; position:relative;">
+           <p class="wf-lbl" style="font-size: 24px; line-height:1.2; text-transform:none; color:var(--ink);">Multidisipliner sanatçıların<br>oyun alanı.<br>Sürece açık, canlı bir stüdyo.</p>
+           <p class="note" style="margin-top: 10px;">→ Arka planda 3-4 saniyelik çok hafif bir blur video dönecek. Scroll edildikçe öndeki tipografi harf harf yıkılacak.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">01</span>
+      <h2>Kayan Bant (Marquee)</h2>
+      <p>Hero alanı bittikten hemen sonra ekranı yatay olarak bölen ve sürekli kayan ritmik yazı bandı.</p>
+      <div class="tags"><span>Mondragon Style</span><span>Continuous Scroll</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf" style="padding: 10px 0; overflow:hidden; white-space:nowrap; border-left:none; border-right:none;">
+        <p class="wf-lbl" style="font-size: 14px; font-weight:bold; color:var(--ink);">Marka Kimliği & Logo Sistemleri ✦ Tipografi / İçerik Geliştirme ✦ Web Design ✦ Motion Design ✦ Marka Kimliği & Logo Sistemleri</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">02</span>
+      <h2>Zengin Vitrin (Rich Showcase)</h2>
+      <p>Klasik bir dizilim yerine; dijital arayüzler, organik resimler, illüstrasyonlar ve marka kimliklerinin asimetrik bir düzende sergilendiği, gezinmesi keyifli bir akış.</p>
+      <div class="tags"><span>Asimetrik Grid</span><span>Editoryal</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf">
+        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:var(--s4); margin-bottom:var(--s4);">
+          <div class="ph" style="height:180px;"><span class="wf-lbl">Cemre'nin İllüstrasyonları</span></div>
+          <div>
+            <h3 style="margin-bottom: 10px; font-size:18px;">Sanat Üretimi</h3>
+            <p class="note">Araya giren metinler, marka hikayeleri ve eylem çağrıları...</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:var(--s4);">
+          <div class="ph" style="height:200px;"><span class="wf-lbl">Web / Motion Tasarımları (Ata & Celal)</span></div>
+          <div class="ph" style="height:100px; align-self:end;"><span class="wf-lbl">Marka Kimliği</span></div>
+        </div>
+      </div>
+      <p class="note">→ Tüm işler, aralara giren metinler ve "Proje Başlat" CTA'leri ile gezmeye doyulmayan, Mondragon ferahlığında asimetrik bir duvar oluşturacak.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">03</span>
+      <h2>Büyük Final (Interactive Footer CTA)</h2>
+      <p>Ana sayfanın en altında, footer'a ulaşmadan hemen önce ekranı kaplayan devasa etkileşimli alan.</p>
+      <div class="tags"><span>GSAP & SplitText</span><span>Glitch Effect</span><span>Liquid Glass Button</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf dark" style="text-align:center; padding: 60px 20px; background:#000; color:#fff; border:none;">
+        <!-- Bu kelimeler fare üzerine gelince glitch/renk/blueprint efektine girecek -->
+        <h1 style="font-size: clamp(32px, 5vw, 48px); letter-spacing: -1px; margin: 0; line-height: 1.2; color:#fff;">SOFT TENSION LAB</h1>
+        <h1 style="font-size: 24px; letter-spacing: -1px; margin: 0; margin-top:20px; line-height: 1.2; color:#fff;">Ömer & Cemre</h1>
+        <h1 style="font-size: 24px; letter-spacing: -1px; margin: 0; line-height: 1.2; color:#fff;">Lead With Tension</h1>
+        <h1 style="font-size: 24px; letter-spacing: -1px; margin: 0; line-height: 1.2; color:#fff;">Sanatsal Sezgi</h1>
+        <h1 style="font-size: 24px; letter-spacing: -1px; margin: 0; line-height: 1.2; color:#fff;">Sistematik Tasarım</h1>
+        <h1 style="font-size: 18px; letter-spacing: -1px; margin: 0; margin-top:20px; line-height: 1.2; color:#fff;">hello@softtensionlab.com</h1>
+        
+        <!-- Etkileşim kod dışında kalan kusursuz buton -->
+        <div style="margin-top: 50px;">
+           <span class="pill" style="display:inline-block; font-size:12px; padding:12px 24px; background:rgba(255,255,255,0.1); backdrop-filter:blur(5px); color:#fff; border:1px solid rgba(255,255,255,0.2);">PROJE BAŞLAT ↗</span>
+        </div>
+      </div>
+      <p class="note">→ <a href="https://codepen.io/Andrea-Catanzaro/pen/bNgyqbp" target="_blank">GSAP Referans Linki ↗</a></p>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Sayfa 2</span>
+    <h2>ABOUT (Hakkımızda)</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">A1</span>
+      <h2>Manifesto & Minimal Servis Listesi</h2>
+      <p>Vizyonu anlatan ferah bir metin ve en altta yan yana dizilmiş minimalist bir servis özeti.</p>
+      <div class="tags"><span>Negative Space</span><span>Slide-up Text</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf">
+        <div style="margin-bottom: var(--s4);">
+            <p style="font-size: 16px; font-weight: bold; line-height: 1.5; color: var(--ink);">
+              SOFT TENSION LAB; SANAT, TASARIM VE KÜLTÜRÜN KESİŞİMİNDE YER ALAN BAĞIMSIZ BİR KREATİF STÜDYODUR. KAVRAMSAL DÜŞÜNCEYİ SOMUT GÖRSEL KİMLİKLERE DÖNÜŞTÜREREK, MARKALAR VE SANATÇILAR İÇİN ESTETİK DUVARLARI YIKIYORUZ.<br><br>
+              SÜRECE AÇIK, CANLI BİR STÜDYO OLARAK; SİSTEMATİK TASARIM İLE SANATSAL SEZGİ ARASINDAKİ GERİLİMDEN BESLENİYORUZ. HİKAYESİ OLAN, SAMİMİ VE BÜTÜNSEL DENEYİMLER YARATMAK İÇİN BİRLİKTE HAREKETE GEÇELİM.
+            </p>
+        </div>
+        <div class="bar" style="margin-top:30px; padding-top:20px; border-top:1px solid var(--line); justify-content:space-between; flex-wrap:wrap; gap:10px;">
+           <span class="wf-lbl">Marka Kimliği & Logo</span>
+           <span class="wf-lbl">Tipografi & İçerik</span>
+           <span class="wf-lbl">Web Design & Motion</span>
+           <span class="wf-lbl">Geleneksel & Dijital Sanat</span>
+           <span class="wf-lbl">Sanat Üretimi</span>
+        </div>
+      </div>
+      <p class="note">→ Yazılar sayfa yüklendiğinde görünmez bir maske içinden slide-up animasyonuyla çıkacak.</p>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Sayfa 3</span>
+    <h2>WORKS (Projeler)</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">W1</span>
+      <h2>Logo Wall (Dark Mode)</h2>
+      <p>Siyah (#03173A'nın en koyu tonu) zemin. Hiçbir link veya kutu barındırmayan, bembeyaz logo grid'i. Minimalist güç gösterisi.</p>
+      <div class="tags"><span>Dark Mode</span><span>Beyaz Logolar</span><span>No-Links</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf dark">
+        <p class="wf-lbl" style="margin-bottom: 20px;">SELECTED WORKS</p>
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--s4);">
+          <div class="ph" style="height:80px; border:none;"><span class="wf-lbl">BEYAZ LOGO 1</span></div>
+          <div class="ph" style="height:80px; border:none;"><span class="wf-lbl">BEYAZ LOGO 2</span></div>
+          <div class="ph" style="height:80px; border:none;"><span class="wf-lbl">BEYAZ LOGO 3</span></div>
+          <div class="ph" style="height:80px; border:none;"><span class="wf-lbl">BEYAZ LOGO 4</span></div>
+          <div class="ph" style="height:80px; border:none;"><span class="wf-lbl">BEYAZ LOGO 5</span></div>
+          <div class="ph" style="height:80px; border:none;"><span class="wf-lbl">BEYAZ LOGO 6</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Sayfa 4</span>
+    <h2>CONTACT (İletişim)</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">C1</span>
+      <h2>Olha Lazarieva Layout &amp; Form</h2>
+      <p>Ekranın solunda devasa tipografi ve sadece E-posta / Sosyal Medya bilgisi. Sağda Tally mantığıyla özel kodlanmış proje formu. (Lokasyon ve telefon kesinlikle yok).</p>
+      <div class="tags"><span>Split Screen</span><span>Tally Logic Form</span><span>No-Location</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)">
+          <div>
+             <h3 style="font-size: 32px; line-height: 1; letter-spacing: -1px; margin-bottom: 20px;">Hadi<br>Tanışalım.</h3>
+             <p class="wf-lbl" style="font-size:12px; margin-top: 10px;">hello@softtensionlab.com</p>
+             <p class="wf-lbl" style="margin-top: 5px;">Instagram ↗</p>
+             <p class="wf-lbl" style="margin-top: 5px;">Behance ↗</p>
+          </div>
+          <div>
+            <p class="wf-lbl">TALLY FORM YAPI (Custom CSS)</p>
+            <div class="lineado" style="margin-top:15px; width: 100%; border-bottom: 1px solid var(--ink); background:transparent; border-radius:0;"></div>
+            <p class="wf-lbl" style="margin-top:5px; opacity:0.5;">Adınız *</p>
+            
+            <div class="lineado" style="margin-top:20px; width: 100%; border-bottom: 1px solid var(--ink); background:transparent; border-radius:0;"></div>
+            <p class="wf-lbl" style="margin-top:5px; opacity:0.5;">Proje Tipi (Marka Kimliği, Web Design, Motion vs.) *</p>
+            
+            <div class="lineado" style="margin-top:20px; width: 100%; border-bottom: 1px solid var(--ink); background:transparent; border-radius:0;"></div>
+            <p class="wf-lbl" style="margin-top:5px; opacity:0.5;">Bütçe Aralığı *</p>
+
+            <span class="pill" style="display:inline-block;margin-top:25px; background: var(--ink); color:var(--bg); border:none; padding: 10px 20px;">Gönder</span>
+          </div>
+        </div>
+      </div>
+      <p class="note">→ Form içeriği için referans: <a href="https://tally.so/r/LZ5Qlp" target="_blank">Tally Form ↗</a></p>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Sayfa 5</span>
+    <h2>SHOP (Archive)</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">S1</span>
+      <h2>Coming Soon (Empty State)</h2>
+      <p>Satışlar başlayana kadar kullanılacak geçici yapı.</p>
+      <div class="tags"><span>Slide-up Text</span><span>Organik İllüstrasyon</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf" style="text-align:center; padding: 60px 20px;">
+        <div class="ph" style="height:120px; width:120px; border-radius:50%; margin:0 auto; background:transparent;"><span class="wf-lbl">İllüstrasyon</span></div>
+        <h3 style="font-size: 28px; letter-spacing: -1px; margin-top: 20px;">Coming Soon.</h3>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Global Komponentler</span>
+    <h2>404 Error Page</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">Global</span>
+      <h2>404 (Not Found)</h2>
+      <p>Kullanıcı hatalı bir linke gittiğinde STL deneyiminde kalmaya devam eder.</p>
+      <div class="tags"><span>Yıkılan Harfler</span><span>İllüstrasyon</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf" style="text-align:center; padding: 60px 20px; position:relative; overflow:hidden;">
+        <h3 style="font-size: 42px; letter-spacing: -1px; margin-bottom: 15px;">404</h3>
+        <p class="wf-lbl" style="font-size: 14px;">Görünüşe göre bu sayfa tasarım sürecinde kayboldu.</p>
+        <span class="pill" style="display:inline-block; font-size:10px; margin-top: 20px; padding:8px 16px;">ANA SAYFAYA DÖN</span>
+      </div>
+      <p class="note">→ 404 yazısındaki rakamlar "yıkılan harf" animasyonu ile devrilecek veya stüdyodan konsept bir illüstrasyon eklenecek.</p>
+    </div>
+  </section>
+
+  <div class="page-div">
+    <span class="label">Eklenti (Pre-Launch)</span>
+    <h2>Total Coming Soon (Holding Page)</h2>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">Geçici Sayfa</span>
+      <h2>Zarach.pl Geçici Karşılama Ekranı</h2>
+      <p>Site tamamen kodlanıp bitene kadar, softtensionlab.com adresine girenleri karşılayacak olan siyah zeminli geçici "Yapım Aşamasında" sayfası.</p>
+      <div class="tags"><span>Zarach Vibe</span><span>GSAP Animation</span><span>Only Mailto</span></div>
+    </div>
+    <div class="sec-body">
+      <div class="wf dark" style="text-align:center; padding: 100px 20px; border:none; background:#000;">
+        <div style="margin-bottom: 40px; color:rgba(255,255,255,0.5); font-size:12px; font-weight:bold; letter-spacing:0.1em;">STL LOGO</div>
+        
+        <!-- Etkileşimli Alan -->
+        <h1 style="font-size: clamp(32px, 5vw, 48px); letter-spacing: -1px; margin: 0; line-height: 1.2; color:#fff;">SOFT TENSION LAB</h1>
+        <p class="wf-lbl" style="margin-top: 20px; color:rgba(255,255,255,0.5);">WEBSITE COMING SOON</p>
+        
+        <!-- Sadece Tıklanabilir E-Posta -->
+        <div style="margin-top: 60px;">
+           <a href="mailto:hello@softtensionlab.com" style="color:#fff; font-size:16px; text-decoration:none; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:2px;">hello@softtensionlab.com</a>
+        </div>
+      </div>
+      <p class="note">→ Referans Linki: <a href="https://zarach.pl" target="_blank">zarach.pl ↗</a><br>Ata, site bitene kadar bu siyah arayüz yayında kalacak. İletişim olarak SADECE tıklanabilir e-posta linki olacak. Yazılara farenin üzerine gelindiğinde GSAP efekti devreye girecek.</p>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--ink);padding:var(--s3) 0 var(--s5);display:flex;justify-content:space-between;gap:var(--s2);flex-wrap:wrap">
+    <span class="label">Soft Tension Lab · Design Architecture</span>
+    <span class="label">v5.1</span>
+  </footer>
+
+</main>
+</body>
+</html>

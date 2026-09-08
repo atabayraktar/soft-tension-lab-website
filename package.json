@@ -1,0 +1,30 @@
+{
+  "name": "soft-tension-lab-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Soft Tension Lab — independent creative studio. Next.js static export for Firebase Hosting.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "images": "node scripts/optimize-images.mjs",
+    "og": "node scripts/render-og.mjs",
+    "check:overflow": "node .claude/check-overflow.mjs",
+    "shots": "node .claude/screenshot-responsive.mjs",
+    "check:interact": "node scripts/interaction-check.mjs",
+    "serve": "node .claude/serve.mjs",
+    "start": "node .claude/serve.mjs"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.0.0",
+    "sass": "^1.90.0",
+    "sharp": "^0.34.0"
+  },
+  "engines": {
+    "node": ">=20.9"
+  }
+}

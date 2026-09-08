@@ -1,0 +1,97 @@
+@use 'tokens' as *;
+
+// Four layers. The order never changes. Consumers set size/padding on `.lg`
+// (and `.lg__content`), never the effect/tint/shine layers.
+
+.lg {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --mx: 50%;
+  --my: 0%;
+}
+.lg--small { border-radius: $r-small; }
+.lg--pill  { border-radius: $r-pill; }
+
+.lg__effect,
+.lg__tint,
+.lg__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+// 01 — the physics. Blur alone is the floor; the SVG map bends what is behind.
+.lg__effect {
+  z-index: 0;
+  -webkit-backdrop-filter: blur(6px) saturate(130%);
+  backdrop-filter: blur(6px) saturate(130%);
+}
+html[data-glass='svg'] .lg--r-chip .lg__effect { filter: url(#stl-glass-chip); }
+html[data-glass='svg'] .lg--r-nav  .lg__effect { filter: url(#stl-glass-nav); }
+html[data-glass='svg'] .lg--r-card .lg__effect { filter: url(#stl-glass-card); }
+html[data-glass='svg'] .lg--r-veil .lg__effect { filter: url(#stl-glass-veil); }
+
+// Fallback 2 — flat glass, still on-brand (no SVG refraction, stronger blur)
+html[data-glass='flat'] .lg__effect {
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+}
+
+// 02 — the tint. Variants change this one line.
+.lg__tint { z-index: 1; }
+.lg--frost .lg__tint { background: $glass-frost; }
+.lg--clear .lg__tint { background: $glass-clear; }
+.lg--tint  .lg__tint { background: $glass-tint; }
+
+// Fallback 3 — no backdrop support at all: a 92% opaque brand surface.
+html[data-glass='solid'] .lg__effect { display: none; }
+html[data-glass='solid'] .lg--frost .lg__tint,
+html[data-glass='solid'] .lg--clear .lg__tint { background: rgba(240, 238, 233, .92); }
+html[data-glass='solid'] .lg--tint .lg__tint { background: rgba(3, 23, 58, .92); }
+
+// 03 — the thickness. Fixed stack; plus the breathing edge that follows the cursor.
+.lg__shine {
+  z-index: 2;
+  box-shadow: $glass-shine;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg at var(--mx) var(--my),
+      rgba(255, 255, 255, .85),
+      rgba(255, 255, 255, 0) 22%,
+      rgba(255, 255, 255, 0) 78%,
+      rgba(255, 255, 255, .85)
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 240ms $ease-out-expo;
+  }
+}
+@include fine-pointer {
+  .lg:hover .lg__shine::after { opacity: 1; }
+}
+
+// 04 — the content. Never inherits a filter.
+.lg__content {
+  position: relative;
+  z-index: 3;
+}
+
+// Mobile budget: a full-screen veil skips the backdrop pass on small screens — the
+// tint + shine still read as glass, and scroll stays at 60fps.
+@media (max-width: #{$bp-md - 1px}) {
+  .lg--r-veil .lg__effect {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    filter: none !important;
+  }
+}

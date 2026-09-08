@@ -1,0 +1,82 @@
+@use 'tokens' as *;
+
+.cform {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+  .cform__kicker { color: $ink-65; }
+}
+
+// Underlined field: the control sits above its label; the label floats up when the
+// field has a value or focus (placeholder=" " makes :placeholder-shown reliable).
+.cform__field {
+  position: relative;
+  display: grid;
+  padding-top: 1.35rem;
+
+  input, select, textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: .5rem 0 .65rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid $ink;
+    border-radius: 0;
+    color: $ink;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    appearance: none;
+    -webkit-appearance: none;
+    outline-offset: 6px;
+    &:focus-visible { outline: 2px solid $signal; outline-offset: 6px; border-bottom-color: $signal; }
+  }
+  textarea { resize: vertical; min-height: 4.5rem; }
+  select {
+    cursor: pointer;
+    padding-right: 1.75rem;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path d='M2 5l5 5 5-5' fill='none' stroke='%2303173A' stroke-width='1.2'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right .25rem center;
+    &:invalid { color: $ink-65; }
+  }
+
+  .cform__label {
+    position: absolute;
+    top: 1.35rem;
+    left: 0;
+    padding-top: .55rem;
+    @include label(.75rem, .18em);
+    color: $ink-65;
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform $dur-fast $ease-out-expo;
+    .cform__opt { text-transform: none; letter-spacing: .04em; font-weight: 500; }
+  }
+  input:focus ~ .cform__label,
+  input:not(:placeholder-shown) ~ .cform__label,
+  textarea:focus ~ .cform__label,
+  textarea:not(:placeholder-shown) ~ .cform__label,
+  select ~ .cform__label {                       // a select always shows a value, so its label lives up
+    transform: translateY(-1.4rem);
+    color: $ink;
+  }
+
+  &.is-invalid input, &.is-invalid select { border-bottom-color: $signal; }
+  &.is-invalid input, &.is-invalid select, &.is-invalid textarea { padding-bottom: .55rem; }
+}
+
+.cform__error, .cform__hint {
+  margin-top: .45rem;
+  font-size: .8125rem;
+  line-height: 1.4;
+  color: $ink-65;
+}
+.cform__error { color: $signal; font-weight: 500; }
+
+.cform__actions { padding-top: .5rem; }
+
+.cform--done {
+  padding-top: 1.5rem;
+  gap: 1rem;
+  .cform__done-title { font-weight: 800; font-size: clamp(1.75rem, 4vw, 2.75rem); letter-spacing: -.03em; line-height: 1; }
+  .cform__done-copy { color: $ink-65; max-width: 40ch; }
+}

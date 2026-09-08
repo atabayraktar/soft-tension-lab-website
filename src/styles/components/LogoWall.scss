@@ -1,0 +1,32 @@
+@use 'tokens' as *;
+
+.logowall {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  @include up($bp-md) { grid-template-columns: repeat(3, 1fr); }
+}
+
+.logowall__cell {
+  aspect-ratio: 5 / 3;
+  display: grid;
+  place-items: center;
+  @for $i from 1 through 9 {
+    &:nth-child(#{$i}) { --reveal-delay: #{($i - 1) * 45ms}; }
+  }
+}
+
+// The slot: paper at 8% — a quiet stand-in with the wordmark's rhythm, no chrome.
+.logowall__slot {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: .4rem;
+  text-align: center;
+  border-radius: $r-small;
+  background: $paper-08;
+  color: $paper-70;
+  .logowall__slot-label { @include label(.75rem, .22em); }
+  .logowall__slot-note  { @include label(.625rem, .2em); color: $paper-70; }
+}

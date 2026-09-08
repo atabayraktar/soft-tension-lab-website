@@ -1,0 +1,31 @@
+// Single stylesheet entry, imported once from pages/_app.jsx.
+// The Pages Router only accepts global CSS from _app, so component and page styles are
+// authored in their own files here and aggregated in this order:
+//   tokens → globals → components → pages
+
+@use 'globals';
+
+@use 'components/GlassCard';
+@use 'components/Button';
+@use 'components/Cursor';
+@use 'components/PageVeil';
+@use 'components/Nav';
+@use 'components/Footer';
+@use 'components/Mascot';
+@use 'components/TopplingText';
+@use 'components/Hero';
+@use 'components/Marquee';
+@use 'components/ShowcaseGrid';
+@use 'components/FooterFinale';
+@use 'components/HoldingPage';
+@use 'components/LogoWall';
+@use 'components/ServicesList';
+@use 'components/ContactForm';
+
+@use 'pages/home';
+@use 'pages/about';
+@use 'pages/work';
+@use 'pages/services';
+@use 'pages/contact';
+@use 'pages/shop';
+@use 'pages/not-found';

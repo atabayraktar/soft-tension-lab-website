@@ -1,0 +1,49 @@
+@use 'tokens' as *;
+
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid $ink-15;
+  border-bottom: 1px solid $ink-15;
+  padding-block: 1.1rem;
+  background: $paper;
+  @include up($bp-md) { padding-block: 1.4rem; }
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+  animation-play-state: paused;
+  .is-live & { animation-play-state: running; will-change: transform; }
+  @include reduced-motion { animation: none; }
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.6vw, 2.25rem);
+  padding-right: clamp(1.25rem, 2.6vw, 2.25rem);
+  font-weight: 500;
+  font-size: clamp(1.05rem, 2.1vw, 1.55rem);
+  letter-spacing: -.015em;
+  white-space: nowrap;
+  color: $ink;
+}
+
+.marquee__star {
+  width: .8em;
+  height: .8em;
+  color: $ink-40;
+  flex-shrink: 0;
+}
+
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}

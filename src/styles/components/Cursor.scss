@@ -1,0 +1,39 @@
+@use 'tokens' as *;
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $signal;
+  pointer-events: none;
+  opacity: 0;
+  display: none;
+  transform: translate3d(-100px, -100px, 0);
+
+  &::after {
+    // the ring that opens over interactive/preview content
+    content: '';
+    position: absolute;
+    inset: 50%;
+    width: 40px;
+    height: 40px;
+    border: 1px solid $signal;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(.2);
+    opacity: 0;
+    transition: transform $dur-base $ease-out-expo, opacity $dur-base $ease-out-expo;
+  }
+  &.is-grow::after { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  &.is-text::after  { transform: translate(-50%, -50%) scale(.6); }
+  &.is-down::after  { transform: translate(-50%, -50%) scale(.8); }
+
+  @include fine-pointer {
+    display: block;
+    &.is-visible { opacity: 1; }
+  }
+  @include reduced-motion { display: none; }
+}

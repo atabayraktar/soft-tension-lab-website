@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soft Tension Lab — Brand Guidelines</title>
+<!-- Geliştirici notu: Whyte Inktrap font dosyaları lokal olarak projeye dahil edilecektir. -->
+<style>
+:root{
+  /* Renk Paleti Oranları: %60 Zemin, %30 Lacivert, %10 Turuncu */
+  --bg: #F0EEE9;
+  --ink: #03173A;
+  --accent: #FF5700;
+  
+  /* Lacivert üzerinden türetilen uyumlu griler / transparanlıklar */
+  --mute: rgba(3, 23, 58, 0.65);
+  --faint: rgba(3, 23, 58, 0.40);
+  --line: rgba(3, 23, 58, 0.15);
+  --hair: rgba(3, 23, 58, 0.08);
+
+  --s1:6px; --s2:12px; --s3:18px; --s4:26px; --s5:38px; --s6:56px;
+  --wrap:1000px;
+  --col:150px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family: 'Whyte Inktrap', system-ui, sans-serif;
+  font-size:14px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+
+.label{
+  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);
+  font-weight: bold;
+}
+
+/* ---------- masthead ---------- */
+.mast{padding:var(--s6) 0 var(--s4);border-bottom:1px solid var(--ink)}
+.mast .label{display:block;margin-bottom:var(--s4)}
+.mast h1{
+  font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.02em;
+}
+
+/* ---------- section ---------- */
+.sec{display:grid;grid-template-columns:var(--col) 1fr;gap:var(--s4);padding:var(--s5) 0;border-bottom:1px solid var(--hair)}
+.sec-head{position:sticky;top:var(--s4);align-self:start}
+.sec-head .label{display:block}
+.sec-head h2{
+  font-size:15px;line-height:1.3;letter-spacing:-.005em;margin-top:var(--s1);
+}
+.sec-body>*+*{margin-top:var(--s3)}
+
+p.lead{font-size:16px;line-height:1.55;color:var(--ink);max-width:70ch; font-weight: 500;}
+p.copy{color:var(--mute);max-width:76ch}
+.note{font-size:12px;color:var(--faint);line-height:1.55;max-width:76ch}
+
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+
+/* ---------- logo ---------- */
+.logo-box{border:1px solid var(--line);padding:var(--s5) var(--s4);display:flex;align-items:center;justify-content:center;min-height:150px}
+.logo-box.ink{background:var(--ink);border-color:var(--ink)}
+.logo-box img, .logo-box svg{width:100%;max-width:210px;height:auto;display:block}
+.cap{display:flex;justify-content:space-between;gap:var(--s2);margin-top:var(--s1)}
+
+/* ---------- renk ---------- */
+.sw{border:1px solid var(--line)}
+.sw-chip{height:88px;border-bottom:1px solid var(--line)}
+.sw-info{padding:var(--s2) var(--s3) var(--s3)}
+.sw-info h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase; font-weight: bold;}
+.sw-info code{display:block;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px;letter-spacing:.05em;color:var(--mute);margin-top:5px}
+.sw-info p{font-size:12px;color:var(--faint);margin-top:5px;line-height:1.5}
+
+pre.code{
+  border:1px solid var(--line);padding:var(--s3);
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11.5px;line-height:1.75;color:var(--mute);
+  overflow-x:auto;white-space:pre;
+}
+
+/* ---------- tipografi ---------- */
+.type{border:1px solid var(--line);padding:var(--s3)}
+.type-spec{font-size:62px;line-height:1;letter-spacing:-.03em}
+.type-info{margin-top:var(--s3);padding-top:var(--s2);border-top:1px solid var(--hair)}
+.type-info h3{font-size:11px;letter-spacing:.16em;text-transform:uppercase; font-weight:bold;}
+.type-info>p{font-size:12px;color:var(--faint);margin-top:4px}
+.axes{display:flex;gap:6px;flex-wrap:wrap;margin-top:var(--s2)}
+.axes span{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;padding:4px 8px;border:1px solid var(--line);color:var(--mute)}
+.glyphs{margin-top:var(--s2);font-size:13.5px;line-height:1.75;color:var(--mute)}
+
+/* ---------- ikon & buton (Liquid Glass) ---------- */
+.icon-stage{border:1px solid var(--line);background:#F0EEE9;padding:var(--s5) var(--s4);}
+.icons-row{display:flex;justify-content:center;flex-wrap:wrap;gap:25px}
+.liquidGlass-wrapper{position:relative;display:flex;font-weight:600;overflow:hidden;color:var(--ink);cursor:pointer;box-shadow:0 6px 6px rgba(3,23,58,0.1),0 0 20px rgba(3,23,58,0.05);transition:all 0.4s cubic-bezier(0.175,0.885,0.32,2.2)}
+.liquidGlass-effect{position:absolute;z-index:0;inset:0;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);filter:url(#glass-distortion);overflow:hidden;isolation:isolate}
+.liquidGlass-tint{z-index:1;position:absolute;inset:0;background:rgba(240,238,233,0.35)}
+.liquidGlass-shine{position:absolute;inset:0;z-index:2;overflow:hidden;box-shadow:inset 2px 2px 1px 0 rgba(255,255,255,0.6),inset -1px -1px 1px 1px rgba(255,255,255,0.4)}
+.liquidGlass-text{z-index:3;font-size:2rem;color:var(--ink);display:flex;align-items:center;justify-content:center;line-height:0}
+.icon-lg{padding:1.2rem;align-items:center;justify-content:center}
+.icon-lg .liquidGlass-text{width:44px;height:44px}
+.icon-lg,.icon-lg>div{border-radius:2rem}
+.icon-lg:hover{padding:1.4rem;border-radius:2.5rem; color:var(--accent)}
+.icon-lg:hover>div{border-radius:2.5rem}
+
+.icon-lg svg{width:44px;height:44px;fill:currentColor;display:block;transition:all 0.4s cubic-bezier(0.175,0.885,0.32,2.2)}
+.btn-lg{padding:0.95rem 2.1rem;align-items:center;justify-content:center}
+.btn-lg,.btn-lg>div{border-radius:3rem}
+.btn-lg:hover{padding:1.05rem 2.25rem;border-radius:3.5rem}
+.btn-lg:hover>div{border-radius:3.5rem}
+.btn-lg .liquidGlass-text{font-size:14px;line-height:1;letter-spacing:.02em;color:inherit;white-space:nowrap;transition:all 0.4s cubic-bezier(0.175,0.885,0.32,2.2)}
+.btn-lg:hover .liquidGlass-text{transform:scale(0.97); color:var(--accent)}
+
+.code-drop{margin-top:var(--s4);display:flex;flex-direction:column;gap:var(--s1)}
+.code-drop .label{display:block}
+.code-drop .note{margin-top:var(--s2)}
+.code-drop .note code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;color:var(--mute)}
+
+/* ---------- footer ---------- */
+.foot{border-top:1px solid var(--ink);padding:var(--s3) 0 var(--s5);display:flex;justify-content:space-between;gap:var(--s2);flex-wrap:wrap}
+
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+@media (max-width:820px){
+  :root{--s5:28px;--s6:40px}
+  .sec{grid-template-columns:1fr;gap:var(--s2)}
+  .sec-head{position:static}
+  .cols2{grid-template-columns:1fr}
+  .type-spec{font-size:52px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="mast">
+    <span class="label">Brand Guidelines · v1.0</span>
+    <h1>Soft Tension Lab Web Sitesi</h1>
+  </header>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">01</span>
+      <h2>Marka Tanımı, Ruhu &amp; Tonu</h2>
+    </div>
+    <div class="sec-body">
+      <p class="lead">MULTİDİSİPLİNER SANATÇILARIN OYUN ALANI;<br>SÜRECE AÇIK, CANLI BİR STÜDYO.</p>
+      <p class="lead" style="margin-top:var(--s2)">SİSTEMATİK TASARIM İLE SANATSAL SEZGİ ARASINDAKİ GERİLİMDEN BESLENİYOR, MARKALAR İÇİN SAMİMİ GÖRSEL HİKAYELER YARATIYORUZ.</p>
+      <p class="copy" style="margin-top:var(--s3)">Görsel ve yapısal mimari referanslar: <a href="https://emelecollab.com" style="color:var(--ink);text-decoration:underline">emelecollab.com</a>, <a href="https://www.olhalazarieva.com" style="color:var(--ink);text-decoration:underline">olhalazarieva.com</a>, <a href="https://www.studiograylab.com" style="color:var(--ink);text-decoration:underline">studiograylab.com</a>. Sitenin arayüzü, bu referanslardaki modern editoryal akışı temel alacaktır. Marka felsefesini yansıtmak amacıyla; dijital kusursuzluğu temsil eden "Apple Liquid Glass" buton/navigasyon panelleri ile, fiziksel üretim süreçlerinin ham dokusu arasında bilinçli bir tasarım gerilimi (soft tension) hedeflenmektedir.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">02</span>
+      <h2>Logo Varyasyonları</h2>
+    </div>
+    <div class="sec-body">
+      <p class="note" style="margin-bottom:var(--s3)">Logo, monogram ve logotype kullanımları. Açık zeminlerde lacivert (#03173A), koyu zeminlerde kemik/beyaz (#F0EEE9) varyasyonları kullanılır.</p>
+      
+      <!-- ANA LOGO -->
+      <div class="cols2" style="margin-bottom: var(--s3)">
+        <div>
+          <div class="logo-box">
+            <svg id="katman_1" data-name="katman 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" style="max-width:140px;">
+              <path d="M820.17,349.41c-19.91-6.37-40.44-11.12-61.2-14.73-82.69-14.28-163.87-18.41-247.32-4.65-62.89,9.9-126.54,31.57-181.98,59.66-55.59,28.61-115.45,50.58-152.65,98.11-21.41,27.27-35.42,59.95-34.94,93.41.2,15.8,3.29,31.37,7.14,46.79,16.62,64.69,60.63,109.05,134.35,125.3l3.94.87,1.97.44,1.98.37,7.93,1.49c2.84.41,6.75,1.06,9.96,1.52,4.44.52,9.5,1.28,13.96,1.65,30.29,3.18,61.08,4.09,91.57,3.03,54.28-1.94,108.45-10.42,160.62-23.86,15.16-3.76,30.75-8.36,45.47-13.29,67.24-22.41,122.36-67.1,178.59-106,59.59-41.71,124.11-86.81,131.79-156.73,7.06-63.5-50.43-94.39-111.18-113.38ZM922.77,462.08c-8.85,69.73-76.19,113.02-136.71,153.32-37.62,24.84-71.18,57.44-113.09,76.12-25.48,11.38-51.92,21.1-79.1,28.73-4.35,1.18-10.52,3-14.89,4.02-7.32,1.76-15.24,4.01-22.58,5.55-40.06,9.32-81.39,16.35-122.65,19.22-38.65,2.68-77.86,1.82-116.17-3.36-9.03-1.2-17.74-2.78-26.11-4.77-13.72-3.24-26.52-7.57-38.3-13.05-34.23-15.91-59.82-41.55-74.04-78.72-7.3-18.64-11.72-38.62-14-58.57-.35-3.2-.53-6.42-.56-9.64-.22-11.83,1.64-23.62,5.17-35.09,26.11-82.4,140.59-133.15,223.26-169.32,28.61-12.07,58.19-21.66,88.39-28.9,20.54-4.94,41.36-8.79,62.36-11.61,75.84-10.17,153.94-6.84,229.08,7.82,70.14,13.67,158.5,43.08,149.94,118.25Z" fill="#03173a"/>
+            </svg>
+          </div>
+          <div class="cap"><span class="label">Ana Logo</span><span class="label">Açık Zemin</span></div>
+        </div>
+        <div>
+          <div class="logo-box ink">
+            <svg id="katman_1" data-name="katman 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" style="max-width:140px;">
+              <path d="M820.17,349.41c-19.91-6.37-40.44-11.12-61.2-14.73-82.69-14.28-163.87-18.41-247.32-4.65-62.89,9.9-126.54,31.57-181.98,59.66-55.59,28.61-115.45,50.58-152.65,98.11-21.41,27.27-35.42,59.95-34.94,93.41.2,15.8,3.29,31.37,7.14,46.79,16.62,64.69,60.63,109.05,134.35,125.3l3.94.87,1.97.44,1.98.37,7.93,1.49c2.84.41,6.75,1.06,9.96,1.52,4.44.52,9.5,1.28,13.96,1.65,30.29,3.18,61.08,4.09,91.57,3.03,54.28-1.94,108.45-10.42,160.62-23.86,15.16-3.76,30.75-8.36,45.47-13.29,67.24-22.41,122.36-67.1,178.59-106,59.59-41.71,124.11-86.81,131.79-156.73,7.06-63.5-50.43-94.39-111.18-113.38ZM922.77,462.08c-8.85,69.73-76.19,113.02-136.71,153.32-37.62,24.84-71.18,57.44-113.09,76.12-25.48,11.38-51.92,21.1-79.1,28.73-4.35,1.18-10.52,3-14.89,4.02-7.32,1.76-15.24,4.01-22.58,5.55-40.06,9.32-81.39,16.35-122.65,19.22-38.65,2.68-77.86,1.82-116.17-3.36-9.03-1.2-17.74-2.78-26.11-4.77-13.72-3.24-26.52-7.57-38.3-13.05-34.23-15.91-59.82-41.55-74.04-78.72-7.3-18.64-11.72-38.62-14-58.57-.35-3.2-.53-6.42-.56-9.64-.22-11.83,1.64-23.62,5.17-35.09,26.11-82.4,140.59-133.15,223.26-169.32,28.61-12.07,58.19-21.66,88.39-28.9,20.54-4.94,41.36-8.79,62.36-11.61,75.84-10.17,153.94-6.84,229.08,7.82,70.14,13.67,158.5,43.08,149.94,118.25Z" fill="#F0EEE9"/>
+            </svg>
+          </div>
+          <div class="cap"><span class="label">Ana Logo</span><span class="label">Koyu Zemin</span></div>
+        </div>
+      </div>
+
+      <!-- MONOGRAM & LOGOTYPE -->
+      <div class="cols2">
+        <div>
+          <div class="logo-box">
+            <svg id="katman_1" data-name="katman 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" style="max-width:110px;">
+              <path d="M565.03,293.14c-8.28-8.75-19.55-14.96-31.35-17.31-15.76-3.14-32.53-.2-46.37,7.89-11.14,6.52-18.54,16.01-25.9,26.33-8.45,11.82-14.39,24.95-21.93,37.33-7.44,12.22-15.87,23.84-25.07,34.78-1.97,2.35-3.99,4.64-6.01,6.93-8.84,9.93-17.06,19.53-26.77,28.68l-25.29,23.9-19.49,18.43c-14.04,13.25-27.09,26.66-38.52,42.11-7.85,10.63-13.47,21.93-15.34,34.93-2.58,18.05,8,34.11,25.38,38.88,8.84,2.42,18.14,2.82,27.38,1.1,37.56-6.97,60.76-23.66,101.44-30.4,8.84-1.46,17.69-.25,25.49,3.27,7.62,3.47,11.19,10.88,8.92,19.33-3.1,11.5-10.23,21.37-19.02,29.67-13.77,12.98-28.97,24.44-44.89,34.89-17.83,11.71-36.57,22.13-55.22,31.95-18.75,9.87-37.87,19.08-57.22,27.76-23.7,10.61-48.5,25.32-75.02,25.87-10.96.23-22.08-.94-32.72,2.17-25.23,7.38-46.28,30.31-46.28,57.42,0,1.79.09,3.57.25,5.32,2.96,29.98,30.61,53.64,64.71,54.73.81.02,1.62.04,2.45.04,16.3,0,32.6-5.31,45.31-15.61,6.03-4.87,11.19-10.81,14.98-17.58,7.54-13.41,9.69-28.81,18.21-41.93,7.76-11.91,18.28-22.08,30.09-29.96l32.92-22.36c9.12-6.19,18.19-12.44,27.2-18.79,10.22-7.18,20.32-14.48,30.32-21.95,6.79-5.09,13.52-10.25,20.18-15.51,16.44-13,32.44-26.61,47.58-41.1,5.74-5.49,11.46-10.99,16.93-16.73,7.17-7.53,13.81-15.45,19.6-24.08,5.45-8.12,11.32-17.4,10.79-27.6-.38-7.13-2.82-14.24-7.31-19.84-7.09-8.83-18.28-13.05-29.15-14.77-11.32-1.79-23.14-1.21-34.33,1.17-19.24,4.12-37.06,10.88-55.52,17.71-17.26,6.37-43.32,17.27-59.11,5.45-15.58-11.64,1.21-41.32,10.72-53.25,2.69-3.38,5.45-6.7,8.29-9.95,23.79-27.29,52.56-50,84.44-67.33,12.38-6.75,25.56-12.04,39.2-15.67,14.55-3.86,29.57-4.26,44.26-7.2,11.84-2.35,23.32-7.29,32.85-14.77,7.08-5.54,13.01-12.54,16.8-20.74,2.78-6.05,4.3-12.64,4.55-19.3.02-.4.02-.81.02-1.23.2-12.42-4.95-24.13-13.43-33.1Z" fill="#03173a"/>
+              <path d="M466.92,482.73c15.05-4.94,30.41-8.92,46.39-6.2,12.88,2.19,25.34,8.89,32.61,19.75,7.16,10.71,8.68,24.41,6.76,37.15-2.37,15.79-8.76,30.93-17.23,44.29-8.41,13.25-17.97,26-23.46,40.84-2.07,5.6-2.65,11.73-1.11,17.5,2.83,10.61,13.84,12.92,23.46,12.25,11.16-.78,20.81-5.07,28.86-12.91,12.05-11.75,19.18-29.39,17.61-46.26-.95-10.27-3.81-20.23-5.61-30.35-9.55-53.67,15.87-111.92,61.71-141.42,8.17-5.25,17.08-9.82,23.24-17.33,5.74-7,8.59-16.29,7.78-25.31-.6-6.65-3.3-13.3-8.34-17.7-9.8-8.55-25.14-6.25-36.73-.34-16.23,8.27-28.81,22.11-43.27,33.19-18.36,14.07-39.68,23.57-61.39,31.2-21.38,7.52-44.08,12.12-64.96,20.88-7.78,3.27-15.24,7.4-21.69,12.92-3.12,2.67-5.86,5.8-7.7,9.48-3.4,6.81-4.17,16.97,2.29,22.29,8.89,7.33,25.58,1.2,35.07-2.02,1.89-.64,3.79-1.28,5.7-1.91Z" fill="#03173a"/>
+              <path d="M938.77,503.62c-.35-14.93-6.86-29.69-19.42-39.46-15.88-12.35-37.87-15.62-57.14-10.81-11.08,2.77-21.55,7.94-30.47,15.07-14.05,11.22-26.68,23.54-41.62,33.73-15.07,10.27-30.91,21.29-46.36,30.95-16.51,10.33-32.71,19.47-50.73,27.06-11.47,4.83-26.53,8.1-38.23,1.99-5.79-3.02-9.25-8.47-9.99-14.91-.54-4.64.18-9.34,1.19-13.91.27-1.2.55-2.4.86-3.59,12.53-48.85,53.04-83.52,76.79-126.46,11.58-20.94,20.14-44.18,21.8-68.2,2.52-36.58-15.25-77.7-51.95-90.21-18.43-6.28-40.09-5.32-57.42,3.83-8.95,4.72-16.52,11.63-21.45,20.8-7.98,14.85-7.69,37.21,7.98,46.79,9.05,5.54,19.84,6.77,29.5,10.84,7.96,3.35,16.15,8.49,22.88,13.89,13.81,11.08,21,26.81,17.54,44.53-3.5,17.97-15.86,32.83-26.7,46.97-29.03,37.88-57.05,77.66-64.49,125.98-3.07,19.95,3.45,40.14,21.23,51.11,17.86,11.03,40.22,2.74,57.46-4.99,34.67-15.54,65.37-39.16,103.81-44.93,32.02-4.8,63.48,6.22,95.37,1.87,14.71-2.01,31.45-7.64,42.56-17.82,11.21-10.27,17.37-24.92,17-40.12Z" fill="#03173a"/>
+            </svg>
+          </div>
+          <div class="cap"><span class="label">Monogram</span><span class="label">Açık Zemin</span></div>
+        </div>
+        <div>
+          <div class="logo-box ink">
+            <svg id="katman_1" data-name="katman 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" style="max-width:180px;">
+              <path d="M337.83,568.88c-.09-.07-.19-.11-.31-.11h-41.33s-.26.17-.26.17l-.54.25c-4.1,1.66-8.53,2.51-12.9,2.51-1.79,0-3.59-.15-5.36-.42-2.68-.42-5.29-1.23-7.74-2.39-.16-.08-.34-.12-.52-.12h-1.23c-.33,0-.6.26-.61.6-.01.49-.04.99-.09,1.5-.71,6.81-2.68,16.63-11.46,23.36-1.37,1.11-2.84,2.12-4.4,3.05-.29.17-.18.61.16.61h23.49c1.59,0,2.89,1.29,2.89,2.89v83.68c0,1.59,1.29,2.89,2.89,2.89h27.75c1.59,0,2.89-1.29,2.89-2.89v-83.68c0-1.59,1.29-2.89,2.89-2.89h24.95c1.59,0,2.89-1.3,2.89-2.89v-23.21c-.19-.28-.38-.56-.57-.84-1.23-.52-2.39-1.22-3.46-2.07Z" fill="#F0EEE9"/>
+              <path d="M425.73,581.41c-.72-.12-1.41-.26-2.07-.41-7.11-1.47-13.28-5.56-17.94-11.8-.2-.26-.5-.42-.83-.42h-47.35c-.14,0-.27.05-.38.13-2.92,2.19-6.24,3.34-9.64,3.34-.66,0-1.31-.04-1.96-.13-.25-.03-.47.15-.47.4v111.96c0,1.59,1.29,2.87,2.87,2.87h75.52c1.59,0,2.89-1.29,2.89-2.89v-23.51c0-1.59-1.3-2.89-2.89-2.89h-41.19c-1.59,0-2.87-1.29-2.87-2.87v-10.67c0-1.59,1.29-2.89,2.89-2.89h31.68c1.59,0,2.89-1.3,2.89-2.89v-21.38c0-1.59-1.29-2.89-2.89-2.89h-31.68c-1.59,0-2.89-1.3-2.89-2.89v-10.83c0-1.59,1.29-2.89,2.89-2.89h41.17c1.59,0,2.89-1.3,2.89-2.89v-12.85c0-.37-.28-.68-.64-.74Z" fill="#F0EEE9"/>
+              <path d="M529.28,568.77h-27.75c-1.59,0-2.89,1.29-2.89,2.89v44.19l-34.63-45.92c-.54-.71-1.4-1.15-2.3-1.15h-2.29c-.31,0-.61.15-.81.39-4.02,4.93-8.53,8.61-13.47,10.98l-.29.13-.31.1c-3.29,1.02-7.51,1.57-11.85,1.57-.82,0-1.63-.02-2.42-.06-.36-.02-.65.26-.65.62v101.95c0,1.59,1.29,2.89,2.89,2.89h27.76c1.59,0,2.89-1.29,2.89-2.89v-43.44l34.61,45.21c.55.7,1.4,1.12,2.29,1.12h29.22c1.59,0,2.89-1.29,2.89-2.89v-112.8c0-1.59-1.29-2.89-2.89-2.89Z" fill="#F0EEE9"/>
+              <path d="M889.63,568.78h-27.76c-1.59,0-2.88,1.29-2.88,2.88v44.18l-34.62-45.92c-.55-.72-1.4-1.15-2.3-1.15h-29.2c-1.59,0-2.88,1.29-2.88,2.88v112.8c0,1.59,1.29,2.88,2.88,2.88h27.76c1.59,0,2.88-1.29,2.88-2.88v-43.45l34.62,45.2c.55.71,1.39,1.13,2.29,1.13h29.22c1.59,0,2.88-1.29,2.88-2.88v-112.8c0-1.59-1.29-2.88-2.88-2.88Z" fill="#F0EEE9"/>
+              <rect x="624.09" y="568.78" width="34.83" height="118.57" rx="3.35" ry="3.35" fill="#F0EEE9"/>
+              <circle cx="724.6" cy="627.73" r="60.56" fill="#F0EEE9"/>
+              <path d="M581.47,613.07c-3.48-.73-7.52-1.44-9.46-4.83-1.98-3.46-.68-7.82,2.53-10.01,3.78-2.57,9.05-2.18,13.37-1.95,4.38.22,8.74.87,13.03,1.78,3.49.74,6.59,1.72,9.88,3.05,1.23.5,1.72.44,2.17-.07,1.1-1.25.77-5.13.79-6.93.07-6.13-.12-12.25,0-18.39.05-2.53-.32-3.19-2.68-4.05-1.47-.54-3.01-.81-4.52-1.22-3.36-.93-6.74-1.79-10.19-2.27-10.41-1.44-21.2-1.61-31.41,1.25-8.57,2.4-16.7,7.1-22.49,13.97-5.95,7.07-8.18,16.09-6.86,25.23.82,5.65,2.94,11.54,6.8,15.81,4.03,4.46,8.97,8,14.19,10.91,4.59,2.56,9.42,4.65,14.28,6.63,4.35,1.77,8.81,3.72,12.15,7.16,3.38,3.46,2.44,7.43-2.04,8.71-6.18,1.78-12.55,1.9-18.93,1.34-6.44-.57-13.29-1.88-19.1-4.84-2.79-1.42-4.44-2.04-4.61,1.44-.11,2.25-.01,4.57,0,6.82.02,5.26-.02,10.54,0,15.8,0,3.53.79,4.9,4.1,6.32,4.72,2.03,10.05,2.27,15.07,3.03,7.91,1.29,15.92,1.43,23.89.57,7.6-.83,15.38-1.64,22.22-5.37,12.03-6.57,19.91-23.58,17.03-37.06-3.79-17.77-22.7-29.37-39.22-32.83Z" fill="#F0EEE9"/>
+              <path d="M796.25,563.95c1.02.5,2.23.23,2.98-.63,1.29-1.49,2.6-2.86,2.84-4.85-1.22-7.95-1.53-15.76-1.53-23.56,0-5.84.18-12.32.36-18.8,2.12,2.8,3.8,3.19,5.32,2.5,2.78-1.27,5.03-6.67,8.36-8.19.28-.13.56-.25.9-.24,4.46-.19,9.59,5.54,11.76,10.27.7,1.53,1.12,3.19,1.26,4.97-.63.46-1.12.85-1.68,1.1-1.12.51-2.37.32-3.55.16-1.3-.17-2.37-.11-3.65.21-.12.03-.23.06-.34.09-2.25.67-4.45,2.29-6.11,3.91-2.91,2.84-4.62,6.48-6.1,10.2-1.88,4.73-1.58,9.8.39,14.12,2.25,4.93,7.15,7.97,12.43,8.79,9.67,1.51,15.92-4.99,21.76-11.63,1.3-.09,2.68-.38,3.94-.96,1.5-.68,2.78-1.7,3.63-3.08.26,2.13.53,4.23.84,6.3.22,1.51.82,2.96,1.84,4.09,4.38,4.88,10.74,5.65,17.41,5.43,1.35-.07,2.7-.14,4.04-.28,1.1-.11,2.17-.46,3.14-.99,4.57-2.49,8.2-6.79,12.08-11.1,3.08-5.53,4.84-12.67,4.47-19.54-.2-3.82-1.01-7.45-2.72-10.73l-.16-.14c-3.91-7.3-12.07-10.85-20.16-10.42l-.31.02c-3.78.97-8.75,5.37-11.32,8.88-1.1-3.31-1.72-15.07-2.22-18.72-.5-3.65-.76-14.21-1.08-20.32.67-1.87,1.02-3.88.76-5.86-.39-4.42-3.98-8.52-9.94-8.2-2.29.12-4.21,1.45-4.04,4.66l.05.92c3.56,20.44,4.21,43.84,6.21,65.53-.21-.61-.4-1.22-.62-1.83-.46-1.25-.95-2.48-1.45-3.71-.47-1.16-1.11-2.32-1.44-3.53-.15-.53-.34-.94-.58-1.43-.22-.46-.45-.91-.68-1.37-2.35-4.71-5.05-9.27-8.21-13.49-2.83-3.79-6-7.34-9.57-10.45-5.15-4.5-11.67-3.04-17.48-.81-2.96,1.14-5.69,4.31-6.98,7.8.12-4.51.21-8.92.21-12.98,0-7.07-.33-14.09-1.16-21.11-.55-4.58-4.23-9.03-9.24-9.03h-.46c-1.53.61-2.14,2.6-2.14,4.59v.92c1.38,12.39,1.68,24.63,1.68,36.87s-.31,26.77-.31,38.7c0,4.13,0,8.26.15,12.39,1.04,1.66,4.32,3.53,6.43,4.56ZM866.95,528.2c1.01-1.64,2.67-4.26,4.53-5,1.85-.73,4.25.37,5.64,1.58.89.77,1.61,1.72,2.2,2.73.57.96.98,1.96,1.24,2.99.26,1.05.37,2.13.34,3.23-.1,3.08-.67,6.13-1.7,9.03-.05,0-.36.97-.4,1.07-.15.37-.3.74-.46,1.1-.32.71-.66,1.42-1.02,2.11-.54,1.02-1.23,2.66-2.09,3.42-.9.78-2.64.73-3.75,1.07-1.25.38-2.39.85-3.7,1.06-4.39.73-3.87-4.54-4.06-7.29-.1-1.38-.15-2.76-.13-4.14.07-4.53.96-9.08,3.36-12.97ZM829.72,539.5c.57,1.25,1.42,2.38,1.93,3.49.64,1.39.79,2.83-.7,4.36-.74,1.68-2.22,2.87-3.89,3.63-1.67.76-3.53,1.11-4.97,1.26-1.37-.05-2.58-.5-2.9-1.2-1.14-2.5-1.33-5.11-.85-7.01,1.19-2.56,3.75-5.41,6.39-6.62,1.39-.64,2.82-.45,4.55,1.12l.45.97Z" fill="#F0EEE9"/>
+              <path d="M266.1,561.7c3.37,2.77,7.42,4.59,11.71,5.27,1.54.24,3.11.37,4.68.37,3.82,0,7.68-.74,11.16-2.15l.13-.05.12-.08c12.01-7.87,19.96-16.02,24.3-24.92l-.11-.09c.82-1.68,1.41-3.67,1.79-6.08.8-5.04-.05-9.74-1.56-13.8,2.16-.11,4.14-.51,7.22-.77,2.21-.14,4.75-1.97,7.62-.6.33,13,1.14,31.42,3.27,42.79l3.51,3.36c1.41,1.29,3.31,2.37,5.5,2.72,3.15.65,6.62-.16,9.69-2.7-.65-16.45-3.16-34.95-2.87-50.86,3.78-2.02,29.13-4.43,53.97-6.39l-2.21,9.93c-.45,4.14-.6,2.18-2.54,16.53-2.17,14.1,3.96,38.66,23.12,42.55,5.08,1.23,13.17,1.14,18.65-.54,8.78-4.22,15.34-12.96,19.99-22.77v-.24c-.51-4.19-2.65-5.52-5.24-7.61-3.3-2.61-8.09.09-9.05-.2-6.94,11.42-12.82,16.51-24.17,13.01-8.65-8.27-6.68-18.46-4.89-29.89.78-5.84,1.01-5.58,1.79-11.43.05-.98,1.01-5.58,1.74-10.45,15.23-.71,27.24-.85,30.65-.44l1.21.31c4.69-.75,7.72-2.56,8.22-7.68-2.16-5.74-4.98-8.33-8.61-9.25-2.43-.37-14.24.52-28.74,1.51l.08-1.71c1.64-13.39,7.22-36.88,13.22-49.08-.3-3.95-3-5.97-6.57-7-3.26-.94-6.86-2.81-8.92.81-1.11,1.96-2.04,4.02-2.88,6.11-2.16,5.42-3.64,11.1-4.76,16.81-1.32,6.79-4.09,18.17-5.97,26.41l-1.92,8.97c-22.4,2.07-45.32,4.85-48.76,5.17-.51.46-6.17.92-6.65.65-2.78-13.34.71-26.52,3.63-39.49,1.31-5.79,2.04-11.67,3.73-17.41,1.72-5.83,3.95-11.53,6.83-16.88,1.4-2.6,2.95-5.12,4.67-7.53,1.54-2.16,2.88-5.44,5.56-6.19,3.05-.86,6.93.8,8.09,3.78,1.05,2.68.54,5.91.24,8.68-.35,3.29-.89,6.65-.44,9.96.47,3.55,2.09,5.12,4.34,7.61.93,1.03,1.41,1.29,2.13,1.58,3.64.67,7.75-3.05,11.04-5.33,1.09-2.15,1.67-4.08,2.28-6.5.52-5.61-.15-11.77-1.61-16.98-1.84-6.59-7.92-13.54-13.22-17.59-3.86-2.95-8.45-5.87-13.47-4.39-4.38,1.29-9.02,4.31-12.64,7.04-16.75,12.61-22.19,34.43-25.09,54.14-2.22,15.08-3,30.72-5.16,44.82l-.63,2.91c-7.28,3.66-16.85,2.43-24.37,5.29-3.94-3.93-8.32-6.29-13.3-7.07-1-.16-2.07-.24-3.19-.24-.64,0-1.29.03-1.95.08-.59-.05-1.17-.07-1.75-.07-11.87,0-21.06,9.05-30.64,14.77-.74.44-1.5.88-2.11,1.49-.44.44-.79.95-1.12,1.47-2.28,3.62-3.33,7.89-3.99,12.07-2.28,14.45.98,21.64,15.17,33.47ZM290.98,518.39c.48-.04.97-.09,1.45-.09.26,0,.52.01.71.04,3.78.77,6.38,4.89,7.59,8.55,0,1.18,0,2.3-.16,3.37l-.03.21c-.88,5.55-5.18,9.54-9.73,13.03-3.34,1.86-6.7,2.84-9.74,2.84-.72,0-1.44-.05-2.12-.16-3.83-.6-5.96-2.88-7.07-4.68-7.5-12.15,9.19-21.55,19.1-23.11Z" fill="#F0EEE9"/>
+              <path d="M262.59,570.42c.81-7.8-4.53-13.37-10.32-17.85-11.22-8.97-25.44-12.93-36.34-22.54-.32-.28-.64-.56-.86-.92-1.44-2.27.4-6.75,2.07-8.47,1.63-1.67,3.95-2.46,6.24-2.67,3.92-.36,9.66,1.09,14.27.99,7.05-.65,11.47-6.69,10.53-13.77-.67-5.03-2.31-8.87-7.02-11.06-3.41-1.58-8.82-3.01-12.6-2.36-8.44,1.44-17.77,3.94-25.58,8.62-4.03,2.41-7.71,5.45-10.55,9.22-2.45,3.25-5.76,8.71-5.48,12.94.31,4.66,4.2,10.26,6.86,13.88,3.01,4.1,6.62,7.73,10.53,10.98,5.17,4.3,10.8,8.01,16.53,11.51,3.85,2.34,7.68,4.56,11.7,6.57,1.47.73,2.91,1.89,3.19,3.51.19,1.09-.18,2.21-.69,3.19-6.89,13.47-25.47,2.43-36.38,3.44-5.21.48-15.03,5.32-10.13,11.77,1.14,1.5,2.75,2.57,4.27,3.68,2.45,1.79,4.83,3.83,7.67,4.98,2.77,1.13,6.02,1.47,8.95,1.96,6.84,1.14,13.83,1.71,20.75,1.07,8.17-.75,16.2-3.14,22.64-8.35,6.58-5.04,8.94-12.39,9.77-20.34Z" fill="#F0EEE9"/>
+            </svg>
+          </div>
+          <div class="cap"><span class="label">Logotype</span><span class="label">Koyu Zemin</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">03</span>
+      <h2>Renk Paleti</h2>
+    </div>
+    <div class="sec-body">
+      <div class="cols2">
+        <div class="sw">
+          <div class="sw-chip" style="background:#F0EEE9"></div>
+          <div class="sw-info">
+            <h3>%60 Zemin Rengi</h3>
+            <code>#F0EEE9</code>
+            <p>Sıcak beyaz / kemik. Tüm ana gövde zemin rengi.</p>
+          </div>
+        </div>
+        <div class="sw">
+          <div class="sw-chip" style="background:#03173A"></div>
+          <div class="sw-info">
+            <h3>%30 Ana Gövde / Metin</h3>
+            <code>#03173A</code>
+            <p>Lacivert. Tipografi, çizgiler ve ikincil koyu zeminler.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sw" style="margin-top:var(--s3); max-width: 50%;">
+        <div class="sw-chip" style="background:#FF5700"></div>
+        <div class="sw-info">
+          <h3>%10 Vurgu Rengi</h3>
+          <code>#FF5700</code>
+          <p>Turuncu. Hover durumlarında, linklerde ve çok spesifik odak noktalarında ufak dozlarda kullanılır.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">04</span>
+      <h2>Tipografi</h2>
+    </div>
+    <div class="sec-body">
+      <div class="cols2">
+        <div class="type">
+          <p class="type-spec">Ag</p>
+          <div class="type-info">
+            <h3>Whyte Inktrap</h3>
+            <p>Ana Kurumsal Font Ailesi</p>
+            <p class="glyphs">Tüm başlık ve paragraf metin hiyerarşisi lokal olarak projeye dahil edilecek Whyte Inktrap ailesinden sağlanacaktır.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <span class="label">05</span>
+      <h2>İkon &amp; Buton (Liquid Glass)</h2>
+    </div>
+    <div class="sec-body">
+      <div class="icon-stage">
+        <div class="icons-row" style="margin-top:25px">
+          <div class="liquidGlass-wrapper btn-lg">
+            <div class="liquidGlass-effect"></div>
+            <div class="liquidGlass-tint"></div>
+            <div class="liquidGlass-shine"></div>
+            <div class="liquidGlass-text">Projeler</div>
+          </div>
+          <div class="liquidGlass-wrapper btn-lg">
+            <div class="liquidGlass-effect"></div>
+            <div class="liquidGlass-tint"></div>
+            <div class="liquidGlass-shine"></div>
+            <div class="liquidGlass-text">Hizmetlerimiz</div>
+          </div>
+          <div class="liquidGlass-wrapper btn-lg">
+            <div class="liquidGlass-effect"></div>
+            <div class="liquidGlass-tint"></div>
+            <div class="liquidGlass-shine"></div>
+            <div class="liquidGlass-text">Stüdyo</div>
+          </div>
+        </div>
+      </div>
+      <p class="note" style="margin-top:15px;">Arayüz navigasyon elemanlarında SVG tabanlı blur ve distortion katmanları ile oluşturulmuş, zeminle dijital bir kontrast kuran Liquid Glass efekti kullanılacaktır. Hover durumunda font/ikon rengi Vurgu (Turuncu) rengine döner.</p>
+
+      <div class="code-drop">
+        <span class="label">Uygulama Kodu · HTML</span>
+        <pre class="code">&lt;!-- 1) Buton (her buton icin ayni yapi) --&gt;
+&lt;div class=&quot;liquidGlass-wrapper btn-lg&quot;&gt;
+  &lt;div class=&quot;liquidGlass-effect&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;liquidGlass-tint&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;liquidGlass-shine&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;liquidGlass-text&quot;&gt;Projeler&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- 2) Ikon versiyonu: btn-lg yerine icon-lg, text icine SVG --&gt;
+&lt;div class=&quot;liquidGlass-wrapper icon-lg&quot;&gt;
+  &lt;div class=&quot;liquidGlass-effect&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;liquidGlass-tint&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;liquidGlass-shine&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;liquidGlass-text&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;&lt;!-- path --&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- 3) Sayfa basina BIR KEZ: distortion filtresi (body sonuna) --&gt;
+&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;position:absolute&quot; aria-hidden=&quot;true&quot;&gt;
+  &lt;filter id=&quot;glass-distortion&quot; x=&quot;0%&quot; y=&quot;0%&quot; width=&quot;100%&quot; height=&quot;100%&quot; filterUnits=&quot;objectBoundingBox&quot;&gt;
+    &lt;feTurbulence type=&quot;fractalNoise&quot; baseFrequency=&quot;0.012 0.012&quot; numOctaves=&quot;1&quot; seed=&quot;5&quot; result=&quot;turbulence&quot;/&gt;
+    &lt;feComponentTransfer in=&quot;turbulence&quot; result=&quot;mapped&quot;&gt;
+      &lt;feFuncR type=&quot;gamma&quot; amplitude=&quot;1&quot; exponent=&quot;10&quot; offset=&quot;0.5&quot;/&gt;
+      &lt;feFuncG type=&quot;gamma&quot; amplitude=&quot;0&quot; exponent=&quot;1&quot; offset=&quot;0&quot;/&gt;
+      &lt;feFuncB type=&quot;gamma&quot; amplitude=&quot;0&quot; exponent=&quot;1&quot; offset=&quot;0.5&quot;/&gt;
+    &lt;/feComponentTransfer&gt;
+    &lt;feGaussianBlur in=&quot;turbulence&quot; stdDeviation=&quot;3&quot; result=&quot;softMap&quot;/&gt;
+    &lt;feSpecularLighting in=&quot;softMap&quot; surfaceScale=&quot;5&quot; specularConstant=&quot;1&quot;
+        specularExponent=&quot;100&quot; lighting-color=&quot;white&quot; result=&quot;specLight&quot;&gt;
+      &lt;fePointLight x=&quot;-200&quot; y=&quot;-200&quot; z=&quot;300&quot;/&gt;
+    &lt;/feSpecularLighting&gt;
+    &lt;feComposite in=&quot;specLight&quot; operator=&quot;arithmetic&quot; k1=&quot;0&quot; k2=&quot;1&quot; k3=&quot;1&quot; k4=&quot;0&quot; result=&quot;litImage&quot;/&gt;
+    &lt;feDisplacementMap in=&quot;SourceGraphic&quot; in2=&quot;softMap&quot; scale=&quot;150&quot;
+        xChannelSelector=&quot;R&quot; yChannelSelector=&quot;G&quot;/&gt;
+  &lt;/filter&gt;
+&lt;/svg&gt;</pre>
+        <span class="label" style="margin-top:var(--s3)">Uygulama Kodu · CSS</span>
+        <pre class="code">/* --- ortak katmanlar --- */
+.liquidGlass-wrapper{
+  position:relative; display:flex; overflow:hidden;
+  font-weight:600; color:var(--ink); cursor:pointer;
+  box-shadow:0 6px 6px rgba(3,23,58,.1), 0 0 20px rgba(3,23,58,.05);
+  transition:all .4s cubic-bezier(.175,.885,.32,2.2);
+}
+.liquidGlass-effect{
+  position:absolute; inset:0; z-index:0; overflow:hidden; isolation:isolate;
+  -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
+  filter:url(#glass-distortion);          /* zemini kiran katman */
+}
+.liquidGlass-tint{position:absolute; inset:0; z-index:1; background:rgba(240,238,233,.35)}
+.liquidGlass-shine{
+  position:absolute; inset:0; z-index:2; overflow:hidden;
+  box-shadow:inset 2px 2px 1px 0 rgba(255,255,255,.6),
+             inset -1px -1px 1px 1px rgba(255,255,255,.4);
+}
+.liquidGlass-text{
+  z-index:3; display:flex; align-items:center; justify-content:center;
+  font-size:2rem; line-height:0; color:var(--ink);
+}
+
+/* --- buton varyanti --- */
+.btn-lg{padding:.95rem 2.1rem; align-items:center; justify-content:center}
+.btn-lg, .btn-lg&gt;div{border-radius:3rem}
+.btn-lg .liquidGlass-text{
+  font-size:14px; line-height:1; letter-spacing:.02em; color:inherit; white-space:nowrap;
+  transition:all .4s cubic-bezier(.175,.885,.32,2.2);
+}
+.btn-lg:hover{padding:1.05rem 2.25rem; border-radius:3.5rem}
+.btn-lg:hover&gt;div{border-radius:3.5rem}
+.btn-lg:hover .liquidGlass-text{transform:scale(.97); color:var(--accent)}
+
+/* --- ikon varyanti --- */
+.icon-lg{padding:1.2rem; align-items:center; justify-content:center}
+.icon-lg, .icon-lg&gt;div{border-radius:2rem}
+.icon-lg .liquidGlass-text{width:44px; height:44px}
+.icon-lg svg{
+  width:44px; height:44px; fill:currentColor; display:block;
+  transition:all .4s cubic-bezier(.175,.885,.32,2.2);
+}
+.icon-lg:hover{padding:1.4rem; border-radius:2.5rem; color:var(--accent)}
+.icon-lg:hover&gt;div{border-radius:2.5rem}
+
+/* zemin: efektin gorunmesi icin arkada bir doku/renk olmali */
+.icon-stage{background:#F0EEE9}</pre>
+        <p class="note">Efektin calismasi icin üç kural zorunludur: (1) <code>#glass-distortion</code> filtresi sayfada bir kez tanimli olmali, (2) butonun arkasinda kirilacak bir zemin (doku, görsel veya renk) bulunmali, (3) katman sirasi effect → tint → shine → text olarak korunmalidir. <code>backdrop-filter</code> desteklemeyen tarayicilarda buton yari saydam düz bir yüzey olarak görünür.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span class="label">Soft Tension Lab · Brand Guidelines</span>
+    <span class="label">v1.0</span>
+  </footer>
+
+</main>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.012" numOctaves="1" seed="5" result="turbulence"/>
+    <feComponentTransfer in="turbulence" result="mapped">
+      <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
+      <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
+      <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
+    </feComponentTransfer>
+    <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
+    <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
+      <fePointLight x="-200" y="-200" z="300"/>
+    </feSpecularLighting>
+    <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage"/>
+    <feDisplacementMap in="SourceGraphic" in2="softMap" scale="150" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+</body>
+</html>

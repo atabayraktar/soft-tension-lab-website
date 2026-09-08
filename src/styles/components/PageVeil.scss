@@ -1,0 +1,45 @@
+@use 'tokens' as *;
+
+.veil {
+  position: fixed;
+  inset: -2% 0;                       // a hair taller than the viewport so the edges never peek
+  z-index: 150;
+  pointer-events: none;
+  border-radius: 0 !important;
+  transform: translateY(104%);
+  visibility: hidden;
+
+  &--cover {
+    visibility: visible;
+    transform: translateY(0);
+    transition: transform $dur-veil $ease-out-expo;
+  }
+  &--uncover {
+    visibility: visible;
+    transform: translateY(-104%);
+    transition: transform $dur-veil $ease-out-expo;
+  }
+  // Idle: parked below the fold with the effect switched off. A hidden element's
+  // backdrop-filter still composites in Chromium, so it must not merely be invisible.
+  &--idle {
+    transition: none;
+    .lg__effect {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      filter: none !important;
+    }
+  }
+
+  // The veil's blur is what makes the transition "blur, not fade".
+  .lg__effect {
+    -webkit-backdrop-filter: blur(30px) saturate(140%);
+    backdrop-filter: blur(30px) saturate(140%);
+  }
+  @media (max-width: #{$bp-md - 1px}) {
+    .lg__effect {
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+    }
+  }
+  @include reduced-motion { display: none; }
+}

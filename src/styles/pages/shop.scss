@@ -1,0 +1,37 @@
+@use 'tokens' as *;
+
+.shop__inner {
+  min-height: calc(100svh - var(--nav-top) - var(--nav-h));
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  padding-block: clamp(2rem, 6vw, 4rem);
+}
+
+// The circular illustration slot (blueprint: 120px circle) — scaled for the viewport.
+.shop__illo {
+  width: clamp(9rem, 26vw, 14rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid $ink-15;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  .mascot { width: 72%; height: auto; }
+}
+
+.shop__title {
+  font-weight: 800;
+  font-size: clamp(2.5rem, 9vw, 6.5rem);
+  letter-spacing: -.035em;
+  line-height: 1;
+}
+
+.shop__note {
+  color: $ink-65;
+  font-size: 1rem;
+  max-width: 36ch;
+  @include short-landscape { display: none; }
+}

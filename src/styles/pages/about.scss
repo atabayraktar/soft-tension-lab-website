@@ -1,0 +1,60 @@
+@use 'tokens' as *;
+
+.about__manifesto {
+  padding-top: clamp(2.5rem, 7vw, 5rem);
+  padding-bottom: var(--section);
+}
+
+.about__copy {
+  display: grid;
+  gap: clamp(1.5rem, 3.5vw, 2.75rem);
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  max-width: 62rem;
+}
+
+// Short, bold, functions as a headline — the intentional uppercase exception.
+.about__para {
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.9vw, 2.35rem);
+  line-height: 1.22;
+  letter-spacing: -.02em;
+  max-width: none;
+  color: $ink;
+  text-wrap: pretty;
+}
+
+.about__studio {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem) var(--gutter);
+  padding-bottom: var(--section);
+  @include up($bp-md) {
+    grid-template-columns: 5fr 4fr;
+    align-items: start;
+  }
+}
+.about__fig {
+  min-width: 0;
+  img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: $r-small; background: $ink-05; }
+  figcaption { margin-top: .75rem; color: $ink-65; }
+  &--offset { @include up($bp-md) { margin-top: clamp(4rem, 12vw, 9rem); } }
+}
+
+.about__services {
+  padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  padding-bottom: var(--section);
+  border-top: 1px solid $ink-15;
+  display: grid;
+  gap: 1.75rem;
+  @include up($bp-lg) { grid-template-columns: 1fr auto; align-items: baseline; }
+}
+
+.about__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem clamp(1.25rem, 3vw, 2.5rem);
+  @include label(.75rem, .18em);
+  color: $ink-65;
+  li { white-space: nowrap; }
+}
+
+.about__all { @include label; color: $ink; }

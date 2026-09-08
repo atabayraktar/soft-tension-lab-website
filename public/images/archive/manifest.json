@@ -1,0 +1,74 @@
+{
+  "1png": {
+    "source": "1png.png",
+    "width": 4000,
+    "height": 5000,
+    "ratio": 0.8,
+    "outWidth": 1400,
+    "outHeight": 1750
+  },
+  "calisma-yuzeyi-1-kopya": {
+    "source": "Calisma-Yuzeyi-1-kopya.png",
+    "width": 1080,
+    "height": 1350,
+    "ratio": 0.8,
+    "outWidth": 1080,
+    "outHeight": 1350
+  },
+  "calisma-yuzeyi-1": {
+    "source": "Calisma-Yuzeyi-1.png",
+    "width": 1080,
+    "height": 1350,
+    "ratio": 0.8,
+    "outWidth": 1080,
+    "outHeight": 1350
+  },
+  "gift-cardlar-5": {
+    "source": "Gift-Cardlar-5.png",
+    "width": 4000,
+    "height": 5000,
+    "ratio": 0.8,
+    "outWidth": 1400,
+    "outHeight": 1750
+  },
+  "gift-cardlar-7": {
+    "source": "Gift-Cardlar-7.png",
+    "width": 4000,
+    "height": 5000,
+    "ratio": 0.8,
+    "outWidth": 1400,
+    "outHeight": 1750
+  },
+  "our-studio-space-insta-w": {
+    "source": "our-studio-space-insta-W.png",
+    "width": 1080,
+    "height": 1350,
+    "ratio": 0.8,
+    "outWidth": 1080,
+    "outHeight": 1350
+  },
+  "our-studio-space-insta": {
+    "source": "our-studio-space-insta.png",
+    "width": 1080,
+    "height": 1350,
+    "ratio": 0.8,
+    "outWidth": 1080,
+    "outHeight": 1350
+  },
+  "pretend-theres-art-inside": {
+    "source": "Pretend-theres-art-inside_.png",
+    "width": 4000,
+    "height": 5000,
+    "ratio": 0.8,
+    "outWidth": 1400,
+    "outHeight": 1750
+  },
+  "x1": {
+    "source": "x1.png",
+    "width": 4000,
+    "height": 5000,
+    "ratio": 0.8,
+    "outWidth": 1400,
+    "outHeight": 1750
+  }
+}

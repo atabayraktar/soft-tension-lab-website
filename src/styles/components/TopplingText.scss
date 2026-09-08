@@ -1,0 +1,10 @@
+.tt {
+  display: block;
+  .tt__line { display: inline; }
+  .tt__w { display: inline-block; white-space: nowrap; }
+  .tt__space { display: inline-block; white-space: pre; }
+  .tt__g {
+    display: inline-block;
+    backface-visibility: hidden;
+  }
+}

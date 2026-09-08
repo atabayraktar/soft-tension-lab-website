@@ -1,0 +1,54 @@
+@use 'tokens' as *;
+
+.holding {
+  position: relative;
+  height: 100dvh;
+  overflow: hidden;
+  background: $black;
+  color: $paper;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  text-align: center;
+  padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(1.5rem, env(safe-area-inset-bottom));
+  ::selection { background: $paper; color: $black; }
+}
+
+.holding__top { position: relative; z-index: 1; }
+.holding__mark {
+  width: clamp(5.5rem, 14vw, 8rem);
+  height: auto;
+  color: $paper-70;
+}
+
+.holding__center {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  display: grid;
+  gap: 1.25rem;
+  justify-items: center;
+}
+
+.holding__title {
+  font-weight: 800;
+  font-size: clamp(2.2rem, 9vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: -.035em;
+  max-width: 10ch;
+  text-wrap: balance;
+  @include short-landscape { font-size: clamp(1.8rem, 9vh, 3rem); }
+}
+
+.holding__label { color: $paper-70; }
+
+.holding__foot { position: relative; z-index: 1; }
+.holding__mail {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 500;
+  color: $paper;
+  padding-bottom: .15em;
+  border-bottom: 1px solid $paper-45;
+  @include hover { border-bottom-color: $signal; color: $signal; }
+  &:active { border-bottom-color: $signal; }
+}

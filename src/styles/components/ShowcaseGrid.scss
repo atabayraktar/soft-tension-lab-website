@@ -1,0 +1,119 @@
+@use 'tokens' as *;
+
+.showcase {
+  padding-block: var(--section);
+  background: $paper;
+}
+
+.showcase__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2.5rem, 7vw, 5rem) var(--gutter);
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+
+  @include up($bp-md) {
+    grid-template-columns: repeat(12, 1fr);
+    align-items: end;
+    row-gap: clamp(4rem, 9vw, 8rem);
+  }
+}
+
+// Irregular spans — the asymmetry is the point.
+.showcase__cell {
+  min-width: 0;
+  &--c { position: relative; }
+  @include up($bp-md) {
+    &--a { grid-column: 1 / 7;  align-self: start; }
+    &--b { grid-column: 8 / 13; align-self: center; }
+    &--c { grid-column: 1 / 9; }
+    &--d { grid-column: 10 / 13; }
+    &--e { grid-column: 1 / 5;  align-self: start; }
+    &--f { grid-column: 5 / 9;  margin-top: clamp(2rem, 6vw, 5rem); }
+    &--g { grid-column: 10 / 13; }
+  }
+  @include up($bp-lg) {
+    &--a { grid-column: 1 / 6; }
+    &--b { grid-column: 7 / 12; }
+    &--c { grid-column: 1 / 8; }
+    &--d { grid-column: 9 / 12; }
+    &--e { grid-column: 1 / 4; }
+    &--f { grid-column: 5 / 9; }
+    &--g { grid-column: 10 / 13; }
+  }
+}
+
+.showcase__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: $r-small;
+  background: $ink-05;
+  &--45   { aspect-ratio: 4 / 5; }
+  &--wide { aspect-ratio: 16 / 10; }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 700ms $ease-out-expo;
+  }
+  @include fine-pointer {
+    figure:hover & img { transform: scale(1.03); }
+  }
+}
+
+// Labeled placeholder — never a fake artwork.
+.showcase__media--ph {
+  display: grid;
+  place-items: center;
+  border: 1px dashed $ink-15;
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 14px, $ink-05 14px 15px);
+  .showcase__ph-label {
+    @include label(.6875rem, .2em);
+    text-align: center;
+    color: $ink-65;
+    line-height: 1.8;
+    em { font-style: normal; color: $ink; }
+  }
+}
+
+.showcase__cap {
+  @include label(.6875rem, .18em);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: .8rem;
+  color: $ink-65;
+  span:last-child { color: $ink; text-align: right; }
+}
+
+// The glass CTA overlapping the corner of the wide media — glass sits on imagery.
+.showcase__float {
+  position: absolute;
+  right: clamp(.75rem, 2vw, 1.5rem);
+  top: clamp(.75rem, 2vw, 1.5rem);
+  @include up($bp-md) { right: auto; left: clamp(1rem, 2.5vw, 2rem); top: auto; bottom: 3.25rem; }
+}
+
+.showcase__text {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: start;
+  .showcase__kicker { color: $ink-65; }
+}
+
+.showcase__lead {
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  max-width: 22ch;
+  color: $ink;
+  &--sm {
+    font-weight: 500;
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    line-height: 1.4;
+    letter-spacing: -.01em;
+    color: $ink-65;
+    max-width: 30ch;
+  }
+}

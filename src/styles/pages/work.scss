@@ -1,0 +1,13 @@
+@use 'tokens' as *;
+
+.work {
+  position: relative;
+  isolation: isolate;
+}
+
+.work__inner {
+  position: relative;
+  z-index: 1;
+  padding-top: clamp(4.5rem, 12vw, 8.5rem);
+  padding-bottom: var(--section);
+}
