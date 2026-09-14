@@ -28,14 +28,27 @@ export default function TopplingText({ text, as: Tag = 'span', mode = 'scroll', 
 
     const glyphs = Array.from(root.querySelectorAll('.tt__g'));
     const n = glyphs.length;
-    const params = glyphs.map((_, i) => {
-      const r1 = hash(i + 1), r2 = hash(i + 101), r3 = hash(i + 211);
-      const dir = r3 > 0.5 ? 1 : -1;
+    // Drop distance scales with each glyph's own rendered size, not the section — the
+    // glass panel clips overflow, so a fall pegged to section height never reads as
+    // motion, it just vanishes past the card edge the instant it starts.
+    // Drift direction/magnitude is driven by each glyph's own position in the line — the
+    // left half flies left, the right half flies right, scaling with distance from
+    // center — so the whole headline reads as one word breaking apart, not letters
+    // scattering at random.
+    const rootRect = root.getBoundingClientRect();
+    const centerX = rootRect.left + rootRect.width / 2;
+    const halfW = rootRect.width / 2 || 1;
+    const params = glyphs.map((g, i) => {
+      const r1 = hash(i + 1), r2 = hash(i + 101);
+      const gr = g.getBoundingClientRect();
+      const gh = gr.height || 60;
+      const rel = (gr.left + gr.width / 2 - centerX) / halfW; // -1 (far left) .. 1 (far right)
+      const dir = rel >= 0 ? 1 : -1;
       return {
-        start: r1 * 0.45,                     // when this glyph begins to give way
-        rot: dir * (22 + r2 * 60),            // deg
-        drop: 0.55 + r2 * 0.9,                // × section height
-        drift: dir * (8 + r1 * 26),           // px
+        start: r1 * 0.3,                                    // when this glyph begins to give way
+        rot: dir * (22 + r2 * 60),                          // deg
+        drop: (0.55 + r2 * 0.9) * gh,                        // px — × the glyph's own height
+        drift: dir * (40 + Math.abs(rel) * 160 + r1 * 40),  // px — explodes outward from center
       };
     });
     glyphs.forEach((g, i) => { g.style.transformOrigin = params[i].rot > 0 ? '100% 100%' : '0% 100%'; });
@@ -56,9 +69,8 @@ export default function TopplingText({ text, as: Tag = 'span', mode = 'scroll', 
         if (Math.abs(goal - cur[i]) > 0.0008 || Math.abs(vel[i]) > 0.0008) settled = false;
         const q = cur[i];
         if (q <= 0.0005) { glyphs[i].style.transform = ''; continue; }
-        const h = section ? section.offsetHeight : 600;
         glyphs[i].style.transform =
-          `translate3d(${(q * p.drift).toFixed(2)}px, ${(q * q * p.drop * h).toFixed(1)}px, 0) rotate(${(q * p.rot).toFixed(2)}deg)`;
+          `translate3d(${(q * p.drift).toFixed(2)}px, ${(q * q * p.drop).toFixed(1)}px, 0) rotate(${(q * p.rot).toFixed(2)}deg)`;
       }
       if (settled) { running = false; return; }
       raf = requestAnimationFrame(apply);

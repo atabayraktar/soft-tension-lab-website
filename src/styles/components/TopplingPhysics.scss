@@ -1,0 +1,32 @@
+@use 'tokens' as *;
+
+// The Home hero headline as physics. Idle = plain flowed text (identical to .tt).
+// `is-measured` pins every glyph to its measured box (left/top/size are geometry
+// written by the component at runtime, not styling); `is-live` is the falling /
+// settled pile, where the letters can be stirred, grabbed and thrown.
+.tp {
+  display: block;
+  .tp__line { display: inline; }
+  .tp__w { display: inline-block; white-space: nowrap; }
+  .tp__space { display: inline-block; white-space: pre; }
+  .tp__g {
+    display: inline-block;
+    backface-visibility: hidden;
+  }
+
+  &.is-measured {
+    position: relative;
+    .tp__g { position: absolute; }
+    .tp__space { display: none; }
+  }
+
+  &.is-live {
+    .tp__g {
+      user-select: none;
+      @include fine-pointer { cursor: grab; }
+    }
+    &.is-dragging .tp__g {
+      @include fine-pointer { cursor: grabbing; }
+    }
+  }
+}

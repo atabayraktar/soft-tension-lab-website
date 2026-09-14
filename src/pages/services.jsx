@@ -13,7 +13,6 @@ export default function Services() {
         path="/services/"
       />
       <section className="services__inner wrap" aria-labelledby="services-title">
-        <p className="eyebrow">Hizmetler</p>
         <h1 id="services-title" className="services__title">Yedi başlık.</h1>
         <ServicesList />
         <div className="services__cta" data-reveal>

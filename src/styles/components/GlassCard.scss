@@ -9,6 +9,28 @@
   isolation: isolate;
   --mx: 50%;
   --my: 0%;
+
+  // Glass breathing, part 2 — the "minik hareket". On hover the whole surface puffs
+  // outward while its content recedes into it; on press both compress. Amplitudes are
+  // custom properties so a consumer can retune per instance (or set all four to 1 to
+  // opt a caption-like surface out). Defaults are the chip/button amplitude; the
+  // refraction tiers below calm them as the surface grows.
+  --glass-hover-scale: 1.035;
+  --glass-content-scale: .96;
+  --glass-press-scale: .97;
+  --glass-press-content-scale: .98;
+}
+.lg--r-nav {                       // a near-viewport-wide bar: ~10px per side at 1.015, inside the gutter
+  --glass-hover-scale: 1.015;
+  --glass-content-scale: .985;
+  --glass-press-scale: .99;
+  --glass-press-content-scale: .995;
+}
+.lg--r-card {
+  --glass-hover-scale: 1.02;
+  --glass-content-scale: .975;
+  --glass-press-scale: .985;
+  --glass-press-content-scale: .99;
 }
 .lg--small { border-radius: $r-small; }
 .lg--pill  { border-radius: $r-pill; }
@@ -84,6 +106,44 @@ html[data-glass='solid'] .lg--tint .lg__tint { background: rgba(3, 23, 58, .92);
 .lg__content {
   position: relative;
   z-index: 3;
+}
+
+// The hover scale. Bounded, chrome-like surfaces only (nav bar, buttons/pills, cards).
+// The veil tier — full-bleed hero panel, the mobile menu sheet, the page-transition
+// veil — is deliberately excluded: a viewport-sized surface scaling up is either
+// clipped invisibly by its section's overflow or opens gaps at the viewport edge, and
+// a background panel is not chrome you hover for feedback.
+// `scale` (the individual transform property) is used on the wrapper so it composes
+// with any consumer transform; the content layer owns its own `transform`.
+@include fine-pointer {
+  .lg--r-chip,
+  .lg--r-nav,
+  .lg--r-card {
+    transition: scale $dur-base $ease-spring;
+    .lg__content { transition: transform $dur-base $ease-spring; }
+
+    &:hover,
+    &:focus-visible {
+      scale: var(--glass-hover-scale);
+      .lg__content { transform: scale(var(--glass-content-scale)); }
+    }
+    // the press: both invert to a slightly compressed state (wrapper more than content)
+    &:is(a, button):active {
+      scale: var(--glass-press-scale);
+      .lg__content { transform: scale(var(--glass-press-content-scale)); }
+    }
+  }
+}
+@include reduced-motion {
+  .lg,
+  .lg:hover,
+  .lg:focus-visible,
+  .lg:active {
+    scale: none;
+    transition: none;
+    .lg__content { transform: none; transition: none; }
+  }
+  .lg:hover .lg__shine::after { transition: none; }
 }
 
 // Mobile budget: a full-screen veil skips the backdrop pass on small screens — the

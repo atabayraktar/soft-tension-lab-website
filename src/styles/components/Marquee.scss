@@ -27,8 +27,8 @@
 .marquee__item {
   display: inline-flex;
   align-items: center;
-  gap: clamp(1.25rem, 2.6vw, 2.25rem);
-  padding-right: clamp(1.25rem, 2.6vw, 2.25rem);
+  gap: clamp(.5rem, 1vw, .75rem);
+  padding-right: clamp(.5rem, 1vw, .75rem);
   font-weight: 500;
   font-size: clamp(1.05rem, 2.1vw, 1.55rem);
   letter-spacing: -.015em;
@@ -36,10 +36,11 @@
   color: $ink;
 }
 
-.marquee__star {
-  width: .8em;
-  height: .8em;
-  color: $ink-40;
+.marquee__dot {
+  width: .28em;
+  height: .28em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #ff9a52 0%, $signal 70%);
   flex-shrink: 0;
 }
 

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 // A small Signal dot on fine pointers only. Grows over hoverable/preview content,
-// lerp-smoothed (.14). Never mounts on touch or under prefers-reduced-motion.
+// lerp-smoothed (.8 — a hair of trail, not a delay). Never mounts on touch or under
+// prefers-reduced-motion.
 export default function Cursor() {
   const dot = useRef(null);
 
@@ -15,8 +16,8 @@ export default function Cursor() {
     let tx = -100, ty = -100, x = -100, y = -100, raf = 0, visible = false;
 
     const loop = () => {
-      x += (tx - x) * 0.14;
-      y += (ty - y) * 0.14;
+      x += (tx - x) * 0.8;
+      y += (ty - y) * 0.8;
       el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       raf = requestAnimationFrame(loop);
     };

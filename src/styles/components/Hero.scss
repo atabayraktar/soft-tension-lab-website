@@ -1,14 +1,26 @@
 @use 'tokens' as *;
 
+// The pin. On desktop the wrapper is one viewport taller than the hero and the hero
+// sticks to the top while that extra viewport of scroll drives the toppling letters
+// (TopplingPhysics reads the distance back from the DOM). Below the gate — phones,
+// reduced motion — the wrapper adds nothing and the hero flows like any section.
+.hero-pin {
+  --hero-pin: 100svh;
+  @media (min-width: $bp-md) and (prefers-reduced-motion: no-preference) {
+    height: calc(100svh + var(--hero-pin));
+    .hero { position: sticky; top: 0; height: 100svh; }
+  }
+}
+
+// No padding on the section: the glass is the section. Nav clearance and the
+// gutter live on the content layer only, so the surface runs kenardan kenara.
 .hero {
   position: relative;
   min-height: 100svh;
-  padding: calc(var(--nav-top) + var(--nav-h) + .75rem) var(--gutter) var(--gutter);
   display: flex;
   overflow: hidden;
   background: $paper;
   isolation: isolate;
-  @include up($bp-md) { padding-top: calc(var(--nav-top) + var(--nav-h) + 1rem); }
 }
 
 // The ambient "video" slot — pre-blurred, oversized, drifting on transform only.
@@ -31,21 +43,24 @@
   to   { transform: translate3d(2%, 1.5%, 0) scale(1.1); }
 }
 
-// The glass panel: an inset object, so the refraction reads at its edges.
-.hero__glass {
+// The glass surface: full-bleed, edge to edge with the section. Its edges are the
+// viewport's edges, so there is no radius and no CSS border — the `lg__shine` stack
+// alone supplies the thickness. Only the content layer respects the nav + gutter.
+.hero .hero__glass {
   position: relative;
   z-index: 1;
   flex: 1;
   display: flex;
   min-height: 0;
-  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 0;
   .hero__content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;          // the headline stands mid-panel so its letters have room to fall
     gap: 1.5rem;
-    padding: clamp(1.25rem, 4vw, 3rem);
+    padding: calc(var(--nav-top) + var(--nav-h) + .75rem) var(--gutter) var(--gutter);
+    @include up($bp-md) { padding-top: calc(var(--nav-top) + var(--nav-h) + 1rem); }
   }
 }
 
@@ -60,18 +75,4 @@
   overflow-wrap: anywhere;
   @include up($bp-lg) { font-size: clamp(4rem, 7.6vw, 7.25rem); max-width: 15ch; }
   @include short-landscape { font-size: clamp(1.6rem, 7vh, 2.6rem); }
-}
-
-.hero__hint {
-  color: $ink-65;
-  display: inline-flex;
-  align-items: center;
-  gap: .6rem;
-  &::before {
-    content: '';
-    width: 2.25rem;
-    height: 1px;
-    background: $ink-40;
-  }
-  @include short-landscape { display: none; }
 }

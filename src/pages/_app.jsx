@@ -6,13 +6,16 @@ import PageVeil from '../components/PageVeil';
 import HoldingPage from '../components/HoldingPage';
 import useReveal from '../lib/useReveal';
 import useGlassMode from '../lib/useGlassMode';
+import useSmoothScroll from '../lib/useSmoothScroll';
 import { IS_HOLDING } from '../lib/site';
+import 'lenis/dist/lenis.css';
 import '../styles/main.scss';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   useGlassMode();
   useReveal(router.asPath);
+  useSmoothScroll();
 
   // Pre-launch: NEXT_PUBLIC_HOLDING=1 serves the holding page for every route.
   // The real site stays in the codebase; flip the flag off at launch.

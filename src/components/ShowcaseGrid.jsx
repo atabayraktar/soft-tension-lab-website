@@ -14,7 +14,6 @@ export default function ShowcaseGrid() {
   return (
     <section className="showcase" aria-labelledby="showcase-title">
       <div className="wrap">
-        <p className="eyebrow" data-reveal>Vitrin</p>
         <h2 id="showcase-title" className="sr-only">Seçilmiş işler ve stüdyodan kesitler</h2>
 
         <div className="showcase__grid">
@@ -27,7 +26,6 @@ export default function ShowcaseGrid() {
           </figure>
 
           <div className="showcase__cell showcase__cell--b showcase__text" data-reveal>
-            <p className="label showcase__kicker">Sanat Üretimi</p>
             <p className="showcase__lead">{LEAD_LINES[0]}</p>
             <Button href="/contact/" surface="outline">Proje Başlat</Button>
           </div>

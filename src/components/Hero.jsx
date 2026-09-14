@@ -1,10 +1,11 @@
 import GlassCard from './GlassCard';
-import TopplingText from './TopplingText';
+import TopplingPhysics from './TopplingPhysics';
 import { HERO_LINE } from '../lib/site';
 
 /**
  * Massive typographic manifesto over the ambient background, behind a full-hero glass
- * panel. The headline topples letter by letter as the visitor scrolls.
+ * panel. Once the section has scrolled a quarter of the way out, the headline's letters
+ * become physics bodies and topple into a pile at the foot of the glass (TopplingPhysics).
  *
  * Background: until the TouchDesigner loop exists, a pre-blurred still from the studio's
  * own archive drifts very slowly (transform only). Swap `<img>` for a muted <video> of
@@ -12,6 +13,9 @@ import { HERO_LINE } from '../lib/site';
  */
 export default function Hero() {
   return (
+    // The spacer is the pin: on desktop it is one viewport taller than the hero, and the
+    // hero sticks inside it while the scroll through that extra height drives the fall.
+    <div className="hero-pin" data-topple-pin>
     <section className="hero" data-topple-scope aria-labelledby="hero-title">
       <div className="hero__bg" aria-hidden="true">
         <picture>
@@ -26,10 +30,10 @@ export default function Hero() {
 
       <GlassCard variant="frost" refraction="veil" radius="small" className="hero__glass" contentClassName="hero__content">
         <h1 id="hero-title" className="hero__title">
-          <TopplingText text={HERO_LINE} mode="scroll" range={0.7} />
+          <TopplingPhysics text={HERO_LINE} />
         </h1>
-        <p className="hero__hint label" aria-hidden="true">Kaydır</p>
       </GlassCard>
     </section>
+    </div>
   );
 }

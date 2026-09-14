@@ -22,6 +22,9 @@
 .showcase__cell {
   min-width: 0;
   &--c { position: relative; }
+  @for $i from 1 through 7 {
+    &:nth-child(#{$i}) { --reveal-delay: #{($i - 1) * 40ms}; }
+  }
   @include up($bp-md) {
     &--a { grid-column: 1 / 7;  align-self: start; }
     &--b { grid-column: 8 / 13; align-self: center; }
@@ -98,7 +101,6 @@
   display: grid;
   gap: 1.5rem;
   justify-items: start;
-  .showcase__kicker { color: $ink-65; }
 }
 
 .showcase__lead {

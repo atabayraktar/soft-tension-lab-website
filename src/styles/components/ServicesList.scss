@@ -94,4 +94,7 @@
   .services__hud-name { font-weight: 700; font-size: .95rem; letter-spacing: -.01em; text-align: right; }
   // clear tint + a touch more ink so paper text stays ≥ 4.5:1 on light artwork
   .lg__tint { background: rgba(3, 23, 58, .42); }
+  // a caption, not chrome: opt out of the glass hover-scale
+  --glass-hover-scale: 1;
+  --glass-content-scale: 1;
 }

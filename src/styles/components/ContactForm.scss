@@ -3,7 +3,6 @@
 .cform {
   display: grid;
   gap: clamp(1.5rem, 3vw, 2.25rem);
-  .cform__kicker { color: $ink-65; }
 }
 
 // Underlined field: the control sits above its label; the label floats up when the

@@ -68,8 +68,6 @@ export default function ContactForm() {
 
   return (
     <form className="cform" onSubmit={onSubmit} noValidate>
-      <p className="label cform__kicker">Proje talebi</p>
-
       {field('name', 'Adınız',
         <input id="cf-name" name="name" type="text" autoComplete="name" placeholder=" " required aria-required="true" aria-invalid={!!errors.name} aria-describedby={errors.name ? 'cf-name-err' : undefined} />
       )}
