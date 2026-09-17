@@ -16,3 +16,5 @@ export default function Home() {
     </main>
   );
 }
+// The global Footer sits directly under FooterFinale's true #000 — match it exactly.
+Home.footerTheme = 'black';

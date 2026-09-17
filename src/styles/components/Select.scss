@@ -1,0 +1,84 @@
+@use 'tokens' as *;
+
+// Trigger mirrors the underlined input/select look in ContactForm.scss 1:1
+// (same border, padding, type scale) so swapping it in changes nothing but
+// the open panel.
+.select { position: relative; }
+
+.select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  width: 100%;
+  min-height: 3rem;
+  padding: .5rem 0 .65rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid $ink;
+  border-radius: 0;
+  color: $ink;
+  font-family: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  &:focus-visible { outline: none; }
+}
+
+.select__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  &.is-placeholder { color: $ink-65; }
+}
+
+.select__chevron {
+  flex: none;
+  display: inline-flex;
+  color: $ink-65;
+  transition: transform $dur-fast $ease-out-expo;
+  .select__trigger[aria-expanded='true'] & { transform: rotate(180deg); }
+}
+
+// Flat Paper never gets a glass layer (per the liquid-glass rules) — a
+// hairline border does the work here instead.
+.select__panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + .5rem);
+  left: 0;
+  right: 0;
+  max-height: 15rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: .3rem;
+  list-style: none;
+  background: $paper;
+  border: 1px solid $ink-15;
+  border-radius: $r-small;
+  animation: select-panel-in 140ms $ease-out-expo;
+}
+
+@keyframes select-panel-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.select__option {
+  padding: .65rem .6rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: $ink;
+  border-radius: $r-small;
+  cursor: pointer;
+
+  &.is-active { background: $ink-05; }
+  &.is-selected { font-weight: 600; }
+  &.is-active.is-selected { background: $ink-08; }
+}
+
+@include reduced-motion {
+  .select__panel { animation: none; }
+  .select__chevron { transition: none; }
+}

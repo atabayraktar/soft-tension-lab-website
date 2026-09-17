@@ -29,16 +29,22 @@ export default function App({ Component, pageProps }) {
   }
 
   // Pages opt out of the chrome (holding page route) or ask for the dark theme
-  // (Works logo wall) via static properties.
+  // (Works logo wall) via static properties. The footer's theme defaults to
+  // the page's, but can be overridden separately (Component.footerTheme) for
+  // a page that's mostly light except for a dark final section right above
+  // the footer (Home's near-black FooterFinale) — the footer must always
+  // read as a continuation of whatever comes immediately before it, not the
+  // page as a whole.
   const bare = Component.bare === true;
   const theme = Component.theme || 'light';
+  const footerTheme = Component.footerTheme || theme;
 
   return (
     <>
       <Cursor />
       {!bare ? <Nav theme={theme} /> : null}
       <Component {...pageProps} />
-      {!bare ? <Footer theme={theme} /> : null}
+      {!bare ? <Footer theme={footerTheme} /> : null}
       <PageVeil />
     </>
   );

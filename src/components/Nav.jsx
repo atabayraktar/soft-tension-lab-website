@@ -3,11 +3,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import GlassCard from './GlassCard';
 import Logo from './Logo';
-import { NAV, SITE } from '../lib/site';
+import { NAV } from '../lib/site';
 
 /**
  * The floating liquid-glass pill bar. Logotype left (Ana mark on compact widths),
- * ABOUT · WORKS · CONTACT · SHOP right. Always visible, never hides on scroll.
+ * WORKS · SHOP · ABOUT · CONTACT · SERVICES right (Services is inert for now —
+ * no click-through). Always visible, never hides on scroll.
  * Below the lg breakpoint the items collapse into a glass menu sheet.
  */
 export default function Nav({ theme = 'light' }) {
@@ -42,7 +43,6 @@ export default function Nav({ theme = 'light' }) {
 
       <GlassCard as="div" variant="frost" refraction="nav" radius="pill" className="nav__bar" contentClassName="nav__inner">
         <Link href="/" className="nav__brand" aria-label="Soft Tension Lab — ana sayfa">
-          <Logo variant="logotype" className="nav__logotype" decorative />
           <Logo variant="ana" className="nav__ana" decorative />
         </Link>
 
@@ -50,9 +50,15 @@ export default function Nav({ theme = 'light' }) {
           <ul>
             {NAV.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className={`nav__link ${isActive(item.href) ? 'is-active' : ''}`.trim()} aria-current={isActive(item.href) ? 'page' : undefined}>
-                  {item.label}
-                </Link>
+                {item.disabled ? (
+                  <span className="nav__link nav__link--disabled" lang="en" aria-disabled="true">
+                    {item.label}
+                  </span>
+                ) : (
+                  <Link href={item.href} className={`nav__link ${isActive(item.href) ? 'is-active' : ''}`.trim()} lang="en" aria-current={isActive(item.href) ? 'page' : undefined}>
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -64,9 +70,9 @@ export default function Nav({ theme = 'light' }) {
           className="nav__toggle"
           aria-expanded={open}
           aria-controls="nav-sheet"
+          aria-label={open ? 'Kapat' : 'Menü'}
           onClick={() => setOpen((v) => !v)}
         >
-          <span className="nav__toggle-label">{open ? 'Kapat' : 'Menü'}</span>
           <span className="nav__toggle-icon" aria-hidden="true"><i /><i /></span>
         </button>
       </GlassCard>
@@ -87,17 +93,19 @@ export default function Nav({ theme = 'light' }) {
           <ul className="nav__sheet-list">
             {NAV.map((item, i) => (
               <li key={item.href} className={`nav__sheet-item nav__sheet-item--${i + 1}`}>
-                <Link href={item.href} className={`nav__sheet-link ${isActive(item.href) ? 'is-active' : ''}`.trim()} aria-current={isActive(item.href) ? 'page' : undefined}>
-                  {item.label}
-                </Link>
+                {item.disabled ? (
+                  <span className="nav__sheet-link nav__sheet-link--disabled" lang="en" aria-disabled="true">
+                    {item.label}
+                  </span>
+                ) : (
+                  <Link href={item.href} className={`nav__sheet-link ${isActive(item.href) ? 'is-active' : ''}`.trim()} lang="en" aria-current={isActive(item.href) ? 'page' : undefined}>
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
         </nav>
-        <div className="nav__sheet-foot">
-          <a className="nav__sheet-mail link" href={`mailto:${SITE.email}`}>{SITE.email}</a>
-          <a className="nav__sheet-ig" href={SITE.instagram} target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
-        </div>
       </GlassCard>
     </header>
   );

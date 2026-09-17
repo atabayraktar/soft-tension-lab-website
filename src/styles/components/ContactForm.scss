@@ -5,12 +5,26 @@
   gap: clamp(1.5rem, 3vw, 2.25rem);
 }
 
+// Section dividers ("İletişim bilgileri" / "Proje hakkında" / "Zaman ve bütçe" /
+// "Son sorular") lifted verbatim from the studio's Tally question set.
+.cform__section {
+  @include label(.6875rem, .2em);
+  color: $ink-40;
+  padding-top: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-top: 1px solid $ink-08;
+  &:first-child { padding-top: 0; border-top: 0; }
+}
+
 // Underlined field: the control sits above its label; the label floats up when the
 // field has a value or focus (placeholder=" " makes :placeholder-shown reliable).
 .cform__field {
   position: relative;
   display: grid;
-  padding-top: 1.35rem;
+  // Tall enough to fit a floated label that wraps to 2 lines (some of the
+  // Tally questions are long — e.g. "Daha önce profesyonel tasarım hizmeti
+  // aldınız mı?" — on a narrow viewport, they wrap and used to overlap the
+  // control below when this only reserved room for a single line).
+  padding-top: 2.6rem;
 
   input, select, textarea {
     width: 100%;
@@ -25,8 +39,7 @@
     line-height: 1.4;
     appearance: none;
     -webkit-appearance: none;
-    outline-offset: 6px;
-    &:focus-visible { outline: 2px solid $signal; outline-offset: 6px; border-bottom-color: $signal; }
+    &:focus-visible { outline: none; }
   }
   textarea { resize: vertical; min-height: 4.5rem; }
   select {
@@ -40,27 +53,35 @@
 
   .cform__label {
     position: absolute;
-    top: 1.35rem;
+    top: 2.6rem;
     left: 0;
+    right: 0;
     padding-top: .55rem;
     @include label(.75rem, .18em);
     color: $ink-65;
     pointer-events: none;
     transform-origin: left top;
     transition: transform $dur-fast $ease-out-expo;
-    .cform__opt { text-transform: none; letter-spacing: .04em; font-weight: 500; }
   }
   input:focus ~ .cform__label,
   input:not(:placeholder-shown) ~ .cform__label,
   textarea:focus ~ .cform__label,
   textarea:not(:placeholder-shown) ~ .cform__label,
-  select ~ .cform__label {                       // a select always shows a value, so its label lives up
-    transform: translateY(-1.4rem);
+  select ~ .cform__label,
+  .select ~ .cform__label {                       // a select always shows a value, so its label lives up
+    transform: translateY(-2.6rem);                // lands its top flush with the field's own top — room for 2 lines before the control
     color: $ink;
   }
 
-  &.is-invalid input, &.is-invalid select { border-bottom-color: $signal; }
-  &.is-invalid input, &.is-invalid select, &.is-invalid textarea { padding-bottom: .55rem; }
+  // Focus state: the field itself stays quiet — only its label turns Signal.
+  input:focus ~ .cform__label,
+  textarea:focus ~ .cform__label,
+  .select:focus-within ~ .cform__label {
+    color: $signal;
+  }
+
+  &.is-invalid input, &.is-invalid select, &.is-invalid .select__trigger { border-bottom-color: $signal; }
+  &.is-invalid input, &.is-invalid select, &.is-invalid textarea, &.is-invalid .select__trigger { padding-bottom: .55rem; }
 }
 
 .cform__error, .cform__hint {
@@ -71,7 +92,25 @@
 }
 .cform__error { color: $signal; font-weight: 500; }
 
-.cform__actions { padding-top: .5rem; }
+.cform__actions {
+  padding-top: .5rem;
+  display: grid;
+  gap: .75rem;
+  justify-items: start;
+}
+.cform__error--submit { margin-top: 0; max-width: 42ch; }
+
+// Bots fill it, people never see it (visually hidden, not display:none, so
+// naive bots that skip display:none fields still catch it).
+.cform__honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  opacity: 0;
+  pointer-events: none;
+}
 
 .cform--done {
   padding-top: 1.5rem;

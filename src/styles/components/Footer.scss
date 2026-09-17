@@ -1,18 +1,23 @@
 @use 'tokens' as *;
 
 .footer {
-  border-top: 1px solid $ink-08;
+  position: relative;   // scopes the .grain::before overlay (position:absolute; inset:0) to the footer itself
   padding-block: 2.5rem max(2.5rem, env(safe-area-inset-bottom));
   color: $ink;
   background: $paper;
 
-  &--dark {
-    background: $ink-deep;
+  // Always the same colour as whatever section sits directly above it —
+  // never a fixed footer colour, and no border seam either (it's meant to
+  // read as a continuation, not a separate block). --dark matches the Works
+  // page ground ($ink-deep); --black matches FooterFinale's true #000 on
+  // Home exactly.
+  &--dark, &--black {
     color: $paper;
-    border-top-color: $paper-15;
     .footer__meta .footer__label { color: $paper-70; }
     .link { text-decoration-color: $paper-15; }
   }
+  &--dark  { background: $ink-deep; }
+  &--black { background: $black; }
 }
 
 .footer__inner {
@@ -27,12 +32,7 @@
   .footer__mark { width: 3.25rem; height: auto; }  // ≥ 40px min size; ≥ 1 monogram width clear space around
 }
 
-.footer__links {
-  display: grid;
-  gap: .6rem;
-  font-size: 1rem;
-  li { line-height: 1.4; }
-}
+.footer__social { margin-left: -.6rem; }   // optically align the first icon's glyph, not its padded touch box, to the column edge
 
 .footer__meta {
   display: grid;

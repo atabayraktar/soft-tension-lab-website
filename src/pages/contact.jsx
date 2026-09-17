@@ -1,25 +1,28 @@
 import Seo from '../components/Seo';
 import ContactForm from '../components/ContactForm';
-import { SITE } from '../lib/site';
+import SocialLinks from '../components/SocialLinks';
 
-// Contact: split screen. Left — the headline, email, Instagram, Behance. Nothing else.
-// Right — the custom Tally-register form. No location, no phone, by design.
+// Contact: headline, socials, then the Tally-register form — that order on
+// every breakpoint. On wide screens the headline + socials sit in a left
+// column beside the form (mail/Instagram/Behance/YouTube/TikTok as icons
+// only — no location, no phone, by design).
 export default function Contact() {
   return (
     <main id="main" className="page contact">
       <Seo title="Contact" description="Hadi tanışalım. hello@softtensionlab.com — proje talebi formu." path="/contact/" />
       <div className="contact__split wrap">
-        <section className="contact__left" aria-labelledby="contact-title">
-          <h1 id="contact-title" className="contact__title">
-            <span className="mask mask--1"><span>Hadi</span></span>
-            <span className="mask mask--2"><span>Tanışalım.</span></span>
-          </h1>
-          <ul className="contact__links" data-reveal>
-            <li><a className="contact__mail link" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
-            <li><a className="link contact__social" href={SITE.instagram} target="_blank" rel="noopener noreferrer">Instagram <span className="link__arrow" aria-hidden="true">↗</span></a></li>
-            <li><a className="link contact__social" href={SITE.behance} target="_blank" rel="noopener noreferrer">Behance <span className="link__arrow" aria-hidden="true">↗</span></a></li>
-          </ul>
-        </section>
+        <div className="contact__left">
+          <section className="contact__title-block" aria-labelledby="contact-title">
+            <h1 id="contact-title" className="contact__title">
+              <span className="mask mask--1"><span>Hadi</span></span>
+              <span className="mask mask--2"><span>Tanışalım.</span></span>
+            </h1>
+          </section>
+
+          <div className="contact__social-block" data-reveal>
+            <SocialLinks className="contact__social" />
+          </div>
+        </div>
 
         <section className="contact__right" aria-label="Proje talebi formu" data-reveal>
           <ContactForm />

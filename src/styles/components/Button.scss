@@ -31,6 +31,12 @@
     .btn__arrow { transform: translate(4px, -2px); }
   }
   &:active .btn__arrow { transform: translate(2px, -1px); }
+
+  &:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    pointer-events: none;   // also kills the hover colour-shift while disabled
+  }
 }
 
 .btn--outline {

@@ -1,11 +1,23 @@
 @use 'tokens' as *;
 
 .contact__split {
-  display: grid;
-  gap: clamp(3rem, 8vw, 6rem) var(--gutter);
+  // Mobile/tablet-portrait (stacked): a flex column so headline → socials →
+  // form can be ordered independently of DOM order (`.contact__left`
+  // dissolves via display:contents below, so its two children become direct
+  // flex items here, interleaved with the form by `order`).
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 6vw, 4rem) var(--gutter);
   padding-top: clamp(2.5rem, 7vw, 5rem);
   padding-bottom: var(--section);
   @include up($bp-lg) {
+    // Desktop: a plain 2-column grid — .contact__left (title+socials, its
+    // own natural height) beside .contact__right (the form). Deliberately
+    // NOT a 2-row grid with the form spanning both rows: a spanning item
+    // across auto rows gets its excess height partly distributed into row
+    // 1, which shoves row 2 (socials) down the page. Keeping .contact__left
+    // as a single grid item sidesteps that entirely.
+    display: grid;
     grid-template-columns: 1.15fr 1fr;
     align-items: start;
   }
@@ -13,10 +25,24 @@
 }
 
 .contact__left {
-  display: grid;
-  gap: clamp(2rem, 5vw, 3.5rem);
-  align-content: start;
-  @include up($bp-lg) { position: sticky; top: calc(var(--nav-top) + var(--nav-h) + 2rem); }
+  display: contents;   // mobile: let title-block/social-block be ordered independently, see .contact__split
+  @include up($bp-lg) {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-content: start;
+    position: sticky;
+    // Matches .contact__split's own padding-top exactly (not an arbitrary
+    // 2rem) — otherwise the sticky threshold sits above this element's
+    // actual starting position, so it drifts up with the page for the first
+    // stretch of scroll before it "catches" instead of locking immediately.
+    top: calc(var(--nav-top) + var(--nav-h) + clamp(2.5rem, 7vw, 5rem));
+  }
+}
+
+.contact__title-block {
+  order: 1;
+  text-align: right;   // right-aligned at every breakpoint now
+  @include up($bp-lg) { order: initial; }
 }
 
 .contact__title {
@@ -26,21 +52,21 @@
   letter-spacing: -.045em;
   @include up($bp-lg) { font-size: clamp(5rem, 8.5vw, 9rem); }
   @include short-landscape { font-size: clamp(2.4rem, 12vh, 4rem); }
-}
-
-.contact__links {
-  display: grid;
-  gap: .9rem;
-  justify-items: start;
-  .contact__mail {
-    font-weight: 500;
-    font-size: clamp(1.15rem, 2.2vw, 1.6rem);
-    letter-spacing: -.015em;
-    overflow-wrap: anywhere;
-  }
-  .contact__social { @include label(.75rem, .18em); color: $ink-65; @include hover { color: $signal; } }
+  // A tight line-height crops descenders/cedillas (the "ş" in "Tanışalım.")
+  // against the reveal mask's overflow:hidden — a hair of headroom fixes it
+  // without loosening the line spacing visibly.
+  .mask { padding-bottom: .08em; }
 }
 
 .contact__right {
-  @include up($bp-lg) { padding-top: .75rem; }
+  order: 3;
+  @include up($bp-lg) { order: initial; padding-top: .75rem; }
+}
+
+.contact__social-block {
+  order: 2;
+  display: flex;
+  justify-content: flex-end;   // right-aligned at every breakpoint now
+  @include up($bp-lg) { order: initial; }
+  .contact__social { margin-right: -.6rem; }   // optically align the last icon's glyph to the true edge
 }

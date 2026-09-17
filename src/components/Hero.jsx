@@ -1,6 +1,6 @@
 import GlassCard from './GlassCard';
 import TopplingPhysics from './TopplingPhysics';
-import { HERO_LINE } from '../lib/site';
+import { HERO_LINES } from '../lib/site';
 
 /**
  * Massive typographic manifesto over the ambient background, behind a full-hero glass
@@ -30,7 +30,7 @@ export default function Hero() {
 
       <GlassCard variant="frost" refraction="veil" radius="small" className="hero__glass" contentClassName="hero__content">
         <h1 id="hero-title" className="hero__title">
-          <TopplingPhysics text={HERO_LINE} />
+          <TopplingPhysics lines={HERO_LINES} />
         </h1>
       </GlassCard>
     </section>

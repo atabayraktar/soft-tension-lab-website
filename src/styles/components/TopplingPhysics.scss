@@ -6,7 +6,9 @@
 // settled pile, where the letters can be stirred, grabbed and thrown.
 .tp {
   display: block;
-  .tp__line { display: inline; }
+  // Each line is its own block — forced breaks, not CSS wrapping (see
+  // TopplingPhysics.jsx / HERO_LINES in site.js).
+  .tp__line { display: block; }
   .tp__w { display: inline-block; white-space: nowrap; }
   .tp__space { display: inline-block; white-space: pre; }
   .tp__g {

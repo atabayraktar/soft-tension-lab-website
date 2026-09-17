@@ -9,6 +9,10 @@ export const SITE = {
   instagram: 'https://www.instagram.com/softtensionlab',
   instagramHandle: '@softtensionlab',
   behance: 'https://www.behance.net/softtensionlab',
+  // TODO verify: same @softtensionlab handle convention as Instagram/Behance —
+  // confirm these are the studio's actual YouTube/TikTok accounts before launch.
+  youtube: 'https://www.youtube.com/@softtensionlab',
+  tiktok: 'https://www.tiktok.com/@softtensionlab',
   founders: 'Ömer & Cemre',
   tagline: 'Lead With Tension',
   locale: 'tr_TR',
@@ -17,16 +21,26 @@ export const SITE = {
   ogImage: '/og.png',
 };
 
-// Nav is exactly these four items (design_architecture.html, NİHAİ). /services is
-// a secondary page linked from About and the footer — never a nav item.
+// Nav order per studio feedback (2026-09-17): Works, Services, Shop, About,
+// Contact. Services is intentionally inert for now (no destination page
+// click-through yet) but reads visually identical to the other items — see
+// Nav.jsx's `disabled` handling.
 export const NAV = [
-  { href: '/about/', label: 'About' },
   { href: '/work/', label: 'Works' },
-  { href: '/contact/', label: 'Contact' },
+  { href: '/services/', label: 'Services', disabled: true },
   { href: '/shop/', label: 'Shop' },
+  { href: '/about/', label: 'About' },
+  { href: '/contact/', label: 'Contact' },
 ];
 
-export const HERO_LINE = 'Multidisipliner sanatçıların oyun alanı. Sürece açık, canlı bir stüdyo.';
+// Forced line breaks per studio feedback (2026-09-17) — always these 3 lines,
+// at every viewport; only the font-size scales down responsively, the break
+// points never move (see Hero.scss/TopplingPhysics.jsx).
+export const HERO_LINES = [
+  'Multidisipliner sanatçıların',
+  'oyun alanı.',
+  'Sürece açık, canlı bir stüdyo.',
+];
 
 export const MANIFESTO = [
   'SOFT TENSION LAB; SANAT, TASARIM VE KÜLTÜRÜN KESİŞİMİNDE YER ALAN BAĞIMSIZ BİR KREATİF STÜDYODUR. KAVRAMSAL DÜŞÜNCEYİ SOMUT GÖRSEL KİMLİKLERE DÖNÜŞTÜREREK, MARKALAR VE SANATÇILAR İÇİN ESTETİK DUVARLARI YIKIYORUZ.',

@@ -60,9 +60,13 @@ const easeOutExpo = (t) => (t >= 1 ? 1 : 1 - 2 ** (-10 * t));
 const wrapAngle = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-export default function TopplingPhysics({ text, as: Tag = 'span', className = '' }) {
+export default function TopplingPhysics({ lines, as: Tag = 'span', className = '' }) {
   const rootRef = useRef(null);
-  const words = useMemo(() => text.split(' '), [text]);
+  // Forced line breaks: each entry is its own block-level line (`.tp__line`,
+  // display:block — see TopplingPhysics.scss), never re-wrapped by CSS. Only
+  // the font-size scales the whole thing down responsively.
+  const linesOfWords = useMemo(() => lines.map((line) => line.split(' ')), [lines]);
+  const text = useMemo(() => lines.join(' '), [lines]);
   const [enabled, setEnabled] = useState(false);
 
   // Live-updated gates: desktop widths only, and never under reduced motion.
@@ -564,19 +568,21 @@ export default function TopplingPhysics({ text, as: Tag = 'span', className = ''
   return (
     <Tag ref={rootRef} className={`tp ${className}`.trim()}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true" className="tp__line">
-        {words.map((word, wi) => (
-          <span key={wi} className="tp__w">
-            {Array.from(word).map((ch) => {
-              idx += 1;
-              return (
-                <span key={idx} className="tp__g">{ch}</span>
-              );
-            })}
-            {wi < words.length - 1 ? <span className="tp__space"> </span> : null}
-          </span>
-        ))}
-      </span>
+      {linesOfWords.map((words, li) => (
+        <span key={li} aria-hidden="true" className="tp__line">
+          {words.map((word, wi) => (
+            <span key={wi} className="tp__w">
+              {Array.from(word).map((ch) => {
+                idx += 1;
+                return (
+                  <span key={idx} className="tp__g">{ch}</span>
+                );
+              })}
+              {wi < words.length - 1 ? <span className="tp__space"> </span> : null}
+            </span>
+          ))}
+        </span>
+      ))}
     </Tag>
   );
 }

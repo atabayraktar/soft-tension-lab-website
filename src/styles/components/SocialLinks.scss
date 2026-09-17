@@ -1,0 +1,24 @@
+@use 'tokens' as *;
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+.social__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;                   // ≥ 44px touch target
+  height: 3rem;
+  color: $ink-65;
+  border-radius: $r-pill;
+  transition: transform $dur-fast $ease-out-expo;
+  @include hover { color: $signal; }
+  &:active { transform: scale(.92); }
+
+  svg { width: 1.5rem; height: 1.5rem; }
+
+  .page--dark &, .on-dark &, .footer--dark &, .footer--black & { color: $paper-70; }
+}

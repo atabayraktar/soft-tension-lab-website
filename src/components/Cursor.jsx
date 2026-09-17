@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-// A small Signal dot on fine pointers only. Grows over hoverable/preview content,
-// lerp-smoothed (.8 — a hair of trail, not a delay). Never mounts on touch or under
-// prefers-reduced-motion.
+// A small Signal dot on fine pointers only. Tracks the pointer 1:1 (no lag —
+// only the hover ring eases, via CSS transition on `::after`). Never mounts
+// on touch or under prefers-reduced-motion.
 export default function Cursor() {
   const dot = useRef(null);
 
@@ -13,19 +13,12 @@ export default function Cursor() {
 
     const el = dot.current;
     const root = document.documentElement;
-    let tx = -100, ty = -100, x = -100, y = -100, raf = 0, visible = false;
-
-    const loop = () => {
-      x += (tx - x) * 0.8;
-      y += (ty - y) * 0.8;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-      raf = requestAnimationFrame(loop);
-    };
+    let visible = false;
 
     const onMove = (e) => {
-      tx = e.clientX; ty = e.clientY;
+      el.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
       if (!visible) { visible = true; root.setAttribute('data-cursor', 'on'); el.classList.add('is-visible'); }
-      const t = e.target.closest('a, button, [data-cursor="grow"], input, select, textarea, label');
+      const t = e.target.closest('a, button, [data-cursor="grow"], input, select, textarea, label, [role="option"]');
       el.classList.toggle('is-grow', !!t);
       el.classList.toggle('is-text', !!(t && t.matches('input, textarea')));
     };
@@ -37,10 +30,8 @@ export default function Cursor() {
     document.documentElement.addEventListener('mouseleave', onLeave);
     window.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
-    raf = requestAnimationFrame(loop);
 
     return () => {
-      cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('mouseleave', onLeave);
       window.removeEventListener('pointerdown', onDown);

@@ -38,7 +38,7 @@ export default function About() {
       <section className="about__services wrap" aria-label="Hizmetler">
         <ul className="about__tags" data-reveal>
           {SERVICE_TAGS.map((t) => (
-            <li key={t} className="about__tag">{t}</li>
+            <li key={t} className="about__tag" lang={t === 'Web Design & Motion' ? 'en' : undefined}>{t}</li>
           ))}
         </ul>
         <Link href="/services/" className="link about__all" data-reveal>

@@ -119,7 +119,8 @@ p { max-width: 68ch; }
   html[data-cursor='on'] label,
   html[data-cursor='on'] select,
   html[data-cursor='on'] input,
-  html[data-cursor='on'] textarea {
+  html[data-cursor='on'] textarea,
+  html[data-cursor='on'] [role='option'] {
     cursor: none;
   }
 }

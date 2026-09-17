@@ -21,9 +21,9 @@ Traffic is almost entirely from Instagram on mobile. **Mobile-first is not a che
 
 | Source file | Copy to | Role | Where it goes |
 |---|---|---|---|
-| `Logo-Family_Ana Logo.svg` | `public/logos/logo-ana.svg` | Primary mark | Header (mobile/compact), footer, social avatar, print |
+| `Logo-Family_Ana Logo.svg` | `public/logos/logo-ana.svg` | Primary mark | Header/nav bar (**all breakpoints** — per studio feedback 2026-09-17, the header never switches to the Logotype), footer, social avatar, print |
 | `Logo-Family_Monogram.svg` | `public/logos/logo-monogram.svg` | Compact mark | Favicon, loader, cursor, stamp — **the only mark allowed below 32px** |
-| `Logo-Family_Logotype.svg` | `public/logos/logo-logotype.svg` | Horizontal lockup | Nav bar (desktop), wide footer |
+| `Logo-Family_Logotype.svg` | `public/logos/logo-logotype.svg` | Horizontal lockup | Wide footer only — **no longer used in the nav bar** (see Ana Logo row above) |
 | `Logo-Family_Maskotlar.svg` | `public/logos/logo-maskotlar.svg` | Mascots / illustration | Empty states, 404, Shop coming-soon |
 | `Logo-Family.svg` | — | Full sheet | Reference only — **never ship this file to a page** |
 
@@ -157,7 +157,7 @@ box-shadow:
 
 ## Site Structure (from `design_architecture.html`, v5.1 "NİHAİ" — the authoritative blueprint)
 
-Technically one app, perceptually multi-page: the URL changes and content is swapped behind a blur-in/blur-out mask (View Transitions). Nav is a **floating liquid-glass pill bar**: logo/wordmark on the left, items on the right (`ABOUT · WORKS · CONTACT · SHOP`). Always visible, never hides on scroll. Active item turns Signal.
+Technically one app, perceptually multi-page: the URL changes and content is swapped behind a blur-in/blur-out mask (View Transitions). Nav is a **floating liquid-glass pill bar**: logo/wordmark on the left, items on the right (`WORKS · SERVICES · SHOP · ABOUT · CONTACT`) — per studio feedback 2026-09-17, `SERVICES` was added to the floating nav (right after Works) but is intentionally inert for now: rendered and hovers exactly like the other items (no grey/disabled look, hover still turns Signal), it just isn't clickable/linked anywhere yet — the studio will wire it up later. Always visible, never hides on scroll. Active item turns Signal.
 
 **`/` (Home):**
 1. **Header/Nav** — liquid-glass pill bar as above.
@@ -175,7 +175,7 @@ Manifesto copy (do not paraphrase):
 
 **`/work`** (nav label "WORKS") — **Logo Wall.** Full-bleed dark mode (near-black `--ink`/`#000`). White (`--paper`/`currentColor`) client/work logos in a clean grid (3 columns desktop, collapses on mobile), headed "SELECTED WORKS." **No links, no boxes, no captions, no hover chrome** — this is a quiet, minimal power-move, deliberately the opposite of a busy portfolio grid. Until real client logos exist, use clearly-labeled placeholder blocks and flag it.
 
-**`/services`** — secondary/long-form page (linked from About/footer, not in the floating nav) with the 7 services as an Archivo-labeled list; hovering a line may surface a related archive image behind glass — this refinement from the original brief is fine to keep here since it doesn't compete with the NİHAİ nav.
+**`/services`** — secondary/long-form page (also linked from About/footer) with the 7 services as an Archivo-labeled list; hovering a line may surface a related archive image behind glass — this refinement from the original brief is fine to keep here since it doesn't compete with the NİHAİ nav. It now also has a `SERVICES` slot in the floating nav itself (see above), but that nav item is inert for now — do not wire it to this page until asked.
 Marka Kimliği & Logo Sistemleri / Tipografi / İçerik Geliştirme / Geleneksel & Dijital Sanat Entegrasyonu / Editöryel & Baskılı Tasarım / Kreatif Danışmanlık & Geleneksel Sanat Eğitimi / Sanat Üretimi
 
 **`/contact`** — Split-screen (Olha Lazarieva-style layout). **Left:** huge headline "Hadi Tanışalım.", `hello@softtensionlab.com`, Instagram ↗, Behance ↗. **No location, no phone number — never add them.** **Right:** a custom-coded form styled like a Tally form (see `tally.so/r/LZ5Qlp` for the question set) with underlined (not boxed) fields — Adınız / Proje Tipi / Bütçe Aralığı — and a solid ink pill submit button ("Gönder").
@@ -206,7 +206,7 @@ Only `transform` and `opacity` are animated (the marquee band may also translate
 |---|---|
 | Toppling letters | scroll-triggered, spring-like fall/settle, used once on Home hero (+ optional 404) |
 | Page transition | ~500ms `cubic-bezier(.16,1,.3,1)`, blur-in/blur-out mask sweep. **Blur, not fade.** |
-| Cursor | small Signal dot, grows over hoverable/preview content, lerp-smoothed, disabled on touch |
+| Cursor | small Signal dot, tracks the pointer 1:1 (no lag — per studio feedback 2026-09-17 a lerped trail felt slow), grows over hoverable/preview content via a CSS-eased ring only, disabled on touch |
 | Marquee | linear, constant-speed `translateX` loop, `will-change` only while in viewport |
 | Footer-CTA glitch hover | short, sharp colour/offset flicker on the hovered line only — not the whole block |
 | Scroll reveal | sections/text rise ~24px from below on first view, `once: true`, no exit animation |

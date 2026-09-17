@@ -11,6 +11,7 @@
 @use 'components/PageVeil';
 @use 'components/Nav';
 @use 'components/Footer';
+@use 'components/SocialLinks';
 @use 'components/Mascot';
 @use 'components/TopplingText';
 @use 'components/TopplingPhysics';
@@ -21,6 +22,7 @@
 @use 'components/HoldingPage';
 @use 'components/LogoWall';
 @use 'components/ServicesList';
+@use 'components/Select';
 @use 'components/ContactForm';
 
 @use 'pages/home';
