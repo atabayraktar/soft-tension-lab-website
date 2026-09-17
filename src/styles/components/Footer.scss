@@ -2,7 +2,10 @@
 
 .footer {
   position: relative;   // scopes the .grain::before overlay (position:absolute; inset:0) to the footer itself
-  padding-block: 2.5rem max(2.5rem, env(safe-area-inset-bottom));
+  // More breathing room on mobile specifically — the preceding section's CTA
+  // reads as touching the footer otherwise on short viewports.
+  padding-top: 3.5rem;
+  @include up($bp-md) { padding-top: 2.5rem; }
   color: $ink;
   background: $paper;
 
@@ -13,31 +16,65 @@
   // Home exactly.
   &--dark, &--black {
     color: $paper;
-    .footer__meta .footer__label { color: $paper-70; }
+    .footer__label { color: $paper-70; }
     .link { text-decoration-color: $paper-15; }
   }
   &--dark  { background: $ink-deep; }
   &--black { background: $black; }
 }
 
-.footer__inner {
-  display: grid;
-  gap: 2rem;
-  align-items: start;
-  @include up($bp-md) { grid-template-columns: auto 1fr auto; gap: 3rem; }
+// Desktop only: footer content runs edge-to-edge, no side gutter (mobile/tablet keep it).
+.footer .wrap {
+  @include up($bp-xl) { padding-inline: 0; }
+}
+
+// Single line, every page: monogram · copyright stack · social + KVKK.
+// Centered on mobile (each piece stacks and wraps to its own row); the
+// three-column space-between layout only kicks in from tablet up.
+.footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding-bottom: 2.5rem;
+  text-align: center;
+
+  @include up($bp-md) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
 }
 
 .footer__brand {
-  display: inline-block;
-  .footer__mark { width: 3.25rem; height: auto; }  // ≥ 40px min size; ≥ 1 monogram width clear space around
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  // Same height, same colour (both inherit currentColor) — the two logos
+  // read as one signature, not a size mismatch.
+  .footer__mark { height: 2.75rem; width: auto; }
+}
+
+.footer__copy {
+  display: grid;
+  justify-items: center;
+  gap: .3rem;
+  text-align: center;
+  order: 2;
+  @include up($bp-md) { order: initial; }
+  .footer__label { @include label(.7rem, .14em); }  // color comes from the shared .footer__label rule below
+}
+
+.footer__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .footer__social { margin-left: -.6rem; }   // optically align the first icon's glyph, not its padded touch box, to the column edge
 
-.footer__meta {
-  display: grid;
-  gap: .6rem;
-  @include up($bp-md) { text-align: right; }
-  .footer__label { @include label; color: $ink-65; }
-  a.footer__label { color: inherit; opacity: .8; @include hover { opacity: 1; } }
-}
+.footer__label { @include label; color: $ink-65; }
+a.footer__label { color: inherit; opacity: .8; @include hover { opacity: 1; color: $signal; } }

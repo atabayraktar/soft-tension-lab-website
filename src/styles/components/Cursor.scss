@@ -1,5 +1,30 @@
 @use 'tokens' as *;
 
+// Hairline crosshair — a coordinate-readout guide following the pointer.
+// mix-blend-mode: difference so the same line reads as a faint dark hairline
+// on Paper and a faint light one over Ink/black sections, without tracking
+// page theme — the line crosses both as the pointer moves.
+.cursor-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  background: $paper;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0;
+  display: none;
+
+  &--v { width: 1px; height: 100vh; transform: translate3d(-100px, 0, 0); }
+  &--h { width: 100vw; height: 1px; transform: translate3d(0, -100px, 0); }
+
+  @include fine-pointer {
+    display: block;
+    &.is-visible { opacity: .3; }
+  }
+  @include reduced-motion { display: none; }
+}
+
 .cursor {
   position: fixed;
   top: 0;

@@ -43,9 +43,6 @@
   padding-top: clamp(1.5rem, 3vw, 2.25rem);
   padding-bottom: var(--section);
   border-top: 1px solid $ink-15;
-  display: grid;
-  gap: 1.75rem;
-  @include up($bp-lg) { grid-template-columns: 1fr auto; align-items: baseline; }
 }
 
 .about__tags {
@@ -56,5 +53,3 @@
   color: $ink-65;
   li { white-space: nowrap; }
 }
-
-.about__all { @include label; color: $ink; }

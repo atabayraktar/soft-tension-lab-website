@@ -21,13 +21,12 @@ export const SITE = {
   ogImage: '/og.png',
 };
 
-// Nav order per studio feedback (2026-09-17): Works, Services, Shop, About,
-// Contact. Services is intentionally inert for now (no destination page
-// click-through yet) but reads visually identical to the other items — see
-// Nav.jsx's `disabled` handling.
+// Nav order: Services, Works, Shop, About, Contact. Services is intentionally
+// inert for now (no destination page click-through yet) but reads visually
+// identical to the other items — see Nav.jsx's `disabled` handling.
 export const NAV = [
-  { href: '/work/', label: 'Works' },
   { href: '/services/', label: 'Services', disabled: true },
+  { href: '/work/', label: 'Works' },
   { href: '/shop/', label: 'Shop' },
   { href: '/about/', label: 'About' },
   { href: '/contact/', label: 'Contact' },

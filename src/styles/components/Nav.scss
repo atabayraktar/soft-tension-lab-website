@@ -10,6 +10,15 @@
   pointer-events: none;                  // only the bar and sheet catch input
   > * { pointer-events: auto; }
 
+  // Desktop: same rendered width as the footer's edge-to-edge .wrap
+  // (max-width var(--wrap), centered, no side gutter).
+  @include up($bp-xl) {
+    left: 0;
+    right: 0;
+    max-width: var(--wrap);
+    margin-inline: auto;
+  }
+
   &--dark { color: $paper; }
   &.is-open { color: $paper; }           // the bar sits on the dark sheet while the menu is open
 }

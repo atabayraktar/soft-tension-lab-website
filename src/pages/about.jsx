@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import Seo from '../components/Seo';
 import ArchiveImage from '../components/ArchiveImage';
 import { MANIFESTO, SERVICE_TAGS } from '../lib/site';
@@ -41,9 +40,6 @@ export default function About() {
             <li key={t} className="about__tag" lang={t === 'Web Design & Motion' ? 'en' : undefined}>{t}</li>
           ))}
         </ul>
-        <Link href="/services/" className="link about__all" data-reveal>
-          Tüm hizmetler <span className="link__arrow" aria-hidden="true">→</span>
-        </Link>
       </section>
     </main>
   );

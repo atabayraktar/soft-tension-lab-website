@@ -15,10 +15,14 @@
   color: $ink-65;
   border-radius: $r-pill;
   transition: transform $dur-fast $ease-out-expo;
-  @include hover { color: $signal; }
   &:active { transform: scale(.92); }
 
   svg { width: 1.5rem; height: 1.5rem; }
 
+  // Same specificity as the hover rule below (one class each) — must come
+  // first so hover wins the tie-break on dark/black grounds too (Works page,
+  // dark footer). Reordering, not !important, keeps the cascade honest.
   .page--dark &, .on-dark &, .footer--dark &, .footer--black & { color: $paper-70; }
+
+  @include hover { color: $signal; }
 }

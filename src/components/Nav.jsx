@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import GlassCard from './GlassCard';
 import Logo from './Logo';
+import useNavInvert from '../lib/useNavInvert';
 import { NAV } from '../lib/site';
 
 /**
@@ -10,12 +11,21 @@ import { NAV } from '../lib/site';
  * WORKS · SHOP · ABOUT · CONTACT · SERVICES right (Services is inert for now —
  * no click-through). Always visible, never hides on scroll.
  * Below the lg breakpoint the items collapse into a glass menu sheet.
+ *
+ * Colour isn't fixed per page: it tracks whatever's actually scrolled behind
+ * the bar (see useNavInvert) so it stays legible over a mixed-theme page like
+ * Home (light hero/showcase, then a black FooterFinale + footer at the
+ * bottom) — `theme` is only the pre-hydration fallback for pages that are
+ * dark from the very top (Works).
  */
 export default function Nav({ theme = 'light' }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const sheetRef = useRef(null);
   const toggleRef = useRef(null);
+  const navRef = useRef(null);
+  const invert = useNavInvert(navRef, theme !== 'light', router.asPath);
+  const navTheme = invert ? 'dark' : 'light';
 
   const isActive = (href) => router.asPath === href || router.asPath.startsWith(href);
 
@@ -38,7 +48,7 @@ export default function Nav({ theme = 'light' }) {
   }, [open]);
 
   return (
-    <header className={`nav nav--${theme} ${open ? 'is-open' : ''}`.trim()}>
+    <header ref={navRef} className={`nav nav--${navTheme} ${open ? 'is-open' : ''}`.trim()}>
       <a href="#main" className="skip-link">İçeriğe atla</a>
 
       <GlassCard as="div" variant="frost" refraction="nav" radius="pill" className="nav__bar" contentClassName="nav__inner">

@@ -5,7 +5,7 @@ import { FINALE_LINES, SITE } from '../lib/site';
 // hovered line only), one liquid-glass pill button. Nothing else.
 export default function FooterFinale() {
   return (
-    <section className="finale grain on-dark" aria-labelledby="finale-title">
+    <section className="finale grain on-dark" data-nav-invert aria-labelledby="finale-title">
       <div className="wrap finale__inner">
         <ul className="finale__lines">
           {FINALE_LINES.map((l, i) => (

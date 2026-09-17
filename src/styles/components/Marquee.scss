@@ -2,8 +2,6 @@
 
 .marquee {
   overflow: hidden;
-  border-top: 1px solid $ink-15;
-  border-bottom: 1px solid $ink-15;
   padding-block: 1.1rem;
   background: $paper;
   @include up($bp-md) { padding-block: 1.4rem; }
@@ -30,6 +28,7 @@
   gap: clamp(.5rem, 1vw, .75rem);
   padding-right: clamp(.5rem, 1vw, .75rem);
   font-weight: 500;
+  font-style: italic;
   font-size: clamp(1.05rem, 2.1vw, 1.55rem);
   letter-spacing: -.015em;
   white-space: nowrap;

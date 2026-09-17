@@ -20,6 +20,13 @@
 }
 @font-face {
   font-family: 'Whyte Inktrap';
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+  src: url('/fonts/WhyteInktrap-MediumItalic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Whyte Inktrap';
   font-weight: 700;
   font-style: normal;
   font-display: swap;
