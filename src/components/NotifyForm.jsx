@@ -34,9 +34,9 @@ const TOPICS = {
     doneTitle: 'Tamamdır.',
     doneCopy: 'Yayına geçtiğimizde bu adrese haber vereceğiz.',
     button: 'Haber Ver',
-    subject: 'Yakında sayfası bekleme listesi',
-    fromName: 'Soft Tension Lab — Yakında Bekleme Listesi',
-    message: (mail) => `${mail} adresi yakında sayfasının yayına geçmesini bekliyor.`,
+    subject: 'Coming Soon ekranından bekleme listesi kaydı',
+    fromName: 'Soft Tension Lab — Coming Soon Ekranı',
+    message: (mail) => `${mail} adresi Coming Soon ekranından bırakıldı, yayına geçtiğimizde haber verilmesini istiyor.`,
     source: '/comingsoon/',
   },
 };

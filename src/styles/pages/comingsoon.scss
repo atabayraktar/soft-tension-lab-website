@@ -114,25 +114,28 @@
 }
 
 @include short-landscape {
-  .comingsoon { padding-block: .4rem; }
-  .comingsoon__mark { margin-bottom: .1rem; }
-  .comingsoon__center { gap: .05rem; padding-block: 0; }
-  .comingsoon__line { font-size: clamp(.65rem, 2.3vh, .8rem); line-height: 1.2; }
+  // Plenty of width here (a phone on its side) even though height is tight — use it
+  // instead of sitting in a narrow centred column with dead space either side.
+  .comingsoon { padding-block: .3rem; }
+  .comingsoon__mark { margin-bottom: .15rem; }
+  .comingsoon__center { max-width: none; width: 100%; gap: .15rem; padding-block: 0; }
+  .comingsoon__line { font-size: clamp(.65rem, 2.3vh, .8rem); line-height: 1.25; }
 
   // The finale variant never gets the shared "one row" phone layout (it's excluded in
   // NotifyForm.scss on purpose — the footer finale isn't fit-to-screen-critical). This
   // page is, so it forces the same compact field+button row here, and drops the copy
   // line — same move as the shared rule makes for the default variant.
   .comingsoon__notify {
-    margin-top: .15rem;
+    margin-top: .25rem;
     .notify--finale {
+      width: 100%;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: end;
-      column-gap: .6rem;
+      column-gap: 1.25rem;
       .notify__text { grid-column: 1 / -1; }
       .notify__title { font-size: clamp(1rem, 3.6vh, 1.25rem); }
       .notify__copy { display: none; }
-      .notify__field { margin-bottom: 0; }
+      .notify__field { margin-bottom: 0; max-width: none; }
     }
   }
 }
