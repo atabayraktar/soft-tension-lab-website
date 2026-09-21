@@ -50,8 +50,12 @@
   line-height: 1.03;
   letter-spacing: -.03em;
   margin-block: .55em .3em;
-  text-wrap: balance;
-  @include short-landscape { font-size: clamp(1.6rem, 9vh, 2.75rem); }
+
+  // Forced two-line break ("YAKINDA\nGÖRÜŞMEK ÜZERE!") — applies to the visible text and
+  // to the glitch echoes (their content comes from the same \n-bearing data-text attribute).
+  .glitch, .glitch::before, .glitch::after { white-space: pre-line; }
+
+  @include short-landscape { font-size: clamp(1.2rem, 6.5vh, 2rem); margin-block: .3em .2em; }
 }
 
 .comingsoon__notify {
@@ -78,7 +82,7 @@
     // The field/button tracks were still sized by fr-share, which capping the field's own
     // width doesn't change — give the field a small fixed track instead of a share of the
     // row, so the title/copy column actually gets the rest of the space.
-    .notify--finale { grid-template-columns: minmax(0, 1fr) minmax(0, 17rem) auto; }
+    .notify--finale { grid-template-columns: minmax(0, 1fr) minmax(0, 24rem) auto; }
     .notify__field { max-width: none; margin-inline: 0; }
   }
 }

@@ -19,7 +19,7 @@ export default function ComingSoon() {
         <ScrambleText as="p" text="Biz de sabırsızlanıyoruz." className="comingsoon__line" />
         <ScrambleText as="p" text="Tam şu an üzerinde çalışıyoruz." className="comingsoon__line" startDelay={700} />
         <h1 className="comingsoon__headline">
-          <span className="glitch glitch--loop" data-text="YAKINDA GÖRÜŞMEK ÜZERE!">YAKINDA GÖRÜŞMEK ÜZERE!</span>
+          <span className="glitch glitch--loop" data-text={'YAKINDA\nGÖRÜŞMEK ÜZERE!'}>{'YAKINDA\nGÖRÜŞMEK ÜZERE!'}</span>
         </h1>
 
         <div className="comingsoon__notify">
