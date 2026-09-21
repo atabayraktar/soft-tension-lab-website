@@ -71,31 +71,31 @@ export const SERVICES = [
 export const SERVICE_DETAILS = [
   {
     items: ['LOGO SİSTEMLERİ', 'RENK & TİPOGRAFİ', 'MARKA KILAVUZU', 'UYGULAMA ÖRNEKLERİ'],
-    copy: 'Bir markanın nasıl göründüğünü değil, nasıl hissettirdiğini tasarlıyoruz; tutarlı, tekrar edilebilir bir kimlik sistemi kuruyoruz.',
+    copy: 'Bir markanın nasıl göründüğünü değil, nasıl hissettirdiğini tasarlıyoruz; tutarlı, tekrar edilebilir bir kimlik sistemi kuruyoruz. Markayı ve hedefini konuşarak başlıyor, eskizlerden ve ara durumlardan birlikte geçiyoruz. Sonunda logo, renk ve tipografiyi bir araya getiren, uygulanabilir bir marka kılavuzu teslim ediyoruz.',
   },
   {
     items: ['ÖZEL YAZI SİSTEMLERİ', 'HARF FORMU ÇALIŞMASI', 'DİJİTAL & BASKI KULLANIMI'],
-    copy: 'Tipografiyi süs değil, markanın sesi olarak ele alıyoruz.',
+    copy: 'Tipografiyi süs değil, markanın sesi olarak ele alıyoruz. Harf formlarını markanın karakterine göre çiziyor, ekranda ve baskıda nasıl davranacağını birlikte deniyoruz. Teslimde kullanım kuralları belli, dijitale ve kâğıda hazır bir yazı sistemi bırakıyoruz.',
   },
   {
     items: ['METİN & SES TONU', 'SOSYAL İÇERİK', 'KAMPANYA DİLİ'],
-    copy: 'Görselin arkasındaki dili kuruyoruz; markanın nasıl konuştuğunu tanımlıyoruz.',
+    copy: 'Görselin arkasındaki dili kuruyoruz; markanın nasıl konuştuğunu tanımlıyoruz. Ses tonunu birlikte belirliyor, sosyal içerikten kampanya diline aynı sesi taşıyoruz. Elinize geçen şey tek seferlik metin değil, sonrasında kendi başınıza yazabileceğiniz bir dil kılavuzu.',
   },
   {
     items: ['EL İŞÇİLİĞİ', 'DİJİTAL ÜRETİM', 'KARMA TEKNİK'],
-    copy: 'Geleneksel tekniklerle dijital üretimi aynı çalışmada buluşturuyoruz.',
+    copy: 'Geleneksel tekniklerle dijital üretimi aynı çalışmada buluşturuyoruz. Elle üretilen doku, baskı ya da çizim dijital ortamda işleniyor; hangi katmanın nerede kalacağına işin ihtiyacına göre karar veriyoruz. Ortaya çıkan iş hem basılabilir hem ekranda yaşayabilir halde teslim ediliyor.',
   },
   {
     items: ['YAYIN TASARIMI', 'SAYFA DÜZENİ', 'BASKI ÜRETİMİ'],
-    copy: 'Basılı işi bir vitrin değil, kendi başına bir deneyim olarak tasarlıyoruz.',
+    copy: 'Basılı işi bir vitrin değil, kendi başına bir deneyim olarak tasarlıyoruz. Kâğıdı, formatı ve sayfa düzenini içerikle birlikte kuruyor, baskı öncesi provaları sizinle birlikte kontrol ediyoruz. Baskıya hazır dosyaları, matbaayla konuşulmuş teknik notlarla birlikte teslim ediyoruz.',
   },
   {
     items: ['ATÖLYE & EĞİTİM', 'SANAT DANIŞMANLIĞI', 'SÜREÇ YÖNETİMİ'],
-    copy: 'Stüdyonun birikimini atölyeler ve danışmanlıkla paylaşıyoruz.',
+    copy: 'Stüdyonun birikimini atölyeler ve danışmanlıkla paylaşıyoruz. Atölyelerde geleneksel teknikleri küçük gruplarla, elle çalışarak öğretiyoruz; danışmanlıkta ise süren bir projenin sanat yönünü birlikte netleştiriyoruz. Süre ve içerik ihtiyaca göre şekilleniyor.',
   },
   {
     items: ['ORİJİNAL ÜRETİM', 'SERGİ HAZIRLIĞI', 'SINIRLI ÜRETİM'],
-    copy: 'Kendi sanat pratiğimizi sürdürüyor, stüdyonun sezgisini somutlaştırıyoruz.',
+    copy: 'Kendi sanat pratiğimizi sürdürüyor, stüdyonun sezgisini somutlaştırıyoruz. Orijinal işler, sergi hazırlığı ve sınırlı sayıda üretimler bu pratiğin içinden çıkıyor. Bir iş ya da iş birliği için yazdığınızda süreci ve takvimi birlikte planlıyoruz.',
   },
 ];
 

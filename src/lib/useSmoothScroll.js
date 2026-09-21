@@ -29,7 +29,13 @@ export default function useSmoothScroll() {
 
     const lenis = new Lenis({ autoRaf: true, anchors: true });
     instance = lenis;
-    const onRouteChange = () => lenis.scrollTo(0, { immediate: true });
+    // Not for a section URL (Nav.jsx lands on the section itself) and not for the shallow
+    // hydration replace Next runs on an auto-exported page (`/#hizmetler` opened directly
+    // would otherwise be pulled back to the top right after the browser's hash jump).
+    const onRouteChange = (url, { shallow } = {}) => {
+      if (shallow || String(url).includes('#')) return;
+      lenis.scrollTo(0, { immediate: true });
+    };
     router.events.on('routeChangeComplete', onRouteChange);
 
     return () => {

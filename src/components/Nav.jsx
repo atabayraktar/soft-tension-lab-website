@@ -18,10 +18,22 @@ function scrollToSection(id, { immediate = false } = {}) {
   if (!el) return false;
   const bar = document.querySelector('.nav__bar');
   const offset = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0;
+  // What is landed on: the section, or (data-land-with="siblings") the section with the
+  // bands around it — the block is centred when it fits under the bar, otherwise the band
+  // above lands fully visible with the section's head right under it.
+  let { top: blockTop, bottom: blockBottom } = el.getBoundingClientRect();
+  if (el.dataset.landWith === 'siblings') {
+    const prev = el.previousElementSibling, nextEl = el.nextElementSibling;
+    if (prev) blockTop = Math.min(blockTop, prev.getBoundingClientRect().top);
+    if (nextEl) blockBottom = Math.max(blockBottom, nextEl.getBoundingClientRect().bottom);
+  }
+  const avail = window.innerHeight - offset;
+  const blockH = blockBottom - blockTop;
+  const centre = blockH <= avail ? (avail - blockH) / 2 : 0;
   // A number, not the element: Lenis would resolve an element against its own animated
   // position (stale right after a native jump) and subtract scroll-margin-top on top of
   // the offset.
-  const top = Math.round(el.getBoundingClientRect().top + window.scrollY - offset);
+  const top = Math.round(blockTop + window.scrollY - offset - centre);
   const calm = immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const lenis = getLenis();
   if (lenis) {
@@ -110,6 +122,24 @@ export default function Nav({ theme = 'light' }) {
       router.events.off('routeChangeError', fail);
     };
   }, [router.events]);
+
+  // A section URL opened directly (`/#hizmetler`): the browser's own hash jump happens
+  // before the fonts and the hero's pin have their final height, so the section drifts
+  // away from the top — land on it again, without motion, once the layout has settled.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id || !NAV.some((item) => item.scroll === id)) return undefined;
+    let alive = true;
+    let raf = 0;
+    const land = () => {
+      if (!alive) return;
+      raf = requestAnimationFrame(() => requestAnimationFrame(() => { if (alive) scrollToSection(id, { immediate: true }); }));
+    };
+    (document.fonts?.ready ?? Promise.resolve()).then(land, land);
+    return () => { alive = false; cancelAnimationFrame(raf); };
+    // Once, on mount: the in-app navigations are handled by the handlers above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!open) return undefined;

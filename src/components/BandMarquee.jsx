@@ -18,7 +18,12 @@ export default function BandMarquee({ text, tone = 'dark', reverse = false }) {
   useEffect(() => {
     const el = ref.current;
     if (!el || !('IntersectionObserver' in window)) return undefined;
-    const io = new IntersectionObserver(([e]) => el.classList.toggle('is-live', e.isIntersecting), { threshold: 0 });
+    // The observer can hand over several queued entries at once (mount off-screen, then a
+    // section landing that jumps the band on-screen in the same frame): the LAST one is the
+    // current state — reading the first left the band paused after a "Hizmetler" landing.
+    const io = new IntersectionObserver((entries) => {
+      el.classList.toggle('is-live', entries[entries.length - 1].isIntersecting);
+    }, { threshold: 0 });
     io.observe(el);
     return () => io.disconnect();
   }, []);

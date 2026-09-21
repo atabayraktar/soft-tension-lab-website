@@ -29,13 +29,17 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matc
  * Off under reduced motion (plain, static copy).
  */
 // `firstDelay` overrides the wait before the first wave (default FIRST) — a copy that is
-// mounted on demand (the services accordion's "// TITLE") wants its wave right away.
-export default function ScrambleText({ text, as: Tag = 'p', className = '', startDelay = 0, firstDelay = FIRST, ...rest }) {
+// mounted on demand (the services accordion's open title) wants its wave right away.
+// `once`: a single wave over every line at once, then the engine stops and the root gets
+// `is-settled` (state, so a re-render never wipes it) — the services title runs its wave
+// only while its column opens and then settles into its final colour.
+export default function ScrambleText({ text, as: Tag = 'p', className = '', startDelay = 0, firstDelay = FIRST, once = false, ...rest }) {
   const rootRef = useRef(null);
   const engineRef = useRef(null);
   const words = useMemo(() => text.split(' '), [text]);
   // null → natural flow (measuring); otherwise { text, groups: [[wordIndex, …], …] }
   const [lines, setLines] = useState(null);
+  const [settled, setSettled] = useState(false);
   const frozen = lines && lines.text === text ? lines.groups : null;
 
   const stopEngine = useCallback(() => {
@@ -88,6 +92,7 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
   useEffect(() => {
     const root = rootRef.current;
     if (!root || !frozen || reduced()) return undefined;
+    if (once && settled) return undefined;   // the one wave has run (a re-measure never replays it)
 
     const lineEls = Array.from(root.querySelectorAll('.scr__l'));
     const lineChars = lineEls.map((l) => Array.from(l.querySelectorAll('.scr__c')));
@@ -136,10 +141,26 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
       line.forEach((c, i) => glitch(c, Math.abs(i - mid) * WAVE_STEP));
     };
 
+    // Once: every line waves together, and the root settles when the last glyph has reset.
+    const waveAll = () => {
+      if (!lineChars.length) return;
+      let longest = 0;
+      lineChars.forEach((line) => {
+        const mid = (line.length - 1) / 2;
+        line.forEach((c, i) => glitch(c, Math.abs(i - mid) * WAVE_STEP));
+        longest = Math.max(longest, mid * WAVE_STEP * 1000);
+      });
+      later(() => setSettled(true), longest + HALF * 2 + 20);
+    };
+
     // `startDelay` staggers several instances on one screen so their waves cascade
     // instead of firing in unison.
     let loop = 0;
-    const first = setTimeout(() => { wave(); loop = setInterval(wave, TICK); }, firstDelay + startDelay);
+    const first = setTimeout(() => {
+      if (once) { waveAll(); return; }
+      wave();
+      loop = setInterval(wave, TICK);
+    }, firstDelay + startDelay);
     const stop = () => {
       clearTimeout(first);
       clearInterval(loop);
@@ -149,7 +170,7 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
     };
     engineRef.current = stop;
     return () => { stop(); if (engineRef.current === stop) engineRef.current = null; };
-  }, [frozen, startDelay, firstDelay]);
+  }, [frozen, startDelay, firstDelay, once, settled]);
 
   const renderWord = (wi) => (
     <span key={wi}>
@@ -163,7 +184,7 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
   );
 
   return (
-    <Tag ref={rootRef} className={`scr ${className}`.trim()} {...rest}>
+    <Tag ref={rootRef} className={`scr ${className}${settled ? ' is-settled' : ''}`.trim()} {...rest}>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true" className={`scr__vis${frozen ? ' scr__vis--frozen' : ''}`}>
         {frozen

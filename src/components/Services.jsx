@@ -10,17 +10,26 @@ const REDUCED = '(prefers-reduced-motion: reduce)';
 const upper = (s) => s.toLocaleUpperCase('tr-TR');
 
 /**
- * Home services — #hizmetler, the nav's "Hizmetler" target.
+ * Home services — #hizmetler, the nav's "Hizmetler" target. Full-bleed, on Paper, no
+ * heading of its own (the section is named for assistive tech only) and no vertical
+ * padding: the band sits directly between its neighbouring bands.
  *
- * Wide (≥ 1280px): seven equal hairline columns, index + title only. Hovering (mouse),
- * focusing (keyboard) or tapping (touch tablets) one grows it and squeezes the other six
- * to narrow strips; the grown column shows the big index with its "// TITLE" running the
- * glyph wave (ScrambleText, mounted on open so the wave fires on reveal), the "/ " lines
- * and the one-sentence copy. Leaving the list with the mouse puts every column back.
+ * Wide (≥ 1280px): seven equal Ink-ruled columns under one top rule, title only. Hovering
+ * (mouse), focusing (keyboard) or tapping (touch tablets) one grows it and squeezes the
+ * other six. Inside the grown column, in order: the title slides up out of its mask, the
+ * big title arrives with one glyph wave (ScrambleText `once`, mounted on open so it runs
+ * exactly while the column grows) and settles into Signal, the lines drop in one after
+ * another (last line first), the copy fades in at the foot, and two short ticks mark the
+ * column's base corners. The mouse leaving the list closes every column, softly.
  *
  * Narrow: a vertical accordion — full-width rows, tap toggles, one open at a time, the
- * index + title always visible and the lines + copy folding out under the title. No
- * hover dependence on touch. Under reduced motion the first entry starts open.
+ * open title turning Signal and the lines + copy folding out under it with the same
+ * choreography. No hover dependence on touch. Under reduced motion the first entry
+ * starts open.
+ *
+ * The list's own class never changes after mount: useReveal adds `is-in` to the wrapper
+ * around it, and React overwriting a className would wipe that class (the section then
+ * sat at opacity 0 — the "disappears on hover" bug). State lives on each <li> only.
  */
 export default function Services() {
   const [open, setOpen] = useState(null);
@@ -51,20 +60,13 @@ export default function Services() {
   };
 
   return (
-    <section id={SERVICES_ID} className="services" aria-labelledby="services-title">
-      <div className="wrap">
-        <h2 id="services-title" className="eyebrow services__eyebrow" data-reveal>HİZMETLER</h2>
-
-        <ul
-          ref={listRef}
-          className={`services__list${open !== null ? ' has-open' : ''}`}
-          onPointerLeave={onLeave}
-          onBlur={onBlur}
-          data-reveal
-        >
+    // data-land-with: the nav lands on this section together with the two marquee bands
+    // around it (Nav.jsx scrollToSection), so both bands are on screen on arrival.
+    <section id={SERVICES_ID} className="services" aria-label="Hizmetler" data-land-with="siblings">
+      <div className="services__reveal" data-reveal>
+        <ul ref={listRef} className="services__list" onPointerLeave={onLeave} onBlur={onBlur}>
           {SERVICES.map((title, i) => {
             const isOpen = open === i;
-            const index = `00-${i + 1}`;
             const headId = `${uid}-h${i}`;
             const panelId = `${uid}-p${i}`;
             const { items, copy } = SERVICE_DETAILS[i];
@@ -79,23 +81,20 @@ export default function Services() {
                   onClick={onClick(i)}
                   onFocus={onFocus(i)}
                 >
-                  <span className="svc__index">{index}</span>
-                  <span className="svc__title">{title}</span>
-                  <span className="svc__plus" aria-hidden="true"><i /><i /></span>
+                  <span className="svc__title"><span className="svc__title-in">{title}</span></span>
                 </button>
 
                 <div id={panelId} className="svc__panel" role="region" aria-labelledby={headId} aria-hidden={!isOpen}>
                   <div className="svc__panel-in">
                     <div className="svc__body">
-                      {/* Wide only: the big index and the decoded "// TITLE" (the title itself is the button above). */}
-                      <p className="svc__lead" aria-hidden="true">
-                        <span className="svc__num">{index}</span>
-                        {isOpen && wide ? (
-                          <ScrambleText as="span" className="svc__code" text={`// ${upper(title)}`} firstDelay={180} />
-                        ) : null}
-                      </p>
+                      {/* Wide only: the open state's big title, waved in once (the title itself is the button above). */}
+                      {isOpen && wide ? (
+                        <ScrambleText as="p" className="svc__code" text={upper(title)} firstDelay={0} once aria-hidden="true" />
+                      ) : null}
                       <ul className="svc__items">
-                        {items.map((item) => <li key={item} className="svc__item">{item}</li>)}
+                        {items.map((item) => (
+                          <li key={item} className="svc__item"><span className="svc__item-in">{item}</span></li>
+                        ))}
                       </ul>
                       <p className="svc__copy">{copy}</p>
                     </div>

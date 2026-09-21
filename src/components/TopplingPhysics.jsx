@@ -451,12 +451,20 @@ export default function TopplingPhysics({ lines, as: Tag = 'span', className = '
     };
 
     // ------------------------------------------------------------------- events
+    let prevY = null;   // last scroll offset seen — null until the first reading
     const onScroll = () => {
       if (!ready) return;
       const p = readProgress();
-      // A section jump from the nav (Nav.jsx tags its Lenis scroll with `passHero`) runs
-      // straight through the pin — it is never held. Lenis drops the tag when it lands.
-      const passing = !!getLenis()?.userData?.passHero;
+      const y = window.scrollY;
+      // A landing is never held — only a descent through the pin to its end is. A landing
+      // is: a section jump from the nav (Nav.jsx tags its smooth Lenis scroll `passHero`),
+      // or any move of more than a screen in one step (the nav's immediate landing after a
+      // page swap — Lenis clears the tag synchronously on immediate scrolls, so the tag
+      // alone never reached this handler — a hash load, scroll restoration), or the very
+      // first reading.
+      const jumped = prevY === null || Math.abs(y - prevY) > window.innerHeight;
+      prevY = y;
+      const passing = jumped || !!getLenis()?.userData?.passHero;
       if (passing) holdArmed = false;
       else if (p < 0.999) holdArmed = true;       // only a descent into the pin's end can hold
       applyProgress(p);
