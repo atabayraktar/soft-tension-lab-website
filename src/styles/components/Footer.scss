@@ -53,9 +53,14 @@
   align-items: center;
   justify-content: center;
   gap: .75rem;
+  @include focus-ring;
   // Same height, same colour (both inherit currentColor) — the two logos
-  // read as one signature, not a size mismatch.
+  // read as one signature, not a size mismatch. The link wraps both, so
+  // hover / focus turns them Signal together.
   .footer__mark { height: 2.75rem; width: auto; }
+  @include hover { color: $signal; }
+  &:focus-visible { color: $signal; }
+  &:active { color: $signal; opacity: .8; }
 }
 
 .footer__copy {

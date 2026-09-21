@@ -12,15 +12,43 @@
 }
 
 .nf__code {
+  --glitch-echo: #{$ink};  // Paper ground: the echo copy is Ink, not Paper
+  --glitch-scale: 2;       // ~2× the Coming Soon headline, so the offsets read the same
   font-weight: 800;
   font-size: clamp(5rem, 22vw, 14rem);
   line-height: .9;
   letter-spacing: -.05em;
   @include short-landscape { font-size: clamp(3rem, 30vh, 6rem); }
+
+  // Let the numerals finish toppling into place before the orange echo starts.
+  .glitch--loop::before,
+  .glitch--loop::after { animation-delay: 1.2s; }
 }
 
 .nf__copy {
   color: $ink-65;
-  font-size: clamp(1rem, 1.6vw, 1.15rem);
-  max-width: 34ch;
+  font-size: clamp(1.35rem, 3.6vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.4;          // room under each glyph for the "△x" measure tag
+  max-width: 24ch;
+  @include short-landscape { font-size: clamp(1.1rem, 4.2vh, 1.5rem); max-width: 40ch; }
+}
+
+// Fit-to-screen (tall enough): page + footer share exactly one viewport, so there is
+// no scroll. The numerals take whatever height the nav, copy, button and footer leave
+// over. Short landscape keeps the normal flow.
+@media (min-height: 40rem) {
+  .page.nf {
+    --nf-footer: 16rem;   // footer height on phones (stacked)
+    min-height: 0;
+  }
+  @media (min-width: 48rem) { .page.nf { --nf-footer: 12rem; } }   // wraps to two rows
+  @media (min-width: 64rem) { .page.nf { --nf-footer: 8rem; } }    // single row
+
+  .nf__inner {
+    min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--nf-footer));
+    padding-block: clamp(1rem, 3svh, 2rem);
+  }
+  .nf__code { font-size: clamp(5rem, min(22vw, calc(100svh - var(--nf-footer) - 26rem)), 14rem); }
 }

@@ -1,6 +1,6 @@
 import Seo from '../components/Seo';
 import Mascot from '../components/Mascot';
-import { SITE } from '../lib/site';
+import NotifyForm from '../components/NotifyForm';
 
 // Shop: coming-soon empty state. Circular illustration slot + "Coming Soon."
 export default function Shop() {
@@ -12,9 +12,11 @@ export default function Shop() {
           <Mascot variant="b" eager />
         </div>
         <h1 id="shop-title" className="shop__title">
-          <span className="mask mask--1"><span>Coming Soon.</span></span>
+          <span className="mask mask--1"><span className="glitch glitch--loop" data-text="Coming Soon." lang="en">Coming Soon.</span></span>
         </h1>
-        <p className="shop__note mask mask--2"><span>Shop henüz açılmadı. Haber vermemizi isterseniz: <a className="link" href={`mailto:${SITE.email}`}>{SITE.email}</a></span></p>
+        <div className="shop__notify" data-reveal>
+          <NotifyForm />
+        </div>
       </section>
     </main>
   );

@@ -61,11 +61,11 @@ export default function Nav({ theme = 'light' }) {
             {NAV.map((item) => (
               <li key={item.href}>
                 {item.disabled ? (
-                  <span className="nav__link nav__link--disabled" lang="en" aria-disabled="true">
+                  <span className="nav__link nav__link--disabled" aria-disabled="true">
                     {item.label}
                   </span>
                 ) : (
-                  <Link href={item.href} className={`nav__link ${isActive(item.href) ? 'is-active' : ''}`.trim()} lang="en" aria-current={isActive(item.href) ? 'page' : undefined}>
+                  <Link href={item.href} className={`nav__link ${isActive(item.href) ? 'is-active' : ''}`.trim()} aria-current={isActive(item.href) ? 'page' : undefined}>
                     {item.label}
                   </Link>
                 )}
@@ -104,11 +104,11 @@ export default function Nav({ theme = 'light' }) {
             {NAV.map((item, i) => (
               <li key={item.href} className={`nav__sheet-item nav__sheet-item--${i + 1}`}>
                 {item.disabled ? (
-                  <span className="nav__sheet-link nav__sheet-link--disabled" lang="en" aria-disabled="true">
+                  <span className="nav__sheet-link nav__sheet-link--disabled" aria-disabled="true">
                     {item.label}
                   </span>
                 ) : (
-                  <Link href={item.href} className={`nav__sheet-link ${isActive(item.href) ? 'is-active' : ''}`.trim()} lang="en" aria-current={isActive(item.href) ? 'page' : undefined}>
+                  <Link href={item.href} className={`nav__sheet-link ${isActive(item.href) ? 'is-active' : ''}`.trim()} aria-current={isActive(item.href) ? 'page' : undefined}>
                     {item.label}
                   </Link>
                 )}

@@ -48,6 +48,11 @@
   height: 100%;
   color: inherit;
   border-radius: $r-pill;
+  @include focus-ring;
+  // Hover / focus / press turn the mark Signal (it links home) — fill is currentColor.
+  @include hover { color: $signal; }
+  &:focus-visible { color: $signal; }
+  &:active { color: $signal; opacity: .8; }
   // Per studio feedback (2026-09-17): the header always uses the Ana Logo,
   // never the Logotype lockup, at every breakpoint.
   .nav__ana { height: 1.5rem; width: auto; }   // ≈ 42px wide (≥ 40px min size for the primary mark)

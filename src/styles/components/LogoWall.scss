@@ -8,9 +8,14 @@
 }
 
 .logowall__cell {
+  position: relative;
+  overflow: hidden;                       // the zoomed image stays inside its box
+  border-radius: $r-small;
   aspect-ratio: 5 / 3;
   display: grid;
   place-items: center;
+  --cap: #{$paper};                       // captions sit on the image: dark image → light text
+  &--light { --cap: #{$ink}; }            // light image → dark text
   @for $i from 1 through 9 {
     &:nth-child(#{$i}) { --reveal-delay: #{($i - 1) * 45ms}; }
   }
@@ -27,6 +32,29 @@
   border-radius: $r-small;
   background: $paper-08;
   color: $paper-70;
+  transition: transform $dur-reveal $ease-out-expo;   // hover zoom (the image layer only — captions stay put)
   .logowall__slot-label { @include label(.75rem, .22em); }
   .logowall__slot-note  { @include label(.625rem, .2em); color: $paper-70; }
+}
+
+// Two info captions pinned inside the image: bottom-left / bottom-right.
+.logowall__cap {
+  @include label(.625rem, .16em);
+  position: absolute;
+  bottom: clamp(.6rem, 1.6vw, 1rem);
+  max-width: 46%;
+  color: var(--cap);
+  &--left  { left:  clamp(.6rem, 1.6vw, 1rem); text-align: left; }
+  &--right { right: clamp(.6rem, 1.6vw, 1rem); text-align: right; }
+  @include up($bp-md) { font-size: .6875rem; }
+}
+
+// Hover: the image layer eases in a touch (transform only). Fine pointers only.
+@include fine-pointer {
+  .logowall__cell:hover .logowall__slot { transform: scale(1.05); }
+  .logowall__cell:hover .logowall__cap { color: $signal; }   // captions turn Signal with the zoom
+}
+@include reduced-motion {
+  .logowall__slot { transition: none; }
+  .logowall__cell:hover .logowall__slot { transform: none; }
 }

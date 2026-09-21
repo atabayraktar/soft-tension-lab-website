@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 /**
  * The single owner of the four-layer liquid-glass markup.
@@ -23,16 +23,33 @@ export default function GlassCard({
   ...rest
 }) {
   const ref = useRef(null);
+  const raf = useRef(0);
+  const last = useRef(null);
 
-  // Glass breathing: the edge highlight follows the pointer. Runtime CSS vars only —
-  // nothing is styled inline in markup.
-  const onPointerMove = useCallback((e) => {
+  // Glass breathing: the light-spot + edge highlight follow the pointer (the "liquid
+  // glass moves on hover" bit). Runtime CSS vars only — nothing is styled inline in
+  // markup. Coalesced to one rect read + one write per frame: pointermove can fire at
+  // 120Hz+ and the vars only need to land once per paint.
+  const flush = useCallback(() => {
+    raf.current = 0;
     const el = ref.current;
-    if (!el || e.pointerType !== 'mouse') return;
+    const e = last.current;
+    if (!el || !e) return;
     const r = el.getBoundingClientRect();
     el.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
     el.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
   }, []);
+
+  const onPointerMove = useCallback(
+    (e) => {
+      if (e.pointerType !== 'mouse') return;
+      last.current = { clientX: e.clientX, clientY: e.clientY };
+      if (!raf.current) raf.current = requestAnimationFrame(flush);
+    },
+    [flush]
+  );
+
+  useEffect(() => () => { if (raf.current) cancelAnimationFrame(raf.current); }, []);
 
   return (
     <Tag

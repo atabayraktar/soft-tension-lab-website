@@ -1,8 +1,11 @@
-import Button from './Button';
-import { FINALE_LINES, SITE } from '../lib/site';
+import Link from 'next/link';
+import ScrambleText from './ScrambleText';
+import NotifyForm from './NotifyForm';
+import { FINALE_LINES } from '../lib/site';
 
-// Home's big final CTA. Full-bleed black, stacked lines that glitch on hover (the
-// hovered line only), one liquid-glass pill button. Nothing else.
+// Home's big final CTA. Full-bleed black. The stacked lines and the notify copy run the
+// glyph-wave ("codepen") effect on their own; the one big "Proje Başlat" link runs the
+// orange glitch loop. No mail line, no button — the link is the call to action.
 export default function FooterFinale() {
   return (
     <section className="finale grain on-dark" data-nav-invert aria-labelledby="finale-title">
@@ -10,20 +13,22 @@ export default function FooterFinale() {
         <ul className="finale__lines">
           {FINALE_LINES.map((l, i) => (
             <li key={l.text} className={`finale__line finale__line--${l.size}`} data-reveal>
-              {i === 0 ? (
-                <h2 id="finale-title" className="glitch" data-text={l.text}>{l.text}</h2>
-              ) : (
-                <p className="glitch" data-text={l.text}>{l.text}</p>
-              )}
+              <ScrambleText
+                as={i === 0 ? 'h2' : 'p'}
+                id={i === 0 ? 'finale-title' : undefined}
+                text={l.text}
+                startDelay={i * 350}
+              />
             </li>
           ))}
-          <li className="finale__line finale__line--sm" data-reveal>
-            <a className="glitch finale__mail" data-text={SITE.email} href={`mailto:${SITE.email}`}>{SITE.email}</a>
-          </li>
         </ul>
 
-        <div className="finale__cta" data-reveal>
-          <Button href="/contact/" surface="glass">Proje Başlat</Button>
+        <div className="finale__start" data-reveal>
+          <Link href="/contact/" className="glitch glitch--loop finale__go" data-text="Proje Başlat">Proje Başlat</Link>
+        </div>
+
+        <div className="finale__notify" data-reveal>
+          <NotifyForm topic="news" variant="finale" />
         </div>
       </div>
     </section>

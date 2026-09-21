@@ -10,28 +10,47 @@
   padding-block: clamp(2rem, 6vw, 4rem);
 }
 
-// The circular illustration slot (blueprint: 120px circle) — scaled for the viewport.
+// Borderless illustration slot — the mascot sits free on the Paper, scaled for the viewport.
 .shop__illo {
-  width: clamp(9rem, 26vw, 14rem);
+  // Width-bound on phones, height-bound on desktop: the rest of the stack
+  // (nav, title, notify box, gaps) needs ~30rem, the mascot gets what's left so
+  // the whole screen fits without a scroll.
+  width: clamp(8rem, min(40vw, calc(100svh - 30rem)), 20rem);
   aspect-ratio: 1;
-  border-radius: 50%;
-  border: 1px solid $ink-15;
   display: grid;
   place-items: center;
-  overflow: hidden;
-  .mascot { width: 72%; height: auto; }
+  .mascot { width: 100%; height: auto; }
+  @include short-landscape { width: 22svh; }
 }
 
 .shop__title {
+  --glitch-echo: #{$ink};  // Paper ground: the echo copy is Ink, not Paper
+  text-transform: uppercase;
   font-weight: 800;
   font-size: clamp(2.5rem, 9vw, 6.5rem);
   letter-spacing: -.035em;
   line-height: 1;
 }
 
-.shop__note {
-  color: $ink-65;
-  font-size: 1rem;
-  max-width: 36ch;
-  @include short-landscape { display: none; }
+.shop__notify { width: 100%; display: grid; justify-items: center; }
+
+// Fit-to-screen (tall enough): page + footer share exactly one viewport, so there is no
+// scroll — on phones too (the notify box keeps field + button in one row there). The
+// mascot takes whatever height the nav, title, box and footer leave over. Short
+// landscape keeps the normal flow.
+@media (min-height: 40rem) {
+  .page.shop {
+    --shop-footer: 16rem;   // footer height on phones (stacked)
+    min-height: 0;
+  }
+  @media (min-width: 48rem) { .page.shop { --shop-footer: 12rem; } }   // wraps to two rows
+  @media (min-width: 64rem) { .page.shop { --shop-footer: 8rem; } }    // single row
+
+  .shop__inner {
+    min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--shop-footer));
+    padding-block: clamp(1rem, 3svh, 2rem);
+    gap: clamp(1rem, 3svh, 2.5rem);
+  }
+  .shop__illo { width: clamp(5rem, min(40vw, calc(100svh - var(--shop-footer) - 28.5rem)), 20rem); }
+  @media (min-width: 52rem) { .shop__illo { width: clamp(6rem, min(40vw, calc(100svh - var(--shop-footer) - 30rem)), 20rem); } }
 }

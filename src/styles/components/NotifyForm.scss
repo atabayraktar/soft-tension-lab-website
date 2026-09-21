@@ -1,0 +1,135 @@
+@use 'tokens' as *;
+
+// Flat Paper: no glass here — a hairline box, small radius (cards rule). The
+// field itself reuses the ContactForm underlined-field styles (.cform__field).
+.notify {
+  width: min(100%, 26rem);
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  text-align: left;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+
+  // Wide screens: one horizontal row — text | field | button.
+  @media (min-width: 52rem) {
+    width: min(100%, 60rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) auto;
+    align-items: end;
+    column-gap: clamp(1.5rem, 3vw, 2.5rem);
+    &--done { grid-template-columns: none; }
+  }
+}
+
+.notify__text { display: grid; gap: .5rem; }
+
+.notify__title {
+  font-weight: 800;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+
+.notify__copy {
+  color: $ink-65;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+// The error message floats out of flow under the field (into the box padding /
+// the stacked gap), so showing it never changes the box height.
+.notify__field {
+  width: 100%;
+  margin-bottom: .5rem;                       // stacked: room for the floating error above the button
+  @media (min-width: 52rem) { margin-bottom: 0; }
+}
+.notify__error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: .2rem;
+  white-space: nowrap;
+}
+// Invalid state must not shrink the control (the shared rule trims .1rem).
+.notify .cform__field.is-invalid input { padding-bottom: .65rem; }
+
+.notify--done { gap: .75rem; }
+
+// Phones, page variant (Shop): title/copy on top, then field + button in ONE row, so the
+// whole screen fits without a scroll.
+@media (max-width: 51.99rem) {
+  .notify:not(.notify--finale):not(.notify--done) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: .75rem;
+    .notify__text { grid-column: 1 / -1; }
+    .notify__field { margin-bottom: 0; }
+  }
+}
+// Short phones (≈ 740px and under): the one-line copy goes, the title still says it — that
+// is what lets the Shop screen fit without a scroll.
+@media (max-width: 51.99rem) and (max-height: 47rem) {
+  .notify:not(.notify--finale):not(.notify--done) .notify__copy { display: none; }
+}
+
+// Bots fill it, people never see it.
+.notify__honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+// ── finale variant: black footer finale — light type ────────────────────────────
+// Phones/tablets: a centred stack. From 52rem up: one horizontal row, the words on
+// the left (heavy title over a small muted line), the field and the button beside them.
+.notify--finale {
+  color: $paper;
+  width: min(100%, 34rem);
+  justify-items: center;
+  text-align: center;
+  padding-inline: 0;
+
+  @media (min-width: 52rem) {
+    width: min(100%, 62rem);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) auto;
+    align-items: end;
+    justify-items: start;
+    text-align: left;
+    column-gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  &.notify--done { grid-template-columns: none; justify-items: center; text-align: center; }
+
+  // Phones: air left/right of the field, and more air above the button (the floating
+  // error message would otherwise sit right on it).
+  @media (max-width: 51.99rem) {
+    padding-inline: 1.25rem;
+    .notify__field { margin-bottom: 1.5rem; }
+  }
+
+  .notify__text { justify-items: center; @media (min-width: 52rem) { justify-items: start; } }
+  .notify__title {
+    font-size: clamp(1.375rem, 2.6vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+  }
+  .notify__copy { color: $paper-70; font-size: clamp(.875rem, 1.1vw, .95rem); line-height: 1.45; max-width: 32ch; }
+
+  // Underlined field on black: Paper line, Paper text; the floated label stays legible.
+  .cform__field {
+    input { color: $paper; border-bottom-color: $paper; }
+    .cform__label { color: $paper-70; }
+    input:focus ~ .cform__label,
+    input:not(:placeholder-shown) ~ .cform__label { color: $paper; }
+    input:focus ~ .cform__label { color: $signal; }
+    input:-webkit-autofill {
+      -webkit-text-fill-color: $paper;
+      box-shadow: 0 0 0 100px $black inset;
+    }
+  }
+  .cform__error { color: $signal; }
+}

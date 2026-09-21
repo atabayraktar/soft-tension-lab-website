@@ -17,12 +17,16 @@
 @use 'components/TopplingPhysics';
 @use 'components/Hero';
 @use 'components/Marquee';
-@use 'components/ShowcaseGrid';
+@use 'components/Showcase';
 @use 'components/FooterFinale';
 @use 'components/HoldingPage';
 @use 'components/LogoWall';
 @use 'components/Select';
 @use 'components/ContactForm';
+@use 'components/NotifyForm';
+@use 'components/ScrambleText';
+@use 'components/GlassScrollbar';
+@use 'components/Banner';
 
 @use 'pages/home';
 @use 'pages/about';

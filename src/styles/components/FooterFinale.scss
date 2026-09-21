@@ -5,6 +5,8 @@
   background: $black;
   color: $paper;
   padding-block: clamp(6rem, 16vw, 12rem);
+  // Desktop: the notify row is the last thing before the footer — keep the gap to it modest.
+  @include up($bp-lg) { padding-bottom: 4.5rem; }
   overflow: hidden;
   isolation: isolate;
   ::selection { background: $paper; color: $black; }
@@ -39,14 +41,28 @@
   }
 }
 
-.finale__mail {
+// The one call to action: a big "Proje Başlat" link. It carries the orange glitch loop
+// (.glitch--loop); hover / focus turn it Signal on top of that.
+.finale__go {
   @include focus-ring;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: .18em;
-  text-decoration-color: $paper-45;
-  @include hover { text-decoration-color: $signal; }
+  display: inline-block;
+  font-size: clamp(2.25rem, 8vw, 6.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -.04em;
+  line-height: 1;
+  color: $paper;
+  white-space: nowrap;
+  &:focus-visible { color: $signal; }
+  @include short-landscape { font-size: clamp(1.75rem, 11vh, 3.25rem); }
 }
+
+.finale__notify { width: 100%; display: grid; justify-items: center; }
+
+// One speed for the whole effect: the loop bursts for 16% of its cycle, and the hover
+// burst lasts exactly as long — so hovering feels the same as watching it run.
+$glitch-cycle: 4000ms;
+$glitch-burst: $glitch-cycle * .16;   // 640ms
 
 // Glitch hover: two offset copies of the line (transform + opacity only) flicker in
 // short steps behind the hovered line. Nothing else on the block moves.
@@ -64,8 +80,8 @@
   }
   &::after { color: $paper; }
   @include fine-pointer {
-    &:hover::before { animation: glitch-a 420ms steps(2, end) 1; }
-    &:hover::after  { animation: glitch-b 420ms steps(2, end) 1; }
+    &:hover::before { animation: glitch-a $glitch-burst steps(2, end) 1; }
+    &:hover::after  { animation: glitch-b $glitch-burst steps(2, end) 1; }
     &:hover { color: $signal; }
   }
 }
@@ -83,12 +99,34 @@
   75%  { opacity: .9; transform: translate(-5px, 1px);  clip-path: inset(60% 0 10% 0); }
   100% { opacity: 0;  transform: none; }
 }
+// Always-on variant (Shop "Coming Soon."): the same flicker, no hover needed — a
+// short burst every ~4s. Ghost copies only; the line itself stays put. Set
+// `--glitch-echo` to the surface's text colour (the second copy is Paper on black) and
+// `--glitch-scale` to grow the offsets with the type size (1 ≈ a 100px headline).
+// z-index keeps both echoes above transformed glyph spans (TopplingText).
+.glitch--loop {
+  &::before, &::after { z-index: 1; }
+  &::before { animation: glitch-a-loop $glitch-cycle steps(2, end) infinite; }
+  &::after  { animation: glitch-b-loop $glitch-cycle steps(2, end) infinite; color: var(--glitch-echo, #{$paper}); }
+}
+@keyframes glitch-a-loop {
+  0%   { opacity: .9; transform: translate(calc(-6px * var(--glitch-scale, 1)), calc(-2px * var(--glitch-scale, 1))); clip-path: inset(0 0 55% 0); }
+  4%   { opacity: .9; transform: translate(calc(5px * var(--glitch-scale, 1)), calc(1px * var(--glitch-scale, 1)));  clip-path: inset(40% 0 20% 0); }
+  8%   { opacity: .9; transform: translate(calc(-3px * var(--glitch-scale, 1)), calc(2px * var(--glitch-scale, 1))); clip-path: inset(70% 0 0 0); }
+  12%  { opacity: .9; transform: translate(calc(4px * var(--glitch-scale, 1)), calc(-1px * var(--glitch-scale, 1))); clip-path: inset(10% 0 60% 0); }
+  16%, 100% { opacity: 0; transform: none; }
+}
+@keyframes glitch-b-loop {
+  0%   { opacity: .9; transform: translate(calc(5px * var(--glitch-scale, 1)), calc(2px * var(--glitch-scale, 1)));   clip-path: inset(50% 0 0 0); }
+  4%   { opacity: .9; transform: translate(calc(-4px * var(--glitch-scale, 1)), calc(-1px * var(--glitch-scale, 1))); clip-path: inset(0 0 65% 0); }
+  8%   { opacity: .9; transform: translate(calc(3px * var(--glitch-scale, 1)), calc(-2px * var(--glitch-scale, 1)));  clip-path: inset(30% 0 35% 0); }
+  12%  { opacity: .9; transform: translate(calc(-5px * var(--glitch-scale, 1)), calc(1px * var(--glitch-scale, 1)));  clip-path: inset(60% 0 10% 0); }
+  16%, 100% { opacity: 0; transform: none; }
+}
 @include reduced-motion {
   .glitch::before, .glitch::after { animation: none !important; }
 }
 
-.finale__cta {
-  .btn { color: $paper; }
-  .btn:hover { color: $signal; }
-  .lg__tint { background: $glass-clear; }  // clear tint reads better on true black
-}
+// The glass button inside the notify box: clear tint reads better on true black.
+.finale__notify .btn { color: $paper; &:hover { color: $signal; } }
+.finale__notify .lg__tint { background: $glass-clear; }

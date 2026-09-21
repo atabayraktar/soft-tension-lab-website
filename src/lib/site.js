@@ -25,11 +25,11 @@ export const SITE = {
 // inert for now (no destination page click-through yet) but reads visually
 // identical to the other items — see Nav.jsx's `disabled` handling.
 export const NAV = [
-  { href: '/services/', label: 'Services', disabled: true },
-  { href: '/work/', label: 'Works' },
-  { href: '/shop/', label: 'Shop' },
-  { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact' },
+  { href: '/services/', label: 'Hizmetler', disabled: true },
+  { href: '/work/', label: 'Çalışmalar' },
+  { href: '/shop/', label: 'Mağaza' },
+  { href: '/about/', label: 'Hakkında' },
+  { href: '/contact/', label: 'İletişim' },
 ];
 
 // Forced line breaks per studio feedback (2026-09-17) — always these 3 lines,

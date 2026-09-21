@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 import Cursor from '../components/Cursor';
+import GlassScrollbar from '../components/GlassScrollbar';
 import PageVeil from '../components/PageVeil';
 import HoldingPage from '../components/HoldingPage';
 import useReveal from '../lib/useReveal';
@@ -42,6 +43,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Cursor />
+      <GlassScrollbar />
       {!bare ? <Nav theme={theme} /> : null}
       <Component {...pageProps} />
       {!bare ? <Footer theme={footerTheme} /> : null}

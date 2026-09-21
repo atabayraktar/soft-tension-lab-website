@@ -1,0 +1,170 @@
+@use 'tokens' as *;
+
+// The native bar is hidden only where the glass one takes over (fine pointer, stamped on
+// <html data-sbar> before first paint). Without backdrop support the glass has nothing to
+// bend, so the native bar comes back.
+html[data-sbar] {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+html[data-sbar][data-glass='solid'] {
+  scrollbar-width: auto;
+  &::-webkit-scrollbar { display: initial; }
+}
+html[data-sbar-drag] { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+
+// Geometry — a glass rod, 8px at rest, 12px when you reach for it. The rod's right edge
+// stays put ($gutter); it grows leftward. The hit zone is the slide (16px), never the rod.
+$rod: 12px;
+$rod-rest: .667;          // 8px / 12px
+$gutter: 3px;
+
+// A full-height, click-through strip: only the slide (the moving hit zone) takes the
+// pointer, so the bar never swallows clicks on whatever sits at the right edge of the page.
+.sbar {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: 1rem;
+  z-index: 130;                  // over the nav (120), under the page veil (150)
+  pointer-events: none;
+  &[data-hidden='true'] { display: none; }
+  html[data-glass='solid'] & { display: none; }
+
+  // The track: a hairline under the rod's resting centre that surfaces only while the
+  // page is moving or the rod is held, fading out at both ends. Hidden while idle.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 6.5px;                // $gutter + (8px resting rod) / 2 − half its own width
+    width: 1px;
+    background: rgba(3, 23, 58, .16);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 140px, #000 calc(100% - 56px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 140px, #000 calc(100% - 56px), transparent);
+    opacity: 0;
+    transition: opacity $dur-base $ease-out-expo;
+  }
+  &[data-tone='dark']::before { background: rgba(240, 238, 233, .16); }
+  // (:hover reaches the strip through its pointer-enabled slide, so no :has is needed)
+  &[data-idle='false']::before,
+  &[data-drag='true']::before,
+  &:hover::before { opacity: 1; }
+}
+
+// The slide moves (translate) and fades (opacity); the rod inside it breathes (scale).
+.sbar__slide {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  pointer-events: auto;
+  cursor: grab;
+  opacity: .72;
+  transition: opacity $dur-base $ease-out-expo;
+  .sbar[data-idle='false'] &,
+  &:hover,
+  .sbar[data-drag='true'] & { opacity: 1; }
+  .sbar[data-drag='true'] & { cursor: grabbing; }
+}
+
+// The rod is a plain GlassCard. Its own hover "puff" is switched off (the rod has its own
+// breath), and refraction is dropped: a 12px pill has nothing to bend, so it is one
+// backdrop pass — blur + tint + shine.
+.sbar .sbar__thumb,
+.sbar__signal {
+  position: absolute;
+  top: 0;
+  right: $gutter;
+  width: $rod;
+  height: 100%;
+  border-radius: $r-pill;
+  transform-origin: 100% 50%;
+  scale: $rod-rest 1;
+  // shrink back calmly; the grow (below) springs
+  transition: scale $dur-base $ease-out-expo;
+}
+.sbar__slide:hover .sbar__thumb,
+.sbar__slide:hover .sbar__signal,
+.sbar[data-drag='true'] .sbar__thumb,
+.sbar[data-drag='true'] .sbar__signal {
+  scale: 1 1;
+  transition: scale 480ms $ease-spring;
+}
+.sbar .sbar__thumb {
+  --glass-hover-scale: 1;
+  --glass-content-scale: 1;
+  --glass-press-scale: 1;
+  --glass-press-content-scale: 1;
+  .lg__effect { filter: none !important; }
+}
+
+// 02 — the tint, per ground. A quieter Ink veil than the `tint` variant (the rod is thin,
+// so its thickness has to come from the edges, not from a fill); over the dark full-bleed
+// sections (Works, footer finale) it flips to a paper veil.
+.sbar .sbar__thumb .lg__tint { background: rgba(3, 23, 58, .22); }
+.sbar[data-tone='dark'] .sbar__thumb .lg__tint { background: rgba(240, 238, 233, .20); }
+
+// 03 — the shine, retuned for a cylinder. The stock stack is drawn for a wide surface
+// (highlights top-left, shade bottom-right); a vertical rod reads as glass when it is lit
+// along its LEFT flank — a crisp specular streak, a soft bloom beside it, shade falling
+// off on the right flank, capped ends — and a rim so the edge stays crisp on Paper.
+.sbar .sbar__thumb .lg__shine {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .55),               // rim
+    inset 2.5px 0 0 -1.5px rgba(255, 255, 255, .95),        // specular streak, left flank
+    inset 5px 0 5px -3px rgba(255, 255, 255, .45),          // bloom beside it
+    inset -3px 0 5px -2px rgba(3, 23, 58, .30),             // right flank falls into shade
+    inset 0 3px 3px -2px rgba(255, 255, 255, .80),          // top cap catches light
+    inset 0 -4px 5px -3px rgba(3, 23, 58, .26),             // bottom cap in shade
+    0 0 0 1px rgba(3, 23, 58, .14),                         // outer hairline on Paper
+    0 2px 4px -1px rgba(3, 23, 58, .16),                    // lift
+    0 8px 16px -6px rgba(3, 23, 58, .22);
+}
+.sbar[data-tone='dark'] .sbar__thumb .lg__shine {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .32),
+    inset 2.5px 0 0 -1.5px rgba(255, 255, 255, .95),
+    inset 5px 0 6px -3px rgba(255, 255, 255, .48),
+    inset -3px 0 5px -2px rgba(0, 0, 0, .45),
+    inset 0 3px 3px -2px rgba(255, 255, 255, .75),
+    inset 0 -4px 5px -3px rgba(0, 0, 0, .45),
+    0 0 0 1px rgba(0, 0, 0, .35),
+    0 2px 4px -1px rgba(0, 0, 0, .40),
+    0 8px 16px -6px rgba(0, 0, 0, .55);
+}
+
+// The Signal accent, in two hairlines over the rod. A sibling of the GlassCard (same box,
+// same breath) so it can sit outside the glass's overflow clip and carry a whisper of
+// outer glow. Opacity only. Hover: the specular streak itself catches Signal — a glint,
+// not an outline. Drag: the rim lights too, so the held rod is unmistakable.
+// Both are 1px lines — Signal is never a surface.
+.sbar__signal {
+  pointer-events: none;
+  box-shadow: inset 2.5px 0 0 -1.5px rgba(255, 87, 0, .95);          // the glint
+  opacity: 0;
+  transition: opacity $dur-fast $ease-out-expo, scale $dur-base $ease-out-expo;
+  &::before {                                                         // the held rim
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 87, 0, .75),
+      0 0 0 1px rgba(255, 87, 0, .16),
+      0 0 10px 0 rgba(255, 87, 0, .22);
+    opacity: 0;
+    transition: opacity $dur-fast $ease-out-expo;
+  }
+}
+.sbar__slide:hover .sbar__signal { opacity: 1; transition: opacity $dur-fast $ease-out-expo, scale 480ms $ease-spring; }
+.sbar[data-drag='true'] .sbar__signal { opacity: 1; transition: opacity $dur-fast $ease-out-expo, scale 480ms $ease-spring; }
+.sbar[data-drag='true'] .sbar__signal::before { opacity: 1; }
+
+@include reduced-motion {
+  .sbar::before,
+  .sbar__slide,
+  .sbar .sbar__thumb,
+  .sbar__signal,
+  .sbar__signal::before { transition: none; }
+}

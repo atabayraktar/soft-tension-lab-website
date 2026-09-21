@@ -58,6 +58,13 @@ export default function Document() {
         {/* Marks the document as JS-capable before first paint so reveal/mask styles only
             apply when something will actually reveal them. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.setAttribute('data-js','1')" }} />
+        {/* Fine-pointer desktops get the glass scrollbar, so the native one is hidden before first
+            paint (no layout shift). Touch devices never get the flag and keep their own bars. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "if(matchMedia('(hover: hover) and (pointer: fine)').matches)document.documentElement.setAttribute('data-sbar','1')",
+          }}
+        />
       </Head>
       <body>
         <Main />
