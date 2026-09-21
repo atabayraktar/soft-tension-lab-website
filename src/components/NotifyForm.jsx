@@ -30,7 +30,7 @@ const TOPICS = {
   },
   comingsoon: {
     title: 'Yine de bize ulaşabilirsiniz.',
-    copy: 'E-postanı bırak, yayına geçtiğimizde\nilk sen haberdar ol.',
+    copy: 'E-postanı bırak, yayına geçtiğimizde ilk sen haberdar ol.',
     doneTitle: 'Tamamdır.',
     doneCopy: 'Yayına geçtiğimizde bu adrese haber vereceğiz.',
     button: 'Haber Ver',

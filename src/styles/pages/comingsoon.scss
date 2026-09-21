@@ -11,10 +11,11 @@
   justify-items: center;
   text-align: center;
   padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(2.5rem, calc(1.5rem + env(safe-area-inset-bottom)));
+  @media (min-width: 52rem) { padding-inline: clamp(1.25rem, 3vw, 2.25rem); }
   ::selection { background: $paper; color: $black; }
 }
 
-.comingsoon__top { position: relative; z-index: 1; }
+.comingsoon__top { position: relative; z-index: 1; margin-top: 1rem; }
 .comingsoon__mark {
   display: block;
   width: clamp(6rem, 18vw, 11rem);
@@ -30,7 +31,7 @@
   gap: .5rem;
   max-width: 42rem;
   padding-block: 1rem;
-  @media (min-width: 52rem) { max-width: 50rem; }
+  @media (min-width: 52rem) { max-width: 76rem; }
 }
 
 .comingsoon__line {
@@ -66,15 +67,19 @@
   // at ≥52rem, the finale variant's own default). Our title is longer than Shop's, so it
   // gets a smaller font instead of a bespoke layout: shrink to fit, don't restructure.
   .notify__title { font-size: clamp(1.1rem, 1.9vw, 1.6rem); }
-  .notify__copy { font-size: clamp(.8rem, 1vw, .875rem); white-space: pre-line; }
+  .notify__copy { font-size: clamp(.8rem, 1vw, .9rem); }
 
   // Stacked (mobile/narrow) only — at ≥52rem the field sits in its own real grid column
   // and doesn't need capping.
   .notify__field { max-width: 22rem; margin-inline: auto; }
   .btn { margin-top: 1.1rem; }
   @media (min-width: 52rem) {
-    .notify__field { max-width: none; margin-inline: 0; }
     .btn { margin-top: 0; }
+    // The field/button tracks were still sized by fr-share, which capping the field's own
+    // width doesn't change — give the field a small fixed track instead of a share of the
+    // row, so the title/copy column actually gets the rest of the space.
+    .notify--finale { grid-template-columns: minmax(0, 1fr) minmax(0, 17rem) auto; }
+    .notify__field { max-width: none; margin-inline: 0; }
   }
 }
 
@@ -82,7 +87,6 @@
 // the page still fits without scrolling, same move as short-landscape makes on phones.
 @media (min-width: 52rem) and (max-height: 58rem) {
   .comingsoon { padding-block: 2rem 2rem; }
-  .comingsoon__mark { width: clamp(5rem, 11vw, 7.5rem); }
   .comingsoon__center { gap: .2rem; padding-block: .2rem; }
   .comingsoon__headline { margin-block: .35em .2em; }
   .comingsoon__notify { margin-top: .3rem; }
