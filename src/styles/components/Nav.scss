@@ -1,18 +1,31 @@
 @use 'tokens' as *;
 
+// ---------------------------------------------------------------------------
+// Menu morph timing (the pill grows into the sheet — see the sheet block below)
+// ---------------------------------------------------------------------------
+$sheet-open:        600ms;
+$sheet-close:       560ms;
+$sheet-close-delay: 160ms;   // the links are (all but) gone by then — and a mid-open reversal barely holds
+$link-in:           700ms;
+$link-in-delay:     220ms;   // first link starts as the glass passes ~85% of its travel
+$link-out:          220ms;
+$bar-out:           200ms;   // the pill's own glass is swallowed as the sheet leaves its rect
+$bar-in:            240ms;   // …and re-forms as the sheet settles back into it
+$bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
+
 .nav {
   position: fixed;
   top: var(--nav-top);
-  left: var(--gutter);
-  right: var(--gutter);
+  left: var(--chrome-inset);
+  right: var(--chrome-inset);
   z-index: 120;
   color: $ink;
   pointer-events: none;                  // only the bar and sheet catch input
   > * { pointer-events: auto; }
 
-  // Desktop: same rendered width as the footer's edge-to-edge .wrap
-  // (max-width var(--wrap), centered, no side gutter).
-  @include up($bp-xl) {
+  // Desktop (mouse + keyboard): same rendered width as the footer's edge-to-edge .wrap
+  // (max-width var(--wrap), centered, no side gutter). Touch tablets keep the gutter.
+  @media (min-width: #{$bp-xl}) and (hover: hover) and (pointer: fine) {
     left: 0;
     right: 0;
     max-width: var(--wrap);
@@ -30,6 +43,18 @@
   height: var(--nav-h);
   border: 1px solid $ink-15;             // hairline: on flat Paper glass needs an edge
   .nav--dark & { border-color: $paper-15; }
+
+  // While the sheet grows out of the pill, the pill's own body — effect, tint, shine and
+  // the hairline — is swallowed by it: only the logo and the toggle stay, as the top strip
+  // of the open menu. The body re-forms during the last stretch of the sheet's shrink, so
+  // there is never a second pill drawn on top of the settling glass.
+  transition: border-color $bar-in linear $bar-in-delay;
+  .lg__effect, .lg__tint, .lg__shine { transition: opacity $bar-in linear $bar-in-delay; }
+  .nav.is-open & {
+    border-color: transparent;
+    transition: border-color $bar-out linear;
+    .lg__effect, .lg__tint, .lg__shine { opacity: 0; transition: opacity $bar-out linear; }
+  }
 
   // GlassCard's content layer becomes the flex row
   .nav__inner {
@@ -113,8 +138,21 @@
 }
 
 // ---------------------------------------------------------------------------
-// The glass menu sheet
+// The glass menu sheet — the pill grows into it
 // ---------------------------------------------------------------------------
+// The sheet is always full-bleed; what animates is a `clip-path: inset()` cut-out.
+// Closed = the bar's exact rectangle (same top/side insets, same height, pill corners),
+// open = the whole viewport with square corners. Because it is a transition (not a
+// keyframe), a tap mid-animation simply reverses from wherever the cut-out is.
+// Sequencing: open → glass expands, links rise once it is mostly out; close → links
+// retreat first (fast), then the glass shrinks back into the pill.
+// (clip-path is the one sanctioned exception to the transform/opacity-only rule:
+// paint-only, no layout.)
+//
+// The clip lives on the three glass LAYERS, not on the wrapper: a clip-path (like
+// opacity/filter/mask) on an ancestor makes it a backdrop root, and the effect layer's
+// backdrop-filter would then only see the (empty) sheet instead of the page. Clipping
+// the blurred element itself leaves its backdrop intact.
 .nav__sheet {
   position: fixed;
   inset: 0;
@@ -123,6 +161,32 @@
   color: $paper;
   @include up($bp-lg) { display: none !important; }
 
+  // the pill's rect, as insets from the viewport edges (tracks the breakpoint vars)
+  --sheet-pill: inset(
+    var(--nav-top)
+    var(--chrome-inset)
+    calc(100% - var(--nav-top) - var(--nav-h))
+    var(--chrome-inset)
+    round calc(var(--nav-h) / 2)
+  );
+  visibility: hidden;                    // inert + unpainted once the close has settled
+  pointer-events: none;                  // …and never a tap target while shrinking away
+  transition: visibility 0s linear ($sheet-close + $sheet-close-delay);
+  .lg__effect, .lg__tint, .lg__shine {
+    clip-path: var(--sheet-pill);
+    transition: clip-path $sheet-close $ease-out-expo $sheet-close-delay;
+  }
+
+  .is-open & {
+    visibility: visible;
+    pointer-events: auto;
+    transition: visibility 0s;
+    .lg__effect, .lg__tint, .lg__shine {
+      clip-path: inset(0 round 0);
+      transition: clip-path $sheet-open $ease-out-expo;
+    }
+  }
+
   .nav__sheet-inner {
     height: 100%;
     display: flex;
@@ -130,8 +194,10 @@
     justify-content: flex-end;   // pinned to the bottom…
     align-items: flex-end;       // …and the right edge, corner-fixed
     gap: 2rem;
-    padding: calc(var(--nav-top) + var(--nav-h) + 1.5rem) var(--gutter) max(1.5rem, env(safe-area-inset-bottom));
+    // right edge lines up with the menu icon in the bar (bar inset + its inner padding)
+    padding: calc(var(--nav-top) + var(--nav-h) + 1.5rem) calc(var(--chrome-inset) + 1.4rem) max(1.5rem, env(safe-area-inset-bottom));
     overflow-y: auto;
+    overscroll-behavior: contain; // its own scroll never chains to the locked page behind
   }
   // stronger blur so the sheet reads as a surface even on a busy page
   .lg__effect {
@@ -149,28 +215,64 @@
     display: inline-block;
     font-family: $font-display;
     font-weight: 800;
-    font-size: clamp(2.5rem, 11vw, 4.5rem);
+    // Sized so the longest label (ÇALIŞMALAR ≈ 6.8em wide) fits the space between the menu
+    // icon's inset and the left edge — bigger and it overflows the mask and gets clipped.
+    font-size: clamp(2rem, 11vw, 4.5rem);
     line-height: 1.02;
     letter-spacing: -.03em;
     text-transform: uppercase;
     color: $paper;
     transform: translateY(110%);
-    transition: transform 700ms $ease-out-expo;
+    // closing: a quick ease-in retreat ahead of the glass shrinking — bottom link first,
+    // i.e. the one nearest the edge that is about to recede
+    transition: transform $link-out cubic-bezier(.5, 0, .75, 0);
     padding-block: .1em;
     @include hover { color: $signal; }
     &.is-active { color: $signal; }
     &--disabled { cursor: default; }
   }
   @for $i from 1 through 5 {
-    &--#{$i} .nav__sheet-link { transition-delay: 60ms * $i; }
+    &--#{$i} .nav__sheet-link { transition-delay: 15ms * (5 - $i); }
   }
-  .is-open & .nav__sheet-link { transform: none; }
+  // opening: rise on the slow expo once the glass is mostly out, staggered
+  .is-open & .nav__sheet-link {
+    transform: none;
+    transition: transform $link-in $ease-out-expo;
+  }
+  @for $i from 1 through 5 {
+    .is-open &--#{$i} .nav__sheet-link { transition-delay: $link-in-delay + 55ms * $i; }
+  }
 
   @include short-landscape {
     .nav__sheet-link { font-size: clamp(1.5rem, 6vh, 2.25rem); }
   }
 }
 
+// No morph: the sheet simply appears/disappears, links visible at once, the bar's
+// body switches without a fade.
 @include reduced-motion {
+  .nav__sheet { transition: none; }
+  .nav__sheet .lg__effect, .nav__sheet .lg__tint, .nav__sheet .lg__shine { clip-path: none; transition: none; }
   .nav__sheet-item .nav__sheet-link { transform: none; transition: none; }
+  .nav__bar, .nav__bar .lg__effect, .nav__bar .lg__tint, .nav__bar .lg__shine { transition: none; }
+}
+
+// ---------------------------------------------------------------------------
+// Scroll lock while the menu is open (class + offset set on <html> by Nav.jsx)
+// ---------------------------------------------------------------------------
+// `overflow: hidden` alone is ignored by iOS Safari, so the body is pinned with
+// position: fixed at the negative scroll offset (the page stays visually where it was);
+// Nav.jsx restores window.scrollY on close, so nothing jumps. Lenis (fine-pointer) is
+// stopped/started alongside.
+html.is-menu-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+  body {
+    position: fixed;
+    top: var(--lock-y, 0px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    overflow: hidden;
+  }
 }

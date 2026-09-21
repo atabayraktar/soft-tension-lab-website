@@ -11,8 +11,9 @@ import Lenis from 'lenis';
  * document scroll position (window.scrollY / native 'scroll' events keep firing, so
  * useReveal, useGlassMode and TopplingText need no changes), and it already handles the
  * edge cases a custom implementation kept getting wrong — trackpad momentum tails,
- * resize, and not fighting non-wheel scrolls (keyboard, scrollbar, PageVeil's
- * scroll-to-top, browser scroll restoration).
+ * resize, and not fighting non-wheel scrolls (keyboard, scrollbar, browser scroll
+ * restoration). PageVeil resets scroll itself at the moment the page is invisible; the
+ * routeChangeComplete reset below is the reduced-motion / no-veil fallback.
  */
 let instance = null;
 

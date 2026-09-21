@@ -23,9 +23,12 @@
   &--black { background: $black; }
 }
 
-// Desktop only: footer content runs edge-to-edge, no side gutter (mobile/tablet keep it).
+// Mouse-and-keyboard desktops only: footer content runs edge-to-edge, no side gutter.
+// Phones and tablets — touch, at any width, incl. an iPad Pro held sideways — keep it.
+// Side inset = the header's (--chrome-inset), so bar and footer content share one edge.
 .footer .wrap {
-  @include up($bp-xl) { padding-inline: 0; }
+  padding-inline: var(--chrome-inset);
+  @media (min-width: #{$bp-xl}) and (hover: hover) and (pointer: fine) { padding-inline: 0; }
 }
 
 // Single line, every page: monogram · copyright stack · social + KVKK.

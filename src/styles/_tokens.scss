@@ -55,9 +55,11 @@ $r-small: 3px;
 // Motion
 $ease-out-expo: cubic-bezier(.16, 1, .3, 1);
 $ease-spring:   cubic-bezier(.175, .885, .32, 1.4);
+$ease-out-cubic: cubic-bezier(.33, 1, .68, 1);
 $dur-fast:   200ms;
 $dur-base:   340ms;
-$dur-veil:   520ms;
+$dur-fade-out: 280ms;   // page transition: outgoing page → ground (mirrors OUT_MS in PageVeil.jsx)
+$dur-fade-in:  380ms;   // page transition: ground → incoming page (mirrors IN_MS)
 $dur-reveal: 900ms;
 
 // Breakpoints (mobile-first)

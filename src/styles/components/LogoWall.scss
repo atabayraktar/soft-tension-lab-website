@@ -2,9 +2,14 @@
 
 .logowall {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;                 // phones held upright: one project per row
   gap: clamp(1rem, 3vw, 2.5rem);
+  @include up($bp-sm) { grid-template-columns: repeat(2, 1fr); }
   @include up($bp-md) { grid-template-columns: repeat(3, 1fr); }
+  // Portrait tablets: two, bigger tiles — three small ones left the wall short and a big
+  // empty stretch above the footer.
+  @media (min-width: #{$bp-md}) and (max-width: 1100px) and (orientation: portrait) { grid-template-columns: repeat(2, 1fr); }
+  @include short-landscape { grid-template-columns: repeat(2, 1fr); }   // phones held sideways: two
 }
 
 .logowall__cell {

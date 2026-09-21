@@ -61,6 +61,9 @@
 
   // Fluid layout rhythm
   --gutter: clamp(1.25rem, 4.2vw, 3.75rem);
+  // How far the header bar and the footer content sit from the screen edge: the content
+  // gutter on phones, a little less on tablets (chrome hugs the edge more than content).
+  --chrome-inset: var(--gutter);
   --section: clamp(4.5rem, 11vw, 10rem);
   --nav-top: .75rem;
   --nav-h: 3.25rem;
@@ -73,6 +76,7 @@
   :root {
     --nav-top: 1rem;
     --nav-h: 3.5rem;
+    --chrome-inset: calc(var(--gutter) * .6);
   }
 }
 
@@ -219,7 +223,9 @@ html[data-js] .mask--3 > * { transition-delay: 240ms; }
 // Page shells
 .page {
   padding-top: calc(var(--nav-top) + var(--nav-h));
-  min-height: 100dvh;
+  // Page + footer fill one screen when the content is short (--footer-h is set by Footer);
+  // a long page just grows and scrolls as usual.
+  min-height: calc(100dvh - var(--footer-h, 0px));
 }
 .page--dark {
   background: $ink-deep;

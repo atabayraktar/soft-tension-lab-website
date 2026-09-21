@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import GlassCard from './GlassCard';
 import Logo from './Logo';
 import useNavInvert from '../lib/useNavInvert';
+import { getLenis } from '../lib/useSmoothScroll';
 import { NAV } from '../lib/site';
 
 /**
@@ -40,11 +41,32 @@ export default function Nav({ theme = 'light' }) {
     if (!open) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') { setOpen(false); toggleRef.current?.focus(); } };
     document.addEventListener('keydown', onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+
+    // Scroll lock: pin the body at the current offset (html.is-menu-open, see Nav.scss —
+    // overflow: hidden alone is ignored by iOS), pause Lenis where it runs, and put the
+    // page back at exactly the same offset on close so nothing jumps.
+    const html = document.documentElement;
+    const y = window.scrollY;
+    const lenis = getLenis();
+    lenis?.stop();
+    html.style.setProperty('--lock-y', `${-y}px`);
+    html.classList.add('is-menu-open');
+
     const first = sheetRef.current?.querySelector('a');
     first?.focus({ preventScroll: true });
-    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      html.classList.remove('is-menu-open');
+      html.style.removeProperty('--lock-y');
+      window.scrollTo({ top: y, behavior: 'instant' });
+      if (lenis) {
+        lenis.start();
+        // Lenis clamps scrollTo() to its cached limit, which read as 0 while the body was
+        // pinned — re-measure first or the restore snaps to the top.
+        lenis.resize();
+        lenis.scrollTo(y, { immediate: true, force: true });
+      }
+    };
   }, [open]);
 
   return (
@@ -87,8 +109,9 @@ export default function Nav({ theme = 'light' }) {
         </button>
       </GlassCard>
 
-      {/* Glass menu sheet (mobile / tablet). Rendered always for a11y tree stability,
-          hidden with the `hidden` attribute when closed. */}
+      {/* Glass menu sheet (mobile / tablet). Rendered always so the pill→sheet morph
+          (a clip-path transition, see Nav.scss) can run both ways; when closed it is
+          `visibility: hidden` after the shrink settles — inert, unfocusable, unpainted. */}
       <GlassCard
         as="div"
         id="nav-sheet"
@@ -97,7 +120,6 @@ export default function Nav({ theme = 'light' }) {
         radius="small"
         className="nav__sheet"
         contentClassName="nav__sheet-inner"
-        hidden={!open}
       >
         <nav aria-label="Mobil menü" ref={sheetRef}>
           <ul className="nav__sheet-list">

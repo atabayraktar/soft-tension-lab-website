@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import Cursor from '../components/Cursor';
 import GlassScrollbar from '../components/GlassScrollbar';
 import PageVeil from '../components/PageVeil';
+import ToTop from '../components/ToTop';
 import HoldingPage from '../components/HoldingPage';
 import useReveal from '../lib/useReveal';
 import useGlassMode from '../lib/useGlassMode';
@@ -45,9 +46,12 @@ export default function App({ Component, pageProps }) {
       <Cursor />
       <GlassScrollbar />
       {!bare ? <Nav theme={theme} /> : null}
-      <Component {...pageProps} />
-      {!bare ? <Footer theme={footerTheme} /> : null}
-      <PageVeil />
+      {/* Page + footer fade together on route change; the fixed chrome above stays put. */}
+      <PageVeil>
+        <Component {...pageProps} />
+        {!bare ? <Footer theme={footerTheme} /> : null}
+      </PageVeil>
+      <ToTop />
     </>
   );
 }

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Logo from './Logo';
 import SocialLinks from './SocialLinks';
@@ -11,8 +12,24 @@ export default function Footer({ theme = 'light' }) {
   // grain texture — without it here the footer reads as a flatter, slightly
   // different surface even though the base colour matches exactly.
   const grain = theme !== 'light' ? 'grain' : '';
+  const ref = useRef(null);
+
+  // Publishes the footer's real height as --footer-h so a short page can be sized to
+  // (viewport − footer): the footer then rests at the bottom of the screen instead of
+  // leaving a scroll and a large gap above it.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const root = document.documentElement;
+    const write = () => root.style.setProperty('--footer-h', `${Math.round(el.getBoundingClientRect().height)}px`);
+    write();
+    const ro = new ResizeObserver(write);
+    ro.observe(el);
+    return () => { ro.disconnect(); root.style.removeProperty('--footer-h'); };
+  }, []);
+
   return (
-    <footer className={`footer footer--${theme} ${grain}`.trim()} data-nav-invert={theme !== 'light' ? true : undefined}>
+    <footer ref={ref} className={`footer footer--${theme} ${grain}`.trim()} data-nav-invert={theme !== 'light' ? true : undefined}>
       <div className="wrap footer__row">
         <Link href="/" className="footer__brand" aria-label="Soft Tension Lab — ana sayfa">
           <Logo variant="monogram" className="footer__mark" decorative />
