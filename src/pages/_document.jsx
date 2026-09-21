@@ -3,16 +3,24 @@ import { Html, Head, Main, NextScript } from 'next/document';
 // The refraction filter family. One definition per refraction budget tier — the
 // displacement `scale` drops as the surface grows (chip 120 · nav 90 · card 70 · veil 40)
 // so distortion reads on a button and does not turn to mud on a full-screen veil.
+//
+// Each filter is consumed as `backdrop-filter: url(#…)` (see GlassCard.scss), so the map
+// bends the real page behind the surface. The map pulls pixels up to scale/2 px in any
+// direction, and everything it reaches for must lie INSIDE the filter region — with a tight
+// 0–100% box the edge rows displaced into nothing and the surface rendered as a washed,
+// near-opaque smear (measured 2026-09: interior pixel change vs. no-filter 2.4 → 8.9 once
+// the region was grown). The region per tier is therefore sized to the surface's typical
+// box: a 56px nav pill needs ±45px vertically (≈ ±100% of its height), a 48px chip ±60px.
 const TIERS = [
-  ['chip', 120],
-  ['nav', 90],
-  ['card', 70],
-  ['veil', 40],
+  ['chip', 120, ['-40%', '-150%', '180%', '400%']],
+  ['nav', 90, ['-6%', '-100%', '112%', '300%']],
+  ['card', 70, ['-20%', '-20%', '140%', '140%']],
+  ['veil', 40, ['-6%', '-6%', '112%', '112%']],
 ];
 
-function GlassFilter({ id, scale }) {
+function GlassFilter({ id, scale, region: [x, y, width, height] }) {
   return (
-    <filter id={id} x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox" colorInterpolationFilters="sRGB">
+    <filter id={id} x={x} y={y} width={width} height={height} filterUnits="objectBoundingBox" colorInterpolationFilters="sRGB">
       <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="1" seed="17" result="turb" />
       <feComponentTransfer in="turb" result="mapped">
         <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
@@ -72,8 +80,8 @@ export default function Document() {
         {/* Defined once for the whole app. Never duplicated per component. */}
         <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: 'absolute' }}>
           <defs>
-            {TIERS.map(([tier, scale]) => (
-              <GlassFilter key={tier} id={`stl-glass-${tier}`} scale={scale} />
+            {TIERS.map(([tier, scale, region]) => (
+              <GlassFilter key={tier} id={`stl-glass-${tier}`} scale={scale} region={region} />
             ))}
           </defs>
         </svg>

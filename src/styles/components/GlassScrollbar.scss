@@ -96,7 +96,9 @@ $gutter: 3px;
   --glass-content-scale: 1;
   --glass-press-scale: 1;
   --glass-press-content-scale: 1;
-  .lg__effect { filter: none !important; }
+  --glass-swim: 0px;                 // no liquid drift on the rod either
+  --glass-refract: initial;          // …and no refraction map (a chip map tears a thin rod)
+  --glass-lift: none;
 }
 
 // 02 — the tint, per ground. A quieter Ink veil than the `tint` variant (the rod is thin,

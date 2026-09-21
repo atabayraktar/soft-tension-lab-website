@@ -48,11 +48,13 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   // the hairline — is swallowed by it: only the logo and the toggle stay, as the top strip
   // of the open menu. The body re-forms during the last stretch of the sheet's shrink, so
   // there is never a second pill drawn on top of the settling glass.
-  transition: border-color $bar-in linear $bar-in-delay;
+  // `scale` + `box-shadow` are GlassCard's hover spring: setting a transition here would
+  // otherwise replace it (same specificity, this file loads later) and the puff snapped.
+  transition: border-color $bar-in linear $bar-in-delay, scale var(--glass-dur) var(--glass-ease), box-shadow var(--glass-dur) var(--glass-ease);
   .lg__effect, .lg__tint, .lg__shine { transition: opacity $bar-in linear $bar-in-delay; }
   .nav.is-open & {
     border-color: transparent;
-    transition: border-color $bar-out linear;
+    transition: border-color $bar-out linear, scale var(--glass-dur) var(--glass-ease), box-shadow var(--glass-dur) var(--glass-ease);
     .lg__effect, .lg__tint, .lg__shine { opacity: 0; transition: opacity $bar-out linear; }
   }
 
@@ -199,7 +201,10 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
     overflow-y: auto;
     overscroll-behavior: contain; // its own scroll never chains to the locked page behind
   }
-  // stronger blur so the sheet reads as a surface even on a busy page
+  // stronger blur so the sheet reads as a surface even on a busy page (the custom
+  // properties carry the same values into GlassCard's svg-mode backdrop-filter)
+  --glass-blur: 24px;
+  --glass-sat: 140%;
   .lg__effect {
     -webkit-backdrop-filter: blur(24px) saturate(140%);
     backdrop-filter: blur(24px) saturate(140%);

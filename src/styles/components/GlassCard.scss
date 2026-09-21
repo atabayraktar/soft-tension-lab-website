@@ -10,27 +10,45 @@
   --mx: 50%;
   --my: 0%;
 
-  // Glass breathing, part 2 — the liquid-droplet hover (same mechanics as the Vision
-  // Detail header). The shell INFLATES on a hard-overshooting spring — the 2.2 overshoot
-  // is what makes it wobble as the pointer arrives — while the content is pressed inward
-  // a touch, like a droplet swelling around a fingertip; on press both compress. All of it
-  // is custom properties so a consumer can retune per instance (or set the four scales
-  // to 1 to opt a caption-like surface out). Defaults are the chip/button amplitude; the
-  // refraction tiers below calm them as the surface grows.
+  // Glass breathing, part 2 — the liquid hover, same mechanics as the Vision Detail
+  // header. Three things happen at once, all on the same overshooting spring:
+  //   1. the shell INFLATES (`scale`) — the 2.2 overshoot is the wobble as the pointer
+  //      arrives; the content is pressed inward a touch, like a droplet around a fingertip;
+  //   2. the shell LIFTS — the wrapper's outer shadow deepens (`--glass-lift`);
+  //   3. the refraction SWIMS — the effect layer (whose displacement map lives in its own
+  //      local space) is dragged a few px toward the pointer on a lagging JS spring
+  //      (GlassCard.jsx → `--lq-x/--lq-y`), so the page seen through the glass flows after
+  //      the cursor and sloshes back when it stops. `--glass-swim` is the amplitude (px);
+  //      0 disables the loop entirely. `--glass-swim-k` (stiffness) and `--glass-swim-damp`
+  //      (damping ratio, <1 overshoots) tune the settle.
+  // All of it is custom properties so a consumer can retune per instance (or set the
+  // scales to 1 and the swim to 0 to opt a caption-like surface out). Defaults are the
+  // chip/button amplitude; the refraction tiers below calm them as the surface grows.
   --glass-dur: 400ms;
   --glass-ease: cubic-bezier(.175, .885, .32, 2.2);
   --glass-hover-scale: 1.035;
   --glass-content-scale: .96;
   --glass-press-scale: .97;
   --glass-press-content-scale: .98;
+  --glass-swim: 10px;
+  --glass-swim-k: 200;
+  --glass-swim-damp: .6;
+  --glass-lift: 0 8px 16px rgba(3, 23, 58, .14), 0 0 24px rgba(3, 23, 58, .06);
   // The pointer-tracked light spot (see .lg__shine::before): radius + peak colour.
   --glass-glow: rgba(255, 255, 255, .55);
   --glass-glow-r: 220px;
+  // The effect layer's own blur/saturation, consumed by the svg-mode rule below.
+  --glass-blur: 6px;
+  --glass-sat: 130%;
+  // The wrapper lift at rest: the hover shadow's geometry at zero alpha, so the spring
+  // has a real start value and never pops.
+  box-shadow: 0 8px 16px rgba(3, 23, 58, 0), 0 0 24px rgba(3, 23, 58, 0);
 }
 // Calm tier — nav bar (near viewport wide) and card-sized panels: the full 3.5% inflate
 // reads as lurching at this size and squeezing a form's content while the user is about
-// to type in it is hostile, so the swell drops to 1.2%, the content stays put, and the
-// light spot shrinks so it stays a highlight, not a floodlight, across a 1200px pill.
+// to type in it is hostile, so the swell drops to 1.2%, the content stays put, the swim
+// shortens, and the light spot shrinks so it stays a highlight, not a floodlight, across
+// a 1200px pill.
 .lg--r-nav,
 .lg--r-card {
   --glass-hover-scale: 1.012;
@@ -39,13 +57,26 @@
   --glass-press-content-scale: 1;
   --glass-glow: rgba(255, 255, 255, .32);
   --glass-glow-r: 140px;
+  --glass-lift: 0 8px 22px rgba(3, 23, 58, .10), 0 0 20px rgba(3, 23, 58, .05);
+  box-shadow: 0 8px 22px rgba(3, 23, 58, 0), 0 0 20px rgba(3, 23, 58, 0);
 }
+.lg--r-nav  { --glass-swim: 8px; }
+.lg--r-card { --glass-swim: 4px; }
+.lg--r-veil { --glass-swim: 0px; }
 // Over dark scenes the same white spot has to be far fainter to stay a glint.
 .lg--tint { --glass-glow: rgba(255, 255, 255, .16); }
 .lg--tint.lg--r-nav,
 .lg--tint.lg--r-card { --glass-glow: rgba(255, 255, 255, .09); }
 .lg--small { border-radius: $r-small; }
 .lg--pill  { border-radius: $r-pill; }
+
+// The refraction map per tier (consumed only by the svg-mode rule below; the other modes
+// never read it). Plain single-class rules on purpose, so a consumer can switch a surface's
+// map off with `--glass-refract: initial` at the same specificity.
+.lg--r-chip { --glass-refract: url(#stl-glass-chip); }
+.lg--r-nav  { --glass-refract: url(#stl-glass-nav); }
+.lg--r-card { --glass-refract: url(#stl-glass-card); }
+.lg--r-veil { --glass-refract: url(#stl-glass-veil); }
 
 .lg__effect,
 .lg__tint,
@@ -57,15 +88,25 @@
 }
 
 // 01 — the physics. Blur alone is the floor; the SVG map bends what is behind.
+// The layer overhangs the wrapper by the swim amplitude (clipped by the wrapper) so the
+// pointer-driven drift never opens a gap at the trailing edge; the drift itself is the
+// individual `translate` property, fed by GlassCard.jsx.
 .lg__effect {
   z-index: 0;
+  inset: calc(-1 * var(--glass-swim));
+  translate: var(--lq-x, 0px) var(--lq-y, 0px);
   -webkit-backdrop-filter: blur(6px) saturate(130%);
   backdrop-filter: blur(6px) saturate(130%);
 }
-html[data-glass='svg'] .lg--r-chip .lg__effect { filter: url(#stl-glass-chip); }
-html[data-glass='svg'] .lg--r-nav  .lg__effect { filter: url(#stl-glass-nav); }
-html[data-glass='svg'] .lg--r-card .lg__effect { filter: url(#stl-glass-card); }
-html[data-glass='svg'] .lg--r-veil .lg__effect { filter: url(#stl-glass-veil); }
+// Full refraction (Chromium, fine pointer or capable mobile — see useGlassMode). The map
+// runs INSIDE backdrop-filter, ahead of the blur, so it displaces the real page: as an
+// element-level `filter` it only ever displaced this layer's own transparent paint and the
+// surface rendered as a washed, near-opaque smear (measured 2026-09). url() first, then
+// blur: the displaced raw page is what gets softened, not the other way round.
+html[data-glass='svg'] .lg__effect {
+  -webkit-backdrop-filter: var(--glass-refract, ) blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: var(--glass-refract, ) blur(var(--glass-blur)) saturate(var(--glass-sat));
+}
 
 // Fallback 2 — flat glass, still on-brand (no SVG refraction, stronger blur)
 html[data-glass='flat'] .lg__effect {
@@ -141,19 +182,22 @@ html[data-glass='solid'] .lg--tint .lg__tint { background: rgba(3, 23, 58, .92);
 // clipped invisibly by its section's overflow or opens gaps at the viewport edge, and
 // a background panel is not chrome you hover for feedback (it keeps the edge light only).
 // `scale` (the individual transform property) is used on the wrapper so it composes
-// with any consumer transform; the content layer owns its own `transform`. Both ride
-// the same overshooting spring so the shell and its content wobble in phase; the light
-// spot fades in on the slower ease-out so it is still blooming as the swell settles.
+// with any consumer transform; the content layer owns its own `transform`. Shell, lift
+// and content ride the same overshooting spring so they wobble in phase; the light spot
+// fades in on the slower ease-out so it is still blooming as the swell settles.
+// NB: a consumer that sets its own `transition` on the wrapper (the nav bar does, for
+// the menu morph) must list `scale` and `box-shadow` too, or the spring is lost.
 @include fine-pointer {
   .lg--r-chip,
   .lg--r-nav,
   .lg--r-card {
-    transition: scale var(--glass-dur) var(--glass-ease);
+    transition: scale var(--glass-dur) var(--glass-ease), box-shadow var(--glass-dur) var(--glass-ease);
     .lg__content { transition: transform var(--glass-dur) var(--glass-ease); }
 
     &:hover,
     &:focus-visible {
       scale: var(--glass-hover-scale);
+      box-shadow: var(--glass-lift);
       .lg__content { transform: scale(var(--glass-content-scale)); }
       .lg__shine::before { opacity: 1; }
     }
@@ -172,17 +216,22 @@ html[data-glass='solid'] .lg--tint .lg__tint { background: rgba(3, 23, 58, .92);
     scale: none;
     transition: none;
     .lg__content { transform: none; transition: none; }
+    .lg__effect { translate: none; }
   }
   .lg:hover .lg__shine::before,
   .lg:hover .lg__shine::after { transition: none; }
 }
 
-// Mobile budget: a full-screen veil skips the backdrop pass on small screens — the
+// Mobile budget: a full-screen veil skips the refraction pass on small screens — the
 // tint + shine still read as glass, and scroll stays at 60fps.
 @media (max-width: #{$bp-md - 1px}) {
+  .lg--r-veil {
+    --glass-refract: initial;
+    --glass-blur: 10px;
+    --glass-sat: 100%;
+  }
   .lg--r-veil .lg__effect {
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    filter: none !important;
   }
 }
