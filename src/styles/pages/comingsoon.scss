@@ -9,7 +9,7 @@
   display: grid;
   // Single row: the whole centre group (mark + lines + headline + notify) is one unit,
   // centred as a block — not the mark pinned to the top with the rest centred separately
-  // below it (that read as the mark being "stuck" up top, disconnected from the text).
+  // below it.
   align-content: center;
   justify-items: center;
   text-align: center;
@@ -18,23 +18,25 @@
   ::selection { background: $paper; color: $black; }
 }
 
-// Bigger and, critically, the same size logic at every breakpoint — this mark isn't a
-// small nav-style icon, it's the page's lead visual, sitting right above the first line.
+// Same size logic at every breakpoint — this mark isn't a small nav-style icon, it's the
+// page's lead visual, sitting right above the first line.
 .comingsoon__mark {
   display: block;
   width: clamp(7.5rem, 22vw, 14rem);
   height: auto;
-  margin-bottom: 1rem;
 }
 
+// One rhythm value for the whole group (mark, both lines, headline, notify) — every gap
+// in the stack is the same `gap`, not a patchwork of per-element margins. Three tiers by
+// available height, not by device: `--rhythm` is the one thing each tier changes.
 .comingsoon__center {
   position: relative;
   z-index: 1;
   display: grid;
   justify-items: center;
-  gap: .5rem;
+  --rhythm: 2.2rem;
+  gap: var(--rhythm);
   max-width: 42rem;
-  padding-block: 1rem;
   @media (min-width: 52rem) { max-width: 76rem; }
 }
 
@@ -48,22 +50,21 @@
 
 .comingsoon__headline {
   --glitch-scale: .8;
+  margin: 0;
   text-transform: uppercase;
   font-weight: 800;
   font-size: clamp(2.1rem, 7.4vw, 5rem);
   line-height: 1.03;
   letter-spacing: -.03em;
-  margin-block: .55em .3em;
 
   // Forced two-line break ("YAKINDA\nGÖRÜŞMEK ÜZERE!") — applies to the visible text and
   // to the glitch echoes (their content comes from the same \n-bearing data-text attribute).
   .glitch, .glitch::before, .glitch::after { white-space: pre-line; }
 
-  @include short-landscape { font-size: clamp(1rem, 5.2vh, 1.6rem); margin-block: .2em .15em; }
+  @include short-landscape { font-size: clamp(1rem, 5.2vh, 1.6rem); }
 }
 
 .comingsoon__notify {
-  margin-top: 1.75rem;
   width: 100%;
   display: grid;
   justify-items: center;
@@ -80,9 +81,7 @@
   // Stacked (mobile/narrow) only — at ≥52rem the field sits in its own real grid column
   // and doesn't need capping.
   .notify__field { max-width: 22rem; margin-inline: auto; }
-  .btn { margin-top: 1.1rem; }
   @media (min-width: 52rem) {
-    .btn { margin-top: 0; }
     // The field/button tracks were still sized by fr-share, which capping the field's own
     // width doesn't change — give the field a small fixed track instead of a share of the
     // row, so the title/copy column actually gets the rest of the space.
@@ -91,13 +90,10 @@
   }
 }
 
-// Wide-but-short viewports (tablet landscape, small desktop windows): a touch tighter so
-// the page still fits without scrolling, same move as short-landscape makes on phones.
+// Wide-but-short viewports (tablet landscape, small desktop windows): the tighter tier.
 @media (min-width: 52rem) and (max-height: 58rem) {
-  .comingsoon { padding-block: 2rem 2rem; }
-  .comingsoon__center { gap: .2rem; padding-block: .2rem; }
-  .comingsoon__headline { margin-block: .35em .2em; }
-  .comingsoon__notify { margin-top: .3rem; }
+  .comingsoon { padding-block: 1.5rem; }
+  .comingsoon__center { --rhythm: 2.2rem; }
 }
 
 // The STL stamp — a corner signature, not a nav element. Pinned tight to the true corner
@@ -114,22 +110,79 @@
 }
 
 @include short-landscape {
-  // Plenty of width here (a phone on its side) even though height is tight — use it
-  // instead of sitting in a narrow centred column with dead space either side.
-  .comingsoon { padding-block: .3rem; }
-  .comingsoon__mark { margin-bottom: .15rem; }
-  .comingsoon__center { max-width: none; width: 100%; gap: .15rem; padding-block: 0; }
-  .comingsoon__line { font-size: clamp(.65rem, 2.3vh, .8rem); line-height: 1.25; }
+  // A phone on its side: plenty of width, very little height. Widen the column (not to a
+  // literal edge-to-edge 100% — a real max-width, just a much bigger one) instead of
+  // sitting in the base 42rem centred column with dead space either side, and drop to the
+  // tightest rhythm tier.
+  .comingsoon { padding-block: .35rem; }
+
+  // Not a single centred column here: height is the scarce axis, so the stack becomes a
+  // row — mark on the left, the two lines + headline as a left-aligned block on the right,
+  // and the notify bar full-width underneath. Same DOM, pure grid placement.
+  //
+  //   ┌──────────┬──────────────────────┐
+  //   │          │ line 1               │  row 1
+  //   │   mark   │ line 2               │  row 2
+  //   │          │ HEADLINE             │  row 3
+  //   ├──────────┴──────────────────────┤
+  //   │ notify (title, field, button)   │  row 4
+  //   └─────────────────────────────────┘
+  .comingsoon__center {
+    max-width: min(92%, 46rem);
+    --rhythm: .5rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    column-gap: clamp(1.5rem, 4vw, 2.5rem);
+    justify-items: start;
+    text-align: left;
+  }
+  // Column 1, spanning the three text rows, centred against their combined height. Sized
+  // by height (the axis it now shares with the text block) — about as tall as the block.
+  .comingsoon__mark {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    align-self: center;
+    width: clamp(8rem, 50vh, 12rem);
+  }
+  .comingsoon__line {
+    grid-column: 2;
+    font-size: clamp(.85rem, 3.6vh, 1rem);
+    line-height: 1.25;
+    &:nth-of-type(1) { grid-row: 1; }
+    &:nth-of-type(2) { grid-row: 2; }
+  }
+  // The headline starts a new beat under the two lines: one extra step on top of the
+  // shared row gap. Bigger than the stacked tier's size — it has the room now.
+  .comingsoon__headline {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: .45rem;
+    font-size: clamp(1.25rem, 7vh, 2rem);
+  }
+  // Column 2 only — the same width as the text block above it (lines + headline), not the
+  // full mark+text row. Left-aligned to match, not centred.
+  .comingsoon__notify {
+    grid-column: 2;
+    grid-row: 4;
+    justify-items: start;
+    margin-top: .2rem;
+  }
 
   // The finale variant never gets the shared "one row" phone layout (it's excluded in
   // NotifyForm.scss on purpose — the footer finale isn't fit-to-screen-critical). This
   // page is, so it forces the same compact field+button row here, and drops the copy
   // line — same move as the shared rule makes for the default variant.
   .comingsoon__notify {
-    margin-top: .25rem;
     .notify--finale {
       width: 100%;
+      gap: .35rem;
+      // The component's own base (its width is still <52rem here) centres everything —
+      // override both the grid alignment and the text alignment to match the left-aligned
+      // column above it.
+      justify-items: start;
+      text-align: left;
       grid-template-columns: minmax(0, 1fr) auto;
+      justify-content: start;
       align-items: end;
       column-gap: 1.25rem;
       .notify__text { grid-column: 1 / -1; }
