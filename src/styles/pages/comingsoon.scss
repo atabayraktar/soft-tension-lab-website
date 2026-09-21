@@ -7,7 +7,10 @@
   background: $black;
   color: $paper;
   display: grid;
-  grid-template-rows: auto 1fr;
+  // Single row: the whole centre group (mark + lines + headline + notify) is one unit,
+  // centred as a block — not the mark pinned to the top with the rest centred separately
+  // below it (that read as the mark being "stuck" up top, disconnected from the text).
+  align-content: center;
   justify-items: center;
   text-align: center;
   padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(2.5rem, calc(1.5rem + env(safe-area-inset-bottom)));
@@ -15,17 +18,18 @@
   ::selection { background: $paper; color: $black; }
 }
 
-.comingsoon__top { position: relative; z-index: 1; margin-top: 1rem; }
+// Bigger and, critically, the same size logic at every breakpoint — this mark isn't a
+// small nav-style icon, it's the page's lead visual, sitting right above the first line.
 .comingsoon__mark {
   display: block;
-  width: clamp(6rem, 18vw, 11rem);
+  width: clamp(7.5rem, 22vw, 14rem);
   height: auto;
+  margin-bottom: -.75rem;
 }
 
 .comingsoon__center {
   position: relative;
   z-index: 1;
-  align-self: center;
   display: grid;
   justify-items: center;
   gap: .5rem;
@@ -55,7 +59,7 @@
   // to the glitch echoes (their content comes from the same \n-bearing data-text attribute).
   .glitch, .glitch::before, .glitch::after { white-space: pre-line; }
 
-  @include short-landscape { font-size: clamp(1.2rem, 6.5vh, 2rem); margin-block: .3em .2em; }
+  @include short-landscape { font-size: clamp(1rem, 5.2vh, 1.6rem); margin-block: .2em .15em; }
 }
 
 .comingsoon__notify {
@@ -110,17 +114,17 @@
 }
 
 @include short-landscape {
-  .comingsoon { padding-block: .6rem; }
-  .comingsoon__mark { width: clamp(3rem, 11vh, 4.5rem); }
-  .comingsoon__center { gap: .2rem; padding-block: .25rem; }
-  .comingsoon__line { font-size: clamp(.8rem, 3vh, 1rem); }
+  .comingsoon { padding-block: .4rem; }
+  .comingsoon__mark { margin-bottom: -1.1rem; }
+  .comingsoon__center { gap: .05rem; padding-block: 0; }
+  .comingsoon__line { font-size: clamp(.65rem, 2.3vh, .8rem); line-height: 1.2; }
 
   // The finale variant never gets the shared "one row" phone layout (it's excluded in
   // NotifyForm.scss on purpose — the footer finale isn't fit-to-screen-critical). This
   // page is, so it forces the same compact field+button row here, and drops the copy
   // line — same move as the shared rule makes for the default variant.
   .comingsoon__notify {
-    margin-top: .3rem;
+    margin-top: .15rem;
     .notify--finale {
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: end;

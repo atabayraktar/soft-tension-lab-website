@@ -11,11 +11,8 @@ export default function ComingSoon() {
     <main className="comingsoon grain on-dark" id="main">
       <Seo title="Yakında" description="Soft Tension Lab — yakında." path="/comingsoon/" noindex />
 
-      <header className="comingsoon__top">
-        <img src="/images/burgu.webp" alt="" className="comingsoon__mark" width={841} height={497} decoding="async" />
-      </header>
-
       <div className="comingsoon__center">
+        <img src="/images/burgu.webp" alt="" className="comingsoon__mark" width={841} height={497} decoding="async" />
         <ScrambleText as="p" text="Biz de sabırsızlanıyoruz." className="comingsoon__line" />
         <ScrambleText as="p" text="Tam şu an üzerinde çalışıyoruz." className="comingsoon__line" startDelay={700} />
         <h1 className="comingsoon__headline">
