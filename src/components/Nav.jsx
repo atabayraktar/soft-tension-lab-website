@@ -7,6 +7,8 @@ import useNavInvert from '../lib/useNavInvert';
 import { getLenis } from '../lib/useSmoothScroll';
 import { NAV } from '../lib/site';
 
+const LAND_LOWER = 0.2;   // desktop: extra scroll, as a share of the band below's height
+
 /**
  * Scrolls to an in-page section, clearing the floating bar: through Lenis where it runs
  * (fine pointers — same easing as every other scroll on the site), the native smooth
@@ -19,21 +21,28 @@ function scrollToSection(id, { immediate = false } = {}) {
   const bar = document.querySelector('.nav__bar');
   const offset = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0;
   // What is landed on: the section, or (data-land-with="siblings") the section with the
-  // bands around it — the block is centred when it fits under the bar, otherwise the band
-  // above lands fully visible with the section's head right under it.
-  let { top: blockTop, bottom: blockBottom } = el.getBoundingClientRect();
+  // bands around it. The span from the middle of the band above to the middle of the band
+  // below is centred in the area under the bar — so both bands show at least their inner
+  // halves (more when there is room). If even that span is taller than the area, the band
+  // above keeps its lower half under the bar and the section's head with it; the band
+  // below shows what is left.
+  let { top: spanTop, bottom: spanBottom } = el.getBoundingClientRect();
   if (el.dataset.landWith === 'siblings') {
     const prev = el.previousElementSibling, nextEl = el.nextElementSibling;
-    if (prev) blockTop = Math.min(blockTop, prev.getBoundingClientRect().top);
-    if (nextEl) blockBottom = Math.max(blockBottom, nextEl.getBoundingClientRect().bottom);
+    if (prev) { const r = prev.getBoundingClientRect(); spanTop = Math.min(spanTop, r.top + r.height / 2); }
+    if (nextEl) { const r = nextEl.getBoundingClientRect(); spanBottom = Math.max(spanBottom, r.bottom - r.height / 2); }
   }
   const avail = window.innerHeight - offset;
-  const blockH = blockBottom - blockTop;
-  const centre = blockH <= avail ? (avail - blockH) / 2 : 0;
+  const spanH = spanBottom - spanTop;
+  const centre0 = spanH <= avail ? (avail - spanH) / 2 : 0;
+  // Desktop only: sits a touch lower than centred so the band below shows more of itself.
+  const below = el.dataset.landWith === 'siblings' && el.nextElementSibling
+    ? el.nextElementSibling.getBoundingClientRect().height : 0;
+  const centre = window.innerWidth >= 1280 ? centre0 - below * LAND_LOWER : centre0;
   // A number, not the element: Lenis would resolve an element against its own animated
   // position (stale right after a native jump) and subtract scroll-margin-top on top of
   // the offset.
-  const top = Math.round(blockTop + window.scrollY - offset - centre);
+  const top = Math.round(spanTop + window.scrollY - offset - centre);
   const calm = immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const lenis = getLenis();
   if (lenis) {
