@@ -454,7 +454,11 @@ export default function TopplingPhysics({ lines, as: Tag = 'span', className = '
     const onScroll = () => {
       if (!ready) return;
       const p = readProgress();
-      if (p < 0.999) holdArmed = true;            // only a descent into the pin's end can hold
+      // A section jump from the nav (Nav.jsx tags its Lenis scroll with `passHero`) runs
+      // straight through the pin — it is never held. Lenis drops the tag when it lands.
+      const passing = !!getLenis()?.userData?.passHero;
+      if (passing) holdArmed = false;
+      else if (p < 0.999) holdArmed = true;       // only a descent into the pin's end can hold
       applyProgress(p);
       if (p >= 0.999 && holdArmed && !holding && !isSettledNow()) engageHold();
     };

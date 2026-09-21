@@ -103,10 +103,6 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   @include hover { color: $signal; }
   &.is-active { color: $signal; transform: scale(1.04); }
   &:active { transform: scale(.98); }
-
-  // Services: present in the bar, reads and hovers identical to the other
-  // items — just non-interactive (click does nothing, no destination yet).
-  &--disabled { cursor: default; }
 }
 
 // Mobile toggle — icon-only (accessible name via aria-label, not visible text)
@@ -234,7 +230,6 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
     padding-block: .1em;
     @include hover { color: $signal; }
     &.is-active { color: $signal; }
-    &--disabled { cursor: default; }
   }
   @for $i from 1 through 5 {
     &--#{$i} .nav__sheet-link { transition-delay: 15ms * (5 - $i); }

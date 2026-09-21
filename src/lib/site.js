@@ -21,11 +21,12 @@ export const SITE = {
   ogImage: '/og.png',
 };
 
-// Nav order: Services, Works, Shop, About, Contact. Services is intentionally
-// inert for now (no destination page click-through yet) but reads visually
-// identical to the other items — see Nav.jsx's `disabled` handling.
+// Nav order: Services, Works, Shop, About, Contact. Services is an in-page
+// target: it scrolls to the Home services section (#hizmetler) — smoothly when
+// already on Home, otherwise Home is loaded first (see Nav.jsx `scroll`).
+export const SERVICES_ID = 'hizmetler';
 export const NAV = [
-  { href: '/services/', label: 'Hizmetler', disabled: true },
+  { href: `/#${SERVICES_ID}`, label: 'Hizmetler', scroll: SERVICES_ID },
   { href: '/work/', label: 'Çalışmalar' },
   { href: '/shop/', label: 'Mağaza' },
   { href: '/about/', label: 'Hakkında' },
