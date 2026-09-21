@@ -1,0 +1,100 @@
+@use '../tokens' as *;
+
+.comingsoon {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: $black;
+  color: $paper;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-items: center;
+  text-align: center;
+  padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(1.5rem, env(safe-area-inset-bottom));
+  ::selection { background: $paper; color: $black; }
+}
+
+.comingsoon__top { position: relative; z-index: 1; }
+.comingsoon__mark {
+  display: block;
+  width: clamp(6rem, 18vw, 11rem);
+  height: auto;
+}
+
+.comingsoon__center {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  display: grid;
+  justify-items: center;
+  gap: .5rem;
+  max-width: 42rem;
+  padding-block: 1rem;
+}
+
+.comingsoon__line {
+  margin: 0;
+  color: $paper-70;
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.comingsoon__headline {
+  --glitch-scale: .8;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: clamp(2.1rem, 7.4vw, 5rem);
+  line-height: 1.03;
+  letter-spacing: -.03em;
+  margin-block: .55em .3em;
+  text-wrap: balance;
+  @include short-landscape { font-size: clamp(1.6rem, 9vh, 2.75rem); }
+}
+
+.comingsoon__notify {
+  margin-top: .75rem;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+
+  // Clear tint reads better on true black — same call as the footer finale's own glass button.
+  .lg__tint { background: $glass-clear; }
+}
+
+// The 25×25 STL stamp — a corner signature, not a nav element. Never touched by the
+// short-landscape rules below: it stays put regardless of how the centre stack reflows.
+.comingsoon__stamp {
+  position: absolute;
+  z-index: 1;
+  left: var(--gutter);
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  width: 25px;
+  height: 25px;
+  color: $paper-45;
+  @include hover { color: $paper; }
+}
+
+@include short-landscape {
+  .comingsoon { padding-block: .6rem; }
+  .comingsoon__mark { width: clamp(3rem, 11vh, 4.5rem); }
+  .comingsoon__center { gap: .2rem; padding-block: .25rem; }
+  .comingsoon__line { font-size: clamp(.8rem, 3vh, 1rem); }
+
+  // The finale variant never gets the shared "one row" phone layout (it's excluded in
+  // NotifyForm.scss on purpose — the footer finale isn't fit-to-screen-critical). This
+  // page is, so it forces the same compact field+button row here, and drops the copy
+  // line — same move as the shared rule makes for the default variant.
+  .comingsoon__notify {
+    margin-top: .3rem;
+    .notify--finale {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      column-gap: .6rem;
+      .notify__text { grid-column: 1 / -1; }
+      .notify__title { font-size: clamp(1rem, 3.6vh, 1.25rem); }
+      .notify__copy { display: none; }
+      .notify__field { margin-bottom: 0; }
+    }
+  }
+}

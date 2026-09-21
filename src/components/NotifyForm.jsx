@@ -28,6 +28,17 @@ const TOPICS = {
     message: (mail) => `${mail} adresi Soft Tension Lab'dan haberdar olmak istiyor.`,
     source: '/',
   },
+  comingsoon: {
+    title: 'Yine de bize ulaşabilirsiniz.',
+    copy: 'E-postanı bırak, yayına geçtiğimizde ilk sen haberdar ol.',
+    doneTitle: 'Tamamdır.',
+    doneCopy: 'Yayına geçtiğimizde bu adrese haber vereceğiz.',
+    button: 'Haber Ver',
+    subject: 'Yakında sayfası bekleme listesi',
+    fromName: 'Soft Tension Lab — Yakında Bekleme Listesi',
+    message: (mail) => `${mail} adresi yakında sayfasının yayına geçmesini bekliyor.`,
+    source: '/comingsoon/',
+  },
 };
 
 /**
