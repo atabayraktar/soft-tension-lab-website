@@ -24,7 +24,7 @@
   display: block;
   width: clamp(7.5rem, 22vw, 14rem);
   height: auto;
-  margin-bottom: -.75rem;
+  margin-bottom: 1rem;
 }
 
 .comingsoon__center {
@@ -115,7 +115,7 @@
 
 @include short-landscape {
   .comingsoon { padding-block: .4rem; }
-  .comingsoon__mark { margin-bottom: -1.1rem; }
+  .comingsoon__mark { margin-bottom: .1rem; }
   .comingsoon__center { gap: .05rem; padding-block: 0; }
   .comingsoon__line { font-size: clamp(.65rem, 2.3vh, .8rem); line-height: 1.2; }
 
