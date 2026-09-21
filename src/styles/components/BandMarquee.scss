@@ -1,0 +1,48 @@
+@use 'tokens' as *;
+
+// The big single-phrase bands. Type is sized from the viewport (capped), and the band's
+// height follows the type — tall, so the phrase reads as a wall, not a ticker.
+.band {
+  overflow: hidden;
+  font-family: $font-display;
+  font-weight: 800;
+  font-size: clamp(4.25rem, 19vw, 17rem);
+  line-height: .86;
+  letter-spacing: -.045em;
+  padding-block: .16em .1em;                 // optical: caps sit on the baseline, no descenders
+  --band-dur: 18s;
+  @include up($bp-md) { --band-dur: 26s; }
+  @include up($bp-xl) { --band-dur: 34s; }
+
+  &--dark  { background: $black; color: $paper; }
+  &--light { background: $paper; color: $black; }
+}
+
+.band__track {
+  display: flex;
+  width: max-content;
+  animation: band-slide var(--band-dur) linear infinite;
+  animation-play-state: paused;
+  .is-live & { animation-play-state: running; will-change: transform; }
+  .band--reverse & { animation-direction: reverse; }
+  @include reduced-motion { animation: none; }
+}
+
+.band__group {
+  display: flex;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.band__item {
+  flex-shrink: 0;
+  padding-right: .4em;                       // the gap between repeats
+  white-space: nowrap;
+}
+
+@keyframes band-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
