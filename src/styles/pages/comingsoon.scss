@@ -60,19 +60,47 @@
 
   // Clear tint reads better on true black — same call as the footer finale's own glass button.
   .lg__tint { background: $glass-clear; }
+
+  .notify__title { text-align: center; white-space: nowrap; }
+
+  // The finale variant switches to a 3-column row (title | field | button) at ≥52rem —
+  // too narrow a column for this longer title to stay on one line without overlapping the
+  // field next to it. Keep the centred single-column stack at every width instead.
+  @media (min-width: 52rem) {
+    .notify--finale {
+      grid-template-columns: none;
+      justify-items: center;
+      text-align: center;
+      row-gap: 1rem;
+    }
+  }
 }
 
-// The 25×25 STL stamp — a corner signature, not a nav element. Never touched by the
+// Wide-but-short viewports (tablet landscape, small desktop windows): the single-column
+// notify stack above needs more vertical room than the row layout it replaced did, so
+// this range gets the same "trim it to fit" treatment short-landscape gets on phones.
+@media (min-width: 52rem) and (max-height: 58rem) {
+  .comingsoon { padding-block: 1rem; }
+  .comingsoon__mark { width: clamp(4.5rem, 9vw, 6.5rem); }
+  .comingsoon__center { gap: .35rem; padding-block: .4rem; }
+  .comingsoon__notify {
+    margin-top: .4rem;
+    .notify--finale { row-gap: .5rem; }
+    .notify__copy { display: none; }
+  }
+}
+
+// The STL stamp — a corner signature, not a nav element. Pinned tight to the true corner
+// (a small fixed inset, not the page's --gutter) at every breakpoint. Never touched by the
 // short-landscape rules below: it stays put regardless of how the centre stack reflows.
 .comingsoon__stamp {
   position: absolute;
   z-index: 1;
-  left: var(--gutter);
-  bottom: max(1.25rem, env(safe-area-inset-bottom));
-  width: 25px;
-  height: 25px;
-  color: $paper-45;
-  @include hover { color: $paper; }
+  left: .9rem;
+  bottom: max(.9rem, env(safe-area-inset-bottom));
+  width: 44px;
+  height: 44px;
+  color: $signal;
 }
 
 @include short-landscape {
