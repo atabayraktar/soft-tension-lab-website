@@ -30,6 +30,7 @@
   gap: .5rem;
   max-width: 42rem;
   padding-block: 1rem;
+  @media (min-width: 52rem) { max-width: 50rem; }
 }
 
 .comingsoon__line {
@@ -64,39 +65,45 @@
   .notify__title { text-align: center; white-space: nowrap; }
 
   // The field defaults to 100% of its (wide) grid track — cap it to a sane input width
-  // and let it centre itself in whatever space is left.
+  // and let it centre itself in whatever space is left. Reset at ≥52rem, where it sits
+  // in its own narrower column instead (see below).
   .notify__field { max-width: 22rem; margin-inline: auto; }
 
-  // Extra breathing room before the button specifically — the shared row-gap already
-  // spaces title/copy/field evenly, but the button read as glued to the field above it.
-  .btn { margin-top: .35rem; }
+  // Breathing room above the button — stacked (mobile/narrow) context: field, then gap,
+  // then button, not glued together.
+  .btn { margin-top: 1.1rem; }
 
-  // The finale variant switches to a 3-column row (title | field | button) at ≥52rem —
-  // too narrow a column for this longer title to stay on one line without overlapping the
-  // field next to it. Keep the centred single-column stack at every width instead.
+  // ≥52rem: the title stays its own centred full-width line (too long a nowrap string to
+  // share a column with the field — see the rule above), but the copy line moves back to
+  // the field's left, one row below it, close to the finale variant's original layout.
+  // `.notify__text` is unwrapped (`display:contents`) so title and copy become independent
+  // grid items instead of one shared box.
   @media (min-width: 52rem) {
     .notify--finale {
-      grid-template-columns: none;
-      justify-items: center;
-      text-align: center;
-      row-gap: 1rem;
+      grid-template-columns: minmax(14rem, 1fr) minmax(0, 18rem) auto;
+      column-gap: clamp(1rem, 2.5vw, 2rem);
+      row-gap: .85rem;
+      align-items: end;
+      justify-items: stretch;
+      text-align: left;
+
+      .notify__text { display: contents; }
+      .notify__title { grid-column: 1 / -1; text-align: center; }
+      .notify__copy { grid-column: 1; margin: 0; }
+      .notify__field { grid-column: 2; max-width: none; margin-inline: 0; }
+      .btn { grid-column: 3; margin-top: 0; justify-self: start; }
     }
   }
 }
 
-// Wide-but-short viewports (tablet landscape, small desktop windows): the single-column
-// notify stack above needs more vertical room than the row layout it replaced did, so
-// this range gets the same "trim it to fit" treatment short-landscape gets on phones.
+// Wide-but-short viewports (tablet landscape, small desktop windows): a touch tighter so
+// the page still fits without scrolling, same move as short-landscape makes on phones.
 @media (min-width: 52rem) and (max-height: 58rem) {
   .comingsoon { padding-block: 1.25rem 2rem; }
   .comingsoon__mark { width: clamp(3.5rem, 7vw, 5rem); }
   .comingsoon__center { gap: .2rem; padding-block: .2rem; }
   .comingsoon__headline { margin-block: .35em .2em; }
-  .comingsoon__notify {
-    margin-top: .3rem;
-    .notify--finale { row-gap: .35rem; }
-    .btn { margin-top: .2rem; }
-  }
+  .comingsoon__notify { margin-top: .3rem; }
 }
 
 // The STL stamp — a corner signature, not a nav element. Pinned tight to the true corner
