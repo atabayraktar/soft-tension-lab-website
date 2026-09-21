@@ -64,6 +64,40 @@ export const SERVICES = [
   'Sanat Üretimi',
 ];
 
+// Home services accordion (#hizmetler): one entry per SERVICES title, same order.
+// `items` are the "/ " sub-lines (written in capitals in the data — CSS uppercase
+// would turn the Turkish "i" into "I"), `copy` the one-sentence description.
+export const SERVICE_DETAILS = [
+  {
+    items: ['LOGO SİSTEMLERİ', 'RENK & TİPOGRAFİ', 'MARKA KILAVUZU', 'UYGULAMA ÖRNEKLERİ'],
+    copy: 'Bir markanın nasıl göründüğünü değil, nasıl hissettirdiğini tasarlıyoruz; tutarlı, tekrar edilebilir bir kimlik sistemi kuruyoruz.',
+  },
+  {
+    items: ['ÖZEL YAZI SİSTEMLERİ', 'HARF FORMU ÇALIŞMASI', 'DİJİTAL & BASKI KULLANIMI'],
+    copy: 'Tipografiyi süs değil, markanın sesi olarak ele alıyoruz.',
+  },
+  {
+    items: ['METİN & SES TONU', 'SOSYAL İÇERİK', 'KAMPANYA DİLİ'],
+    copy: 'Görselin arkasındaki dili kuruyoruz; markanın nasıl konuştuğunu tanımlıyoruz.',
+  },
+  {
+    items: ['EL İŞÇİLİĞİ', 'DİJİTAL ÜRETİM', 'KARMA TEKNİK'],
+    copy: 'Geleneksel tekniklerle dijital üretimi aynı çalışmada buluşturuyoruz.',
+  },
+  {
+    items: ['YAYIN TASARIMI', 'SAYFA DÜZENİ', 'BASKI ÜRETİMİ'],
+    copy: 'Basılı işi bir vitrin değil, kendi başına bir deneyim olarak tasarlıyoruz.',
+  },
+  {
+    items: ['ATÖLYE & EĞİTİM', 'SANAT DANIŞMANLIĞI', 'SÜREÇ YÖNETİMİ'],
+    copy: 'Stüdyonun birikimini atölyeler ve danışmanlıkla paylaşıyoruz.',
+  },
+  {
+    items: ['ORİJİNAL ÜRETİM', 'SERGİ HAZIRLIĞI', 'SINIRLI ÜRETİM'],
+    copy: 'Kendi sanat pratiğimizi sürdürüyor, stüdyonun sezgisini somutlaştırıyoruz.',
+  },
+];
+
 // Home marquee band (design_architecture.html §01).
 export const MARQUEE = [
   'Marka Kimliği & Logo Sistemleri',

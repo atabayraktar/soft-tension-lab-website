@@ -28,7 +28,9 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matc
  * wider glyph can never re-wrap the paragraph. Re-measured on resize / font load.
  * Off under reduced motion (plain, static copy).
  */
-export default function ScrambleText({ text, as: Tag = 'p', className = '', startDelay = 0, ...rest }) {
+// `firstDelay` overrides the wait before the first wave (default FIRST) — a copy that is
+// mounted on demand (the services accordion's "// TITLE") wants its wave right away.
+export default function ScrambleText({ text, as: Tag = 'p', className = '', startDelay = 0, firstDelay = FIRST, ...rest }) {
   const rootRef = useRef(null);
   const engineRef = useRef(null);
   const words = useMemo(() => text.split(' '), [text]);
@@ -137,7 +139,7 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
     // `startDelay` staggers several instances on one screen so their waves cascade
     // instead of firing in unison.
     let loop = 0;
-    const first = setTimeout(() => { wave(); loop = setInterval(wave, TICK); }, FIRST + startDelay);
+    const first = setTimeout(() => { wave(); loop = setInterval(wave, TICK); }, firstDelay + startDelay);
     const stop = () => {
       clearTimeout(first);
       clearInterval(loop);
@@ -147,7 +149,7 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
     };
     engineRef.current = stop;
     return () => { stop(); if (engineRef.current === stop) engineRef.current = null; };
-  }, [frozen, startDelay]);
+  }, [frozen, startDelay, firstDelay]);
 
   const renderWord = (wi) => (
     <span key={wi}>

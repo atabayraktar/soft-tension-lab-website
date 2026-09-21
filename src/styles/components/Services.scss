@@ -1,0 +1,265 @@
+@use 'tokens' as *;
+
+// ---------------------------------------------------------------------------
+// Services (#hizmetler) — flat, hairline-bordered, on Paper. No glass: nothing sits
+// under it.
+//
+// ≥ xl: a horizontal accordion. Seven equal columns; the open one takes $open shares
+// against 1 for each of the other six. Its width is the interaction, so `flex-grow` is
+// transitioned (the one deliberate exception to transform/opacity here) — everything
+// that appears inside does so with opacity + transform only.
+// < xl: a vertical accordion. Stacked rows; the open row's panel folds out with
+// grid-template-rows 0fr → 1fr (the vertical twin of the flex-grow above), its copy
+// rising in with opacity + transform.
+// ---------------------------------------------------------------------------
+
+$open: 3.2;            // the open column's share — at 1280px the six strips still hold "Entegrasyonu" whole
+$dur-col: 560ms;       // column growth
+$dur-row: 420ms;       // row fold-out
+$dur-in:  320ms;       // copy rising in
+
+.services {
+  padding-block: var(--section);
+  background: $paper;
+  // Native hash landing (no JS / crawlers): clear the floating bar. Nav.jsx uses the
+  // same offset for its Lenis scroll.
+  scroll-margin-top: calc(var(--nav-top) + var(--nav-h));
+}
+
+.services__eyebrow {
+  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+}
+
+.services__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid $ink-15;
+
+  @include up($bp-xl) {
+    display: flex;
+    container-type: inline-size;       // the open body's width is sized from the list (cqw)
+    height: clamp(24rem, 36vw, 32rem); // fixed: hovering never reflows the page below
+    border: 1px solid $ink-15;
+    border-radius: $r-small;
+    overflow: hidden;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// One service
+// ---------------------------------------------------------------------------
+.svc {
+  position: relative;
+  border-bottom: 1px solid $ink-15;
+  --idx: 3.25rem;                      // the index column of the row head
+  @include up($bp-md) { --idx: 4rem; }
+
+  @include up($bp-xl) {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    border-bottom: 0;
+    border-left: 1px solid $ink-15;
+    transition: flex-grow $dur-col $ease-out-expo;
+    &:first-child { border-left: 0; }
+    &.is-open { flex-grow: $open; }
+  }
+}
+
+// The trigger. Narrow: the row head (index · title · plus). Wide: it covers the whole
+// column so hovering / focusing / tapping anywhere on it opens the column.
+.svc__head {
+  @include focus-ring;
+  display: grid;
+  grid-template-columns: var(--idx) minmax(0, 1fr) auto;
+  column-gap: 1rem;
+  align-items: start;
+  width: 100%;
+  padding: 1.1rem 0;
+  text-align: left;
+  color: $ink;
+  touch-action: manipulation;
+
+  @include hover { .svc__index { color: $signal; } }
+  &:active .svc__title { opacity: .7; }
+  .is-open & .svc__index { color: $signal; }
+
+  @include up($bp-xl) {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;                     // a <button> centres its content by default — pin it to the top
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1.25rem .75rem;
+    &:focus-visible { outline-offset: -4px; }   // the list clips its edges — ring sits inside
+    &:active .svc__title { opacity: 1; }
+    // Once the column is open the big index + "// TITLE" take over; the head's own pair
+    // steps back (opacity + transform only — the button keeps its accessible name).
+    .svc__index, .svc__title {
+      transition: opacity 220ms $ease-out-cubic, transform 220ms $ease-out-cubic;
+    }
+    .is-open & .svc__index,
+    .is-open & .svc__title { opacity: 0; transform: translateY(-8px); }
+    .is-open & .svc__index { color: $ink-65; }
+  }
+}
+
+.svc__index {
+  @include label(.6875rem, .18em);
+  padding-top: .35em;                  // optically on the title's cap line
+  color: $ink-65;
+  @include up($bp-xl) { display: block; padding-top: 0; }
+}
+
+.svc__title {
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+  transition: opacity $dur-fast $ease-out-cubic;
+
+  @include up($bp-xl) {
+    display: block;
+    margin-top: .9rem;
+    // Sized from the viewport so the longest single words ("Entegrasyonu", "Danışmanlık")
+    // fit a squeezed strip whole at 1280px; titles wrap word by word, never mid-word
+    // (hyphenation, then anywhere, only as the last resort against overflow).
+    font-size: clamp(.8rem, 1vw, 1.1rem);
+    text-wrap: initial;
+    hyphens: auto;
+    overflow-wrap: anywhere;
+  }
+}
+
+// "+" that turns into "−" — the vertical bar rotates onto the horizontal one.
+.svc__plus {
+  position: relative;
+  align-self: center;
+  width: .875rem;
+  height: .875rem;
+  i {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transition: transform $dur-base $ease-out-expo;
+    &:last-child { transform: rotate(90deg); }
+  }
+  .is-open & i:last-child { transform: rotate(0deg); }
+  @include up($bp-xl) { display: none; }
+}
+
+// ---------------------------------------------------------------------------
+// The panel
+// ---------------------------------------------------------------------------
+.svc__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows $dur-row $ease-out-expo;
+  .is-open & { grid-template-rows: 1fr; }
+
+  @include up($bp-xl) {
+    display: block;
+    height: 100%;
+  }
+}
+
+.svc__panel-in {
+  min-height: 0;
+  overflow: hidden;
+  @include up($bp-xl) { height: 100%; }
+}
+
+.svc__body {
+  margin-left: calc(var(--idx) + 1rem); // under the title, not the index
+  padding-bottom: 1.6rem;
+  max-width: 40ch;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity $dur-in $ease-out-cubic, transform $dur-in $ease-out-expo;
+  .is-open & { opacity: 1; transform: none; transition-delay: 60ms; }
+
+  @include up($bp-xl) {
+    // Laid out at the open column's final width from the first frame (and ScrambleText
+    // measures its lines against it) — the column simply uncovers it as it grows.
+    width: calc(100cqw * #{$open} / (#{$open} + 6));
+    height: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 1.25rem 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    transition: opacity $dur-in $ease-out-cubic, transform $dur-in $ease-out-expo, visibility 0s $dur-in;
+    .is-open & {
+      visibility: visible;
+      transition-delay: 140ms, 140ms, 0s;
+    }
+  }
+}
+
+// Wide only: the big index with the decoded "// TITLE" beside it.
+.svc__lead {
+  display: none;
+  @include up($bp-xl) {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    margin: 0 0 1.75rem;
+    max-width: none;
+  }
+}
+.svc__num {
+  flex: none;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 3vw, 3.25rem);
+  line-height: .9;
+  letter-spacing: -.04em;
+  color: $ink;
+}
+.svc__code {
+  @include label(.6875rem, .16em);
+  flex: 1;
+  min-width: 0;
+  padding-bottom: .3em;
+  color: $ink-65;
+  line-height: 1.5;
+  // ScrambleText centres its frozen lines; here they hang left. The "//" is Signal.
+  .scr__vis--frozen { align-items: flex-start; }
+  .scr__l:first-child > span:first-child .scr__w { color: $signal; }
+}
+
+.svc__items {
+  list-style: none;
+  margin: 0 0 1.4rem;
+  padding: 0;
+  display: grid;
+  gap: .55rem;
+}
+.svc__item {
+  @include label(.6875rem, .16em);
+  color: $ink;
+  &::before { content: '/ '; color: $ink-65; }
+}
+
+.svc__copy {
+  margin: 0;
+  max-width: 36ch;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: $ink-65;
+  @include up($bp-xl) {
+    margin-top: auto;                  // sits at the foot of the column, as in the reference
+    font-size: clamp(.95rem, 1.05vw, 1.0625rem);
+  }
+}
+
+// Under reduced motion globals.scss already collapses every transition; the first entry
+// starts open (Services.jsx) so the section shows its content without any interaction.

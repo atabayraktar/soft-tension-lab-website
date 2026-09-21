@@ -3,10 +3,12 @@ import Hero from '../components/Hero';
 import Marquee from '../components/Marquee';
 import Showcase from '../components/Showcase';
 import BandMarquee from '../components/BandMarquee';
+import Services from '../components/Services';
 import Banner from '../components/Banner';
 import FooterFinale from '../components/FooterFinale';
 
-// Home: Liquid nav → typographic hero → marquee band → silent gallery wall → two big phrase bands → statement banner → footer finale.
+// Home: Liquid nav → typographic hero → marquee band → silent gallery wall → big phrase band →
+// services accordion (#hizmetler) → second phrase band → statement banner → footer finale.
 export default function Home() {
   return (
     <main id="main" className="home">
@@ -15,6 +17,7 @@ export default function Home() {
       <Marquee />
       <Showcase />
       <BandMarquee text="BRANDING DESIGN" tone="dark" />
+      <Services />
       <BandMarquee text="LOGO DESIGN" tone="light" reverse />
       <Banner />
       <FooterFinale />
