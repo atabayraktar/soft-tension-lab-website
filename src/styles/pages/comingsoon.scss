@@ -10,7 +10,7 @@
   grid-template-rows: auto 1fr;
   justify-items: center;
   text-align: center;
-  padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(1.5rem, env(safe-area-inset-bottom));
+  padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(2.5rem, calc(1.5rem + env(safe-area-inset-bottom)));
   ::selection { background: $paper; color: $black; }
 }
 
@@ -63,6 +63,14 @@
 
   .notify__title { text-align: center; white-space: nowrap; }
 
+  // The field defaults to 100% of its (wide) grid track — cap it to a sane input width
+  // and let it centre itself in whatever space is left.
+  .notify__field { max-width: 22rem; margin-inline: auto; }
+
+  // Extra breathing room before the button specifically — the shared row-gap already
+  // spaces title/copy/field evenly, but the button read as glued to the field above it.
+  .btn { margin-top: .35rem; }
+
   // The finale variant switches to a 3-column row (title | field | button) at ≥52rem —
   // too narrow a column for this longer title to stay on one line without overlapping the
   // field next to it. Keep the centred single-column stack at every width instead.
@@ -80,13 +88,14 @@
 // notify stack above needs more vertical room than the row layout it replaced did, so
 // this range gets the same "trim it to fit" treatment short-landscape gets on phones.
 @media (min-width: 52rem) and (max-height: 58rem) {
-  .comingsoon { padding-block: 1rem; }
-  .comingsoon__mark { width: clamp(4.5rem, 9vw, 6.5rem); }
-  .comingsoon__center { gap: .35rem; padding-block: .4rem; }
+  .comingsoon { padding-block: 1.25rem 2rem; }
+  .comingsoon__mark { width: clamp(3.5rem, 7vw, 5rem); }
+  .comingsoon__center { gap: .2rem; padding-block: .2rem; }
+  .comingsoon__headline { margin-block: .35em .2em; }
   .comingsoon__notify {
-    margin-top: .4rem;
-    .notify--finale { row-gap: .5rem; }
-    .notify__copy { display: none; }
+    margin-top: .3rem;
+    .notify--finale { row-gap: .35rem; }
+    .btn { margin-top: .2rem; }
   }
 }
 
