@@ -124,12 +124,29 @@ $desk: (
   @include up($bp-md) { font-size: .6875rem; }
 }
 
-// Hover: the image eases in a touch, the captions turn Signal. Fine pointers only.
+// Hover: the image eases in a touch and its captions turn Signal — and the rest of the
+// wall steps back (blurred, dimmed) so the hovered piece is the only sharp, lit one. With
+// no piece under the pointer the whole wall is sharp. Fine pointers only. (:has() — where
+// it is unsupported the wall simply keeps the zoom + Signal caption.)
 @include fine-pointer {
+  .showcase__frame { transition: filter 500ms $ease-out-expo, opacity 500ms $ease-out-expo; }
+  .showcase__caps { transition: opacity 500ms $ease-out-expo; }
+
   .showcase__item:hover .showcase__img { transform: scale(1.05); }
   .showcase__item:hover .showcase__cap { color: $signal; }   // captions turn Signal with the zoom
+
+  .showcase__wall:has(.showcase__item:hover) .showcase__item:not(:hover) {
+    .showcase__frame { filter: blur(6px); opacity: .5; }
+    .showcase__caps { opacity: .35; }
+  }
 }
 @include reduced-motion {
-  .showcase__img { transition: none; }
+  .showcase__img,
+  .showcase__frame,
+  .showcase__caps { transition: none; }
   .showcase__item:hover .showcase__img { transform: none; }
+  .showcase__wall:has(.showcase__item:hover) .showcase__item:not(:hover) {
+    .showcase__frame { filter: none; opacity: 1; }
+    .showcase__caps { opacity: 1; }
+  }
 }
