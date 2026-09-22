@@ -91,7 +91,7 @@ export default function Banner() {
 
   return (
     <section className="banner" aria-label="Stüdyo notu">
-      <div ref={ref} className={`banner__frame banner__frame--${tone}`}>
+      <div ref={ref} className={`banner__frame banner__frame--${tone}`} data-nav-invert={tone === 'dark' ? true : undefined}>
         <div className="banner__field">
           {BANNER_IMAGE ? (
             <ArchiveImage slug={BANNER_IMAGE.slug} alt="" ratio="16 / 9" sizes="100vw" className="banner__img" />

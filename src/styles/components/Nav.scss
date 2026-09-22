@@ -43,6 +43,9 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   height: var(--nav-h);
   border: 1px solid $ink-15;             // hairline: on flat Paper glass needs an edge
   .nav--dark & { border-color: $paper-15; }
+  // Over a dark surface the glass takes the Ink tint (the `tint` variant, a shade denser
+  // so the Paper items also hold over the band's giant letters passing behind the bar).
+  .nav--dark & .lg__tint { background: rgba($ink, .5); }
 
   // While the sheet grows out of the pill, the pill's own body — effect, tint, shine and
   // the hairline — is swallowed by it: only the logo and the toggle stay, as the top strip
@@ -75,6 +78,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   height: 100%;
   color: inherit;
   border-radius: $r-pill;
+  &[data-on-dark] { color: $paper; }       // a dark photo behind the mark (useNavInvert)
   @include focus-ring;
   // Hover / focus / press turn the mark Signal (it links home) — fill is currentColor.
   @include hover { color: $signal; }
@@ -100,6 +104,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   padding-inline: .15rem;
   color: inherit;
   transition: transform $dur-fast $ease-out-expo;
+  &[data-on-dark] { color: $paper; }       // a dark photo behind this item (useNavInvert)
   @include hover { color: $signal; }
   &.is-active { color: $signal; transform: scale(1.04); }
   &:active { transform: scale(.98); }
