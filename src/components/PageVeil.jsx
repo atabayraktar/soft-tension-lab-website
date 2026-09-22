@@ -80,7 +80,11 @@ export default function PageVeil({ children }) {
     };
 
     // A navigation we did not start (popstate, programmatic push): hide instantly.
-    const onStart = (url, { shallow }) => {
+    // `opts` is only present for `routeChangeStart` — a hash-only change to the same
+    // pathname (e.g. `/#hizmetler` -> `/`) fires `hashChangeStart`/`hashChangeComplete`
+    // instead, with just `url` and no second argument.
+    const onStart = (url, opts) => {
+      const { shallow } = opts || {};
       if (shallow || pushed) return;
       clear();
       setPhase('cut');
@@ -102,12 +106,20 @@ export default function PageVeil({ children }) {
     router.events.on('routeChangeStart', onStart);
     router.events.on('routeChangeComplete', onDone);
     router.events.on('routeChangeError', onError);
+    // A same-pathname, hash-only change (e.g. landing on a section via `/#hizmetler`,
+    // then the logo back to `/`) never fires routeChangeStart/Complete — Next.js emits
+    // these two instead — so without them the veil stayed hidden until the STUCK_MS
+    // safety fallback: a several-second hang on exactly this click sequence.
+    router.events.on('hashChangeStart', onStart);
+    router.events.on('hashChangeComplete', onDone);
     return () => {
       clear();
       document.removeEventListener('click', onClick, true);
       router.events.off('routeChangeStart', onStart);
       router.events.off('routeChangeComplete', onDone);
       router.events.off('routeChangeError', onError);
+      router.events.off('hashChangeStart', onStart);
+      router.events.off('hashChangeComplete', onDone);
     };
     // `router.events` is the stable singleton; the public router object is recreated on
     // every navigation and would tear the in-flight timers down mid-fade.
