@@ -1,55 +1,212 @@
 @use 'tokens' as *;
 
-.about__manifesto {
-  padding-top: clamp(2.5rem, 7vw, 5rem);
-  padding-bottom: var(--section);
-}
-
-.about__copy {
-  display: grid;
-  gap: clamp(1.5rem, 3.5vw, 2.75rem);
-  margin-top: clamp(2rem, 5vw, 3.5rem);
-  max-width: 62rem;
-}
-
-// Short, bold, functions as a headline — the intentional uppercase exception.
-.about__para {
-  font-weight: 700;
-  font-size: clamp(1.15rem, 2.9vw, 2.35rem);
-  line-height: 1.22;
-  letter-spacing: -.02em;
-  max-width: none;
-  color: $ink;
-  text-wrap: pretty;
-}
-
-.about__studio {
-  display: grid;
-  gap: clamp(1.5rem, 4vw, 3rem) var(--gutter);
-  padding-bottom: var(--section);
-  @include up($bp-md) {
-    grid-template-columns: 5fr 4fr;
-    align-items: start;
+// Page rhythm: the year's size drives the overlap and the avatar scale beneath it.
+.about {
+  --year: 42.6vw; // the ink runs ~1.8% wider than the viewport: a small, equal crop of the 2 and the 6
+  // --avatar is the glass card's footprint (the grid unit); the circle inside is that minus the padding.
+  --avatar: clamp(6.25rem, 27vw, 15rem);
+  --avatar-pad: clamp(.625rem, 1.4vw, 1rem);
+  --avatar-gap: clamp(.75rem, 2vw, 1.5rem);
+  --overlap: calc(var(--year) * .3);
+  @include up($bp-md) { --overlap: calc(var(--year) * .42); }
+  // Portrait phones: a bigger year, pulled up a little deeper — the scroll cut can only cut
+  // the digit band below the avatar line, so a shallow overlap left it almost nothing to cut.
+  @media (max-width: #{$bp-md - 1px}) {
+    --year: 48vw;
+    --overlap: calc(var(--year) * .38);
+  }
+  // Landscape phones: the year already fills most of the height, so it keeps the base size;
+  // the card must be taller than the overlap so the captions land below the digits (contrast),
+  // and the labels keep their phone sizes inside the smaller circle.
+  @include short-landscape {
+    --year: 42.6vw;
+    --avatar: clamp(5.5rem, 17vw, 8.5rem);
+    --overlap: calc(var(--year) * .42);
   }
 }
-.about__fig {
-  min-width: 0;
-  img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: $r-small; background: $ink-05; }
-  figcaption { margin-top: .75rem; color: $ink-65; }
-  &--offset { @include up($bp-md) { margin-top: clamp(4rem, 12vw, 9rem); } }
+
+// ---------------------------------------------------------------------------
+// "2026" — full-bleed, edge to edge. Digits may crop at the sides on narrow or very wide
+// ratios; the section clips, the cluster below is a sibling so it stays unclipped.
+// The scroll cut (ScrollCut) starts on the line where the avatars begin — the overlap edge.
+// ---------------------------------------------------------------------------
+.about__year {
+  --cut-from: calc(100% - var(--overlap));
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding-top: clamp(1.25rem, 3vw, 2.5rem);
 }
 
-.about__services {
-  padding-top: clamp(1.5rem, 3vw, 2.25rem);
-  padding-bottom: var(--section);
-  border-top: 1px solid $ink-15;
+.about__year-text {
+  flex: none;
+  max-width: none;
+  font-family: $font-display;
+  font-weight: 900;
+  font-size: var(--year);
+  line-height: .8;
+  letter-spacing: -.045em;
+  white-space: nowrap;
+  color: $ink;
+  // The .mask reveal clips to this box (the .8 line box), which sits just below the digits'
+  // ink top; the headroom keeps the tops whole without moving the line.
+  padding-top: .03em;
+  margin-top: -.03em;
+  // The trailing letter-spacing pulls the box's right edge .045em inside the 6's ink, so a
+  // centred box is not centred ink (measured: +.0208em to the right). The extra right padding
+  // puts the ink centre on the viewport centre, so both edges crop equally.
+  > span { padding-inline: .02em .062em; }
 }
 
-.about__tags {
+// ---------------------------------------------------------------------------
+// Team — five circular slots in a quincunx (2 over 3), pulled up into the year's baseline.
+// ---------------------------------------------------------------------------
+.about__team {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--overlap) * -1);
+}
+
+.about__cluster {
+  display: grid;
+  grid-template-columns: repeat(6, var(--avatar-cell));
+  --avatar-cell: calc(var(--avatar) / 2);
+  column-gap: calc(var(--avatar-gap) / 2);
+  row-gap: 0;
+  justify-content: center;
+  align-content: start;
+}
+
+// Each item is one glass card holding the circle and its caption pair. Grid rows size to
+// the item, so the bottom row always clears the top row; the extra gap is breathing room.
+.about__avatar {
+  grid-column: span 2;
+  width: var(--avatar);
+  // Top row: 2 slots centred over the 3 below. Bottom row: nestles up into the gaps.
+  &:nth-child(1) { grid-column: 2 / span 2; }
+  &:nth-child(2) { grid-column: 4 / span 2; }
+  &:nth-child(n + 3) { margin-top: calc(var(--avatar-gap) * 1.5); }
+  @for $i from 1 through 5 {
+    &:nth-child(#{$i}) { --reveal-delay: #{($i - 1) * 60ms}; }
+  }
+}
+
+// The card idles on a slow bob and lifts on hover. The float lives on the GlassCard root
+// (keyframed `transform`), never on the <li>, which owns the scroll-reveal transform; the
+// hover lift is the individual `translate` property + GlassCard's own hover scale, so the
+// three compose instead of overwriting each other. Cards are staggered off --reveal-delay.
+// Radius: a soft rounded square that scales with the card — a deliberate, page-specific
+// exception to the pill-or-$r-small rule, per explicit client direction for /about.
+@keyframes about-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.about__avatar-card {
+  width: 100%;
+  border-radius: calc(var(--avatar) * .12);
+  --glass-hover-scale: 1.025;
+  animation: about-float 5.2s ease-in-out infinite;
+  animation-delay: calc(var(--reveal-delay, 0ms) * -8);
+  // Paused while the page scrolls (about.jsx toggles the attribute) — keeps scroll at 60fps.
+  .about__cluster[data-scrolling] & { animation-play-state: paused; }
+  @include fine-pointer {
+    transition:
+      translate $dur-base $ease-out-expo,
+      scale var(--glass-dur) var(--glass-ease),
+      box-shadow var(--glass-dur) var(--glass-ease);
+    &:hover { translate: 0 -5px; }
+  }
+  @include reduced-motion {
+    animation: none;
+    &:hover { translate: 0 -3px; }
+  }
+}
+.about__avatar-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(.5rem, 1.2vw, .75rem);
+  padding: var(--avatar-pad);
+}
+
+// Opaque Paper under the placeholder tint — the circle sits over the year's digits.
+.about__avatar-slot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  gap: .35rem;
+  text-align: center;
+  border-radius: $r-pill;
+  border: 1px solid $ink-15;
+  overflow: hidden;
+  background: $paper;
+  color: $ink-65;
+  &::before { content: ''; position: absolute; inset: 0; background: $ink-05; }
+  > * { position: relative; }
+}
+.about__avatar-label { @include label(.625rem, .16em); }
+.about__avatar-note  { @include label(.5625rem, .14em); }
+@include up($bp-md) {
+  .about__avatar-label { font-size: .75rem; letter-spacing: .2em; }
+  .about__avatar-note  { font-size: .625rem; }
+}
+@include short-landscape {
+  .about__avatar-label { font-size: .625rem; letter-spacing: .16em; }
+  .about__avatar-note  { font-size: .5625rem; }
+}
+
+// Caption pair under the circle, inside the card, left + right: where the pair does not
+// fit on one line (phone-sized cards) the right one drops to its own line and keeps its
+// edge, so neighbouring cards never touch.
+.about__avatar-caps {
   display: flex;
   flex-wrap: wrap;
-  gap: .75rem clamp(1.25rem, 3vw, 2.5rem);
-  @include label(.75rem, .18em);
+  justify-content: space-between;
+  row-gap: .125rem;
+  column-gap: .5rem;
+}
+.about__avatar-cap {
+  @include label(.5rem, .12em);
+  white-space: nowrap;
   color: $ink-65;
-  li { white-space: nowrap; }
+  &--right { margin-left: auto; }
+  @include up($bp-md) { font-size: .5625rem; letter-spacing: .16em; }
+}
+
+// ---------------------------------------------------------------------------
+// Manifesto — the two paragraphs side by side, paragraph 1 ragged right, 2 ragged left.
+// Sentence case is applied at render time (see toSentenceCase in about.jsx).
+// ---------------------------------------------------------------------------
+.about__manifesto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  column-gap: clamp(1.75rem, 5vw, 4.5rem);
+  padding-top: var(--section);
+  padding-bottom: calc(var(--section) * .75);
+}
+
+.about__para {
+  font-weight: 700;
+  font-size: clamp(.72rem, 2vw, 1.4rem);
+  line-height: 1.3;
+  letter-spacing: -.015em;
+  color: $ink;
+  text-wrap: pretty;
+  // Portrait phones: larger type against the same column gap (the gap is not touched).
+  @media (max-width: #{$bp-md - 1px}) { font-size: .875rem; }
+  &--1 { text-align: left; }
+  &--2 { text-align: right; }
+}
+
+// ---------------------------------------------------------------------------
+// Closing mark — centred, Signal, the monogram at display size. See the note in about.jsx.
+// ---------------------------------------------------------------------------
+.about__mark {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--section);
+  color: $signal;
+  .logo { width: clamp(7rem, 15vw, 12.5rem); height: auto; }
 }

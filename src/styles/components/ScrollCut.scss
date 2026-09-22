@@ -1,0 +1,20 @@
+@use 'tokens' as *;
+
+// Scroll-tied cut (ScrollCut.jsx). The consumer sets `--cut-from` — the top edge of the
+// panel inside the wrapper; it grows from there to the wrapper's bottom via scaleY.
+.cut {
+  position: relative;
+}
+
+.cut__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--cut-from, 100%);
+  bottom: 0;
+  background: $paper;
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  pointer-events: none;
+  @include reduced-motion { display: none; }
+}
