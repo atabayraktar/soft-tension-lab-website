@@ -86,3 +86,15 @@
 
 .footer__label { @include label; color: $ink-65; }
 a.footer__label { color: inherit; opacity: .8; @include hover { opacity: 1; color: $signal; } }
+
+// Portrait tablets (768–935px): the three-column row does not fit on one line here — the
+// pieces (brand 172 + copyright 368 + social 305 + gaps ≈ 885px) need more than the width
+// minus the side insets, which only exists from ~936px — so the row wrapped unevenly:
+// copyright top-right, socials orphaned bottom-left. Two rows on purpose instead: brand
+// left + socials right, then the copyright centred underneath. Pure reflow via
+// order/basis; the mobile stack (<768) and the single row from 936 are untouched.
+@media (min-width: #{$bp-md}) and (max-width: 935px) {
+  .footer__brand   { order: 1; }
+  .footer__actions { order: 2; }
+  .footer__copy    { order: 3; flex-basis: 100%; }
+}
