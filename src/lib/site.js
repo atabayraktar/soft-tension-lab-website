@@ -35,11 +35,12 @@ export const NAV = [
 
 // Forced line breaks per studio feedback (2026-09-17) — always these 3 lines,
 // at every viewport; only the font-size scales down responsively, the break
-// points never move (see Hero.scss/TopplingPhysics.jsx).
+// points never move (see Hero.scss/TopplingText.jsx). Written in capitals in the
+// data, like MANIFESTO — CSS uppercase would turn the Turkish "i" into "I".
 export const HERO_LINES = [
-  'Multidisipliner sanatçıların',
-  'oyun alanı.',
-  'Sürece açık, canlı bir stüdyo.',
+  'MULTİDİSİPLİNER SANATÇILARIN',
+  'OYUN ALANI.',
+  'SÜRECE AÇIK, CANLI BİR STÜDYO.',
 ];
 
 export const MANIFESTO = [

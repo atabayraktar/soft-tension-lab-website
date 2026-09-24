@@ -1,12 +1,15 @@
 @use 'tokens' as *;
 
-// The pin. On desktop the wrapper is one viewport taller than the hero and the hero
-// sticks to the top while that extra viewport of scroll drives the toppling letters
-// (TopplingPhysics reads the distance back from the DOM). Below the gate — phones,
-// reduced motion — the wrapper adds nothing and the hero flows like any section.
+// The pin. The wrapper is `--hero-pin` taller than the hero and the hero sticks to the
+// top while that extra scroll triggers the toppling letters (TopplingText reads the
+// distance back from the DOM) — the stationary window in which they fall and can be
+// blown around by the pointer or a finger. Kept short on purpose: the whole burst should
+// cost a scroll gesture or two, not a screen. At every width, phones included (the fall
+// and the finger-blow are the point on touch); under reduced motion the wrapper adds
+// nothing and the hero flows like any section.
 .hero-pin {
-  --hero-pin: 100svh;
-  @media (min-width: $bp-md) and (prefers-reduced-motion: no-preference) {
+  --hero-pin: 55svh;
+  @media (prefers-reduced-motion: no-preference) {
     height: calc(100svh + var(--hero-pin));
     .hero { position: sticky; top: 0; height: 100svh; }
   }
@@ -19,28 +22,23 @@
   min-height: 100svh;
   display: flex;
   overflow: hidden;
-  background: $paper;
+  background: $black;                // per the studio: the scene is black, not Ink (2026-09-24)
   isolation: isolate;
 }
 
-// The ambient "video" slot — pre-blurred, oversized, drifting on transform only.
+// The ambient video slot. Plain black until the loop exists; the colour doubles as
+// the poster behind a future <video>, which just needs to cover the box.
 .hero__bg {
   position: absolute;
-  inset: -8%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
-  img {
+  background: $black;
+  video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: .5;                       // Paper stays the 60% — the image is a haze, not a surface
-    animation: hero-drift 38s ease-in-out infinite alternate;
   }
-  @include reduced-motion { img { animation: none; } }
-}
-@keyframes hero-drift {
-  from { transform: translate3d(-2%, -1.5%, 0) scale(1.04); }
-  to   { transform: translate3d(2%, 1.5%, 0) scale(1.1); }
 }
 
 // The glass surface: full-bleed, edge to edge with the section. Its edges are the
@@ -53,6 +51,11 @@
   display: flex;
   min-height: 0;
   border-radius: 0;
+  // The clear tint's Paper wash lightens the flat black slot to ~rgb(24,24,24), so the
+  // hero didn't read as the same black as the footer finale below it. Until there's a
+  // video behind it worth washing, kill the tint here only — effect + shine layers stay,
+  // so the glass structure is already in place for when the loop lands.
+  .lg__tint { background: transparent; }
   .hero__content {
     flex: 1;
     display: flex;
@@ -66,13 +69,19 @@
 
 .hero__title {
   font-weight: 800;
-  // Forced 3-line break (HERO_LINES in site.js) — no max-width/text-wrap:balance
-  // here, the break points are the DOM structure now, not CSS wrapping; only
-  // the size scales down as the viewport shrinks.
-  font-size: clamp(1.3rem, 6.6vw, 6.5rem);
+  // Forced 3-line break (HERO_LINES in site.js) — the break points are the DOM
+  // structure, not CSS wrapping; only the size scales. The size is what fits the
+  // widest run in the content width: from tablet up that is the whole longest line
+  // ("SÜRECE AÇIK, CANLI BİR STÜDYO.", 16.9em in caps at this weight and tracking), so
+  // every sentence stays on one row. On phones a single-row sentence would be caption-
+  // sized, so there the constraint is only the longest *word* ("MULTİDİSİPLİNER",
+  // 9.1em) and the two long sentences wrap onto a second row — the type stays massive.
+  --hero-line-em: 9.4;
+  --hero-max: 3.5rem;
+  font-size: min(calc((100vw - 2 * var(--gutter)) / var(--hero-line-em)), var(--hero-max));
   line-height: .96;
   letter-spacing: -.035em;
-  color: $ink;
-  @include up($bp-lg) { font-size: clamp(3.6rem, 6.8vw, 6.5rem); }
-  @include short-landscape { font-size: clamp(1.5rem, 6.4vh, 2.4rem); }
+  color: $paper;                     // the backdrop is black; Ink would vanish
+  @include up($bp-md) { --hero-line-em: 17.4; --hero-max: 6.5rem; }
+  @include short-landscape { font-size: min(calc((100vw - 2 * var(--gutter)) / var(--hero-line-em)), 6.4vh); }
 }

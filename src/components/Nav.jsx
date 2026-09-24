@@ -47,12 +47,9 @@ function scrollToSection(id, { immediate = false } = {}) {
   const lenis = getLenis();
   if (lenis) {
     // Lenis clamps to its cached limit, which is stale right after a page swap (the new
-    // page's height is not measured yet) — re-measure or the landing stops short. It may
-    // also be stopped by the hero's settle-hold; start it, and tag the scroll so the hero
-    // lets it pass (TopplingPhysics reads `passHero`; Lenis clears userData on completion).
+    // page's height is not measured yet) — re-measure or the landing stops short.
     lenis.resize();
-    lenis.start();
-    lenis.scrollTo(top, { immediate: calm, force: true, userData: { passHero: true } });
+    lenis.scrollTo(top, { immediate: calm, force: true });
   } else {
     window.scrollTo({ top, behavior: calm ? 'instant' : 'smooth' });
   }

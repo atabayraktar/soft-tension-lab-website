@@ -7,4 +7,11 @@
     display: inline-block;
     backface-visibility: hidden;
   }
+
+  // Forced breaks (`lines` prop — the Home hero): each line is its own block, never
+  // re-wrapped by CSS; only the font-size scales.
+  &.tt--lines .tt__line { display: block; }
+
+  // Letters in flight or at rest in the pile aren't a sentence any more.
+  &.is-live .tt__g { user-select: none; }
 }

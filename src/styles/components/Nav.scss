@@ -23,14 +23,10 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   pointer-events: none;                  // only the bar and sheet catch input
   > * { pointer-events: auto; }
 
-  // Desktop (mouse + keyboard): same rendered width as the footer's edge-to-edge .wrap
-  // (max-width var(--wrap), centered, no side gutter). Touch tablets keep the gutter.
-  @media (min-width: #{$bp-xl}) and (hover: hover) and (pointer: fine) {
-    left: 0;
-    right: 0;
-    max-width: var(--wrap);
-    margin-inline: auto;
-  }
+  // No max-width cap at any breakpoint — the bar keeps growing with the viewport on
+  // any monitor size instead of centering inside a fixed 1440px box. The side inset
+  // stays var(--chrome-inset) throughout, so it never sits flush against the screen
+  // edge even on an ultrawide monitor.
 
   &--dark { color: $paper; }
   &.is-open { color: $paper; }           // the bar sits on the dark sheet while the menu is open
@@ -45,7 +41,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   .nav--dark & { border-color: $paper-15; }
   // Over a dark surface the glass takes the Ink tint (the `tint` variant, a shade denser
   // so the Paper items also hold over the band's giant letters passing behind the bar).
-  .nav--dark & .lg__tint { background: rgba($ink, .5); }
+  .nav--dark & .lg__tint { background: rgba($black, .5); }
 
   // While the sheet grows out of the pill, the pill's own body — effect, tint, shine and
   // the hairline — is swallowed by it: only the logo and the toggle stay, as the top strip

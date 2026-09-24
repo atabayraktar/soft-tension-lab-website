@@ -23,12 +23,13 @@
   &--black { background: $black; }
 }
 
-// Mouse-and-keyboard desktops only: footer content runs edge-to-edge, no side gutter.
-// Phones and tablets — touch, at any width, incl. an iPad Pro held sideways — keep it.
-// Side inset = the header's (--chrome-inset), so bar and footer content share one edge.
+// Side inset = the header's (--chrome-inset) at every breakpoint, so bar and footer
+// content share one edge and neither sits flush against the screen edge.
+// No max-width cap — the row keeps spanning the full viewport on any monitor size
+// instead of centering inside the shared 1440px .wrap ceiling.
 .footer .wrap {
   padding-inline: var(--chrome-inset);
-  @media (min-width: #{$bp-xl}) and (hover: hover) and (pointer: fine) { padding-inline: 0; }
+  max-width: none;
 }
 
 // Single line, every page: monogram · copyright stack · social + KVKK.
