@@ -4,7 +4,7 @@ import { useEffect } from 'react';
  * Decides how much glass the device can afford and stamps it on <html data-glass>:
  *   'svg'   — full refraction (filter: url(#stl-glass-*)) — Chromium, fine pointer or capable mobile
  *   'flat'  — backdrop-filter blur(20px) saturate(150%) — still on-brand
- *   'solid' — 92% opaque Paper/Ink surface — no backdrop-filter support at all
+ *   'solid' — 92% opaque Paper/Ink surface — no backdrop-filter support, or Meta's in-app browser
  *
  * After the first scroll, a short frame-rate sample downgrades 'svg' → 'flat' if the
  * page cannot hold ~55fps. The surface is never removed, only simplified.
@@ -12,14 +12,28 @@ import { useEffect } from 'react';
 export default function useGlassMode() {
   useEffect(() => {
     const root = document.documentElement;
+    const ua = navigator.userAgent;
+
+    // Meta's in-app browser (Instagram / Facebook — where nearly all of this site's traffic
+    // lands) answers CSS.supports('backdrop-filter') as true but its compositor silently
+    // no-ops the effect at runtime, so the surface renders as a bare see-through overlay.
+    // No feature-test catches that, so it is matched by UA and routed to the one tier that
+    // never depends on backdrop-filter. Tokens: Instagram appends "Instagram <version>";
+    // Facebook appends "[FBAN/…;FBAV/…]" on iOS and "[FB_IAB/FB4A;FBAV/…]" on Android.
+    const metaInApp = /\bInstagram\b|\bFBAN\/|\bFBAV\/|\bFB_IAB\//.test(ua);
+    if (metaInApp) { root.setAttribute('data-glass', 'solid'); return undefined; }
+
     const supportsBackdrop =
       (window.CSS && (CSS.supports('backdrop-filter', 'blur(1px)') || CSS.supports('-webkit-backdrop-filter', 'blur(1px)')));
     if (!supportsBackdrop) { root.setAttribute('data-glass', 'solid'); return undefined; }
 
     // The displacement map only bends a *backdrop* in Chromium engines; Safari and
     // Firefox apply it to the (transparent) element itself and render nothing useful.
-    const ua = navigator.userAgent;
-    const chromium = /Chrome\/|Chromium\/|CriOS\//.test(ua) && !/Firefox|FxiOS/.test(ua);
+    // Every browser on iOS is WebKit under the hood (App Store rule) — Chrome for iOS
+    // ("CriOS/") included — so no iOS device may ever be classified as Chromium.
+    // iPadOS 13+ reports itself as a Mac; the touch-point check catches that.
+    const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const chromium = !ios && /Chrome\/|Chromium\//.test(ua) && !/Firefox|FxiOS/.test(ua);
     const saveData = navigator.connection && navigator.connection.saveData;
     const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 2;
     let mode = chromium && !saveData && !lowMemory ? 'svg' : 'flat';

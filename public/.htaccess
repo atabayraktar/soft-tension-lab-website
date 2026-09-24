@@ -1,0 +1,10 @@
+# Pre-launch: the bare domain root shows the "Yakında" teaser (/comingsoon/) instead of
+# the real homepage, while every other real route (/about/, /work/, etc.) stays reachable
+# as-is. This is an internal rewrite, not a redirect — the address bar still shows the
+# bare domain, and the teaser's absolute /_next/... asset paths resolve the same either way.
+# Remove this file (or just this rule) once the real homepage should go live at `/`.
+#
+# Ignored by Firebase Hosting deploys (firebase.json ignores dotfiles) — this only matters
+# on the Hostinger/Apache copy of the same `out/` build.
+RewriteEngine On
+RewriteRule ^$ /comingsoon/index.html [L]

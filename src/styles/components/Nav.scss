@@ -93,6 +93,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
 
 .nav__link {
   @include label(.6875rem, .2em);
+  text-transform: none;   // the label is already capitalised in the data (NAV.labelUpper) — see site.js
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -222,7 +223,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
     font-size: clamp(2rem, 11vw, 4.5rem);
     line-height: 1.02;
     letter-spacing: -.03em;
-    text-transform: uppercase;
+    text-transform: none;   // capitalised in the data (NAV.labelUpper), not by CSS — see site.js
     color: $paper;
     transform: translateY(110%);
     // closing: a quick ease-in retreat ahead of the glass shrinking — bottom link first,

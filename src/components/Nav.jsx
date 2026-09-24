@@ -198,7 +198,7 @@ export default function Nav({ theme = 'light' }) {
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   onClick={onItemClick(item)}
                 >
-                  {item.label}
+                  {item.labelUpper}
                 </Link>
               </li>
             ))}
@@ -240,7 +240,7 @@ export default function Nav({ theme = 'light' }) {
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   onClick={onItemClick(item)}
                 >
-                  {item.label}
+                  {item.labelUpper}
                 </Link>
               </li>
             ))}

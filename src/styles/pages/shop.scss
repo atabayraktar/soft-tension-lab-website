@@ -30,6 +30,13 @@
   font-size: clamp(2.5rem, 9vw, 6.5rem);
   letter-spacing: -.035em;
   line-height: 1;
+  // The reveal mask clips at the line box; at line-height 1 the caps overshoot it on real
+  // phones and lose their tops. Headroom above the glyphs, paid back by the margin so the
+  // settled text (and the page's fit-to-screen height) don't move.
+  > .mask {
+    padding-top: .08em;
+    margin-top: -.08em;
+  }
 }
 
 .shop__notify { width: 100%; display: grid; justify-items: center; }

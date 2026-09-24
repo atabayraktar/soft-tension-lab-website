@@ -3,7 +3,15 @@
 // The big single-phrase bands. Type is sized from the viewport (capped), and the band's
 // height follows the type — tall, so the phrase reads as a wall, not a ticker.
 .band {
+  // Only the seam of the sliding track needs hiding (a horizontal effect); vertically
+  // the glyphs may overshoot the tight line box on real phones — never clip them.
+  // `hidden` on one axis forces the other to `auto` (still clips); only `clip` may pair
+  // with `visible`. Engines without `clip` keep the old both-axes hidden.
   overflow: hidden;
+  @supports (overflow: clip) {
+    overflow-x: clip;
+    overflow-y: visible;
+  }
   font-family: $font-display;
   font-weight: 800;
   // Phones (below md): twice the tablet/desktop scale — the band is a wall on a small

@@ -24,13 +24,16 @@ export const SITE = {
 // Nav order: Services, Works, Shop, About, Contact. Services is an in-page
 // target: it scrolls to the Home services section (#hizmetler) — smoothly when
 // already on Home, otherwise Home is loaded first (see Nav.jsx `scroll`).
+// `labelUpper` is what the bar and the menu sheet render — written in capitals in
+// the data, like HERO_LINES: CSS uppercase turns the Turkish "i" into "I" in
+// browsers that don't apply locale casing (Instagram's in-app browser does this).
 export const SERVICES_ID = 'hizmetler';
 export const NAV = [
-  { href: `/#${SERVICES_ID}`, label: 'Hizmetler', scroll: SERVICES_ID },
-  { href: '/work/', label: 'Çalışmalar' },
-  { href: '/shop/', label: 'Mağaza' },
-  { href: '/about/', label: 'Hakkında' },
-  { href: '/contact/', label: 'İletişim' },
+  { href: `/#${SERVICES_ID}`, label: 'Hizmetler', labelUpper: 'HİZMETLER', scroll: SERVICES_ID },
+  { href: '/work/', label: 'Çalışmalar', labelUpper: 'ÇALIŞMALAR' },
+  { href: '/shop/', label: 'Mağaza', labelUpper: 'MAĞAZA' },
+  { href: '/about/', label: 'Hakkında', labelUpper: 'HAKKINDA' },
+  { href: '/contact/', label: 'İletişim', labelUpper: 'İLETİŞİM' },
 ];
 
 // Forced line breaks per studio feedback (2026-09-17) — always these 3 lines,
