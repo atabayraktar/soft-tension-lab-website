@@ -3,15 +3,8 @@
 // The big single-phrase bands. Type is sized from the viewport (capped), and the band's
 // height follows the type — tall, so the phrase reads as a wall, not a ticker.
 .band {
-  // Only the seam of the sliding track needs hiding (a horizontal effect); vertically
-  // the glyphs may overshoot the tight line box on real phones — never clip them.
-  // `hidden` on one axis forces the other to `auto` (still clips); only `clip` may pair
-  // with `visible`. Engines without `clip` keep the old both-axes hidden.
-  overflow: hidden;
-  @supports (overflow: clip) {
-    overflow-x: clip;
-    overflow-y: visible;
-  }
+  // No overflow here: the clipping lives on .band__clip below, so the section keeps its
+  // painted box, its rect (nav invert, section landing) and the seam against its neighbours.
   font-family: $font-display;
   font-weight: 800;
   // Phones (below md): twice the tablet/desktop scale — the band is a wall on a small
@@ -26,6 +19,21 @@
 
   &--dark  { background: $black; color: $paper; }
   &--light { background: $paper; color: $black; }
+}
+
+// The seam of the sliding track is hidden here — a horizontal need, but `overflow: hidden`
+// always clips both axes (and the `overflow: clip` + `visible` pairing needs iOS 16+).
+// So the clip box is simply made taller than the type: on iOS/macOS/Android the font's
+// hhea metrics put the caps ~.14em above the .86 line box (on Windows they sit inside it),
+// and the band's own .16em top padding left them scraping the edge. Headroom above and
+// below, paid back by the margins so the band's height and position do not change; the
+// box is transparent and inert, so the overlap onto the neighbours is invisible and never
+// steals a tap from the row above.
+.band__clip {
+  overflow: hidden;
+  padding-block: .3em .1em;
+  margin-block: -.3em -.1em;
+  pointer-events: none;
 }
 
 .band__track {

@@ -111,10 +111,17 @@ $bp-2xl: 1440px;
   }
 }
 
-// The slide-up "mask" reveal used on About / Shop (text emerges from an invisible mask).
+// The slide-up "mask" reveal used on About / Shop / Contact (text emerges from an invisible mask).
 @mixin mask-reveal($delay: 0ms) {
   display: block;
   overflow: hidden;
+  // Headroom above the glyphs, paid back by the margin so the settled text does not move.
+  // The mask clips at its padding box; with a tight line-height the caps overshoot the line
+  // box on engines that read Whyte's hhea metrics (iOS/macOS/Android — ascent .393, so the
+  // baseline sits .16em higher than on Windows) and lost their tops. .22em covers the
+  // tightest consumer (line-height .8 → .17em overshoot, measured) with room to spare.
+  padding-top: .22em;
+  margin-top: -.22em;
   > * {
     display: block;
     transform: translateY(110%);

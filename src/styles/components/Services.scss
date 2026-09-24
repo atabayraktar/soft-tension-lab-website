@@ -161,7 +161,7 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
   font-size: clamp(1.375rem, 3.4vw, 1.875rem);
   line-height: 1.12;
   letter-spacing: -.01em;
-  text-transform: uppercase;           // html lang="tr" → i→İ, ı→I
+  text-transform: none;                // capitalised in the data (upper() in Services.jsx), not by CSS — same as Nav.scss
   padding-bottom: .06em;               // room for descenders inside the mask
   text-wrap: balance;
   transition: opacity $dur-fast $ease-out-cubic, color $dur-base $ease-band, transform $dur-title $ease-band;

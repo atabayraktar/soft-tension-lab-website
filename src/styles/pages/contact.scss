@@ -53,16 +53,10 @@
   @include up($bp-lg) { font-size: clamp(5rem, 8.5vw, 9rem); }
   @include short-landscape { font-size: clamp(2.4rem, 12vh, 4rem); }
   // A tight line-height crops descenders/cedillas (the "ş" in "Tanışalım.")
-  // against the reveal mask's overflow:hidden — a hair of headroom fixes it
-  // without loosening the line spacing visibly. Same on the top side: on real
-  // phones the caps ("H", "T") and the i-dot overshoot the line box and lose
-  // their tops. Headroom above, paid back by the margin so the settled text
-  // doesn't move (same pattern as .shop__title > .mask).
-  .mask {
-    padding-top: .08em;
-    margin-top: -.08em;
-    padding-bottom: .08em;
-  }
+  // against the reveal mask's overflow:hidden — a hair of room below fixes it
+  // without loosening the line spacing visibly. (The top-side headroom for the
+  // caps and the i-dot comes from the shared mask-reveal mixin.)
+  .mask { padding-bottom: .08em; }
 }
 
 .contact__right {

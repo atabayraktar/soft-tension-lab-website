@@ -81,7 +81,8 @@ export default function Services() {
                   onClick={onClick(i)}
                   onFocus={onFocus(i)}
                 >
-                  <span className="svc__title"><span className="svc__title-in">{title}</span></span>
+                  {/* Capitalised in the data, not by CSS text-transform (unreliable for İ/Ü on some engines — see Nav). */}
+                  <span className="svc__title"><span className="svc__title-in">{upper(title)}</span></span>
                 </button>
 
                 <div id={panelId} className="svc__panel" role="region" aria-labelledby={headId} aria-hidden={!isOpen}>
