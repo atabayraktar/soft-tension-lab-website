@@ -52,10 +52,11 @@
   letter-spacing: -.045em;
   @include up($bp-lg) { font-size: clamp(5rem, 8.5vw, 9rem); }
   @include short-landscape { font-size: clamp(2.4rem, 12vh, 4rem); }
-  // A tight line-height crops descenders/cedillas (the "ş" in "Tanışalım.")
-  // against the reveal mask's overflow:hidden — a hair of room below fixes it
-  // without loosening the line spacing visibly. (The top-side headroom for the
-  // caps and the i-dot comes from the shared mask-reveal mixin.)
+  // Content-driven: the cedilla of the "ş" in "Tanışalım." reaches .243em below the baseline,
+  // past the font's .188em descent, so at this tight line-height the reveal mask's
+  // overflow:hidden cropped it on every engine — a hair of room below fixes it without
+  // loosening the line spacing visibly. (No top-side room is needed: the caps sit inside
+  // the line box now that every engine uses the same font metrics — see globals.scss.)
   .mask { padding-bottom: .08em; }
 }
 

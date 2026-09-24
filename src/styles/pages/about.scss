@@ -32,19 +32,10 @@
 // ---------------------------------------------------------------------------
 .about__year {
   --cut-from: calc(100% - var(--overlap));
-  --year-headroom: calc(var(--year) * .16);
   display: flex;
   justify-content: center;
   overflow: hidden;
-  // The section clips too (the digits crop at the sides), and its top padding was not enough
-  // for the digit tops where the font's hhea metrics lift them ~.15em above the .8 line box
-  // (iOS/macOS/Android; measured −.07…−.11em short at this padding, more on wide monitors
-  // where --year is uncapped). Extra headroom, paid back by the margin: the section's
-  // bottom, the digits and the cut line (a % of the section's height, measured from its
-  // bottom) all stay exactly where they were; the transparent extra strip sits under the
-  // fixed nav.
-  padding-top: calc(clamp(1.25rem, 3vw, 2.5rem) + var(--year-headroom));
-  margin-top: calc(var(--year-headroom) * -1);
+  padding-top: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .about__year-text {
@@ -57,7 +48,13 @@
   letter-spacing: -.045em;
   white-space: nowrap;
   color: $ink;
-  // The .mask reveal clips to this box: its top headroom comes from the shared mask-reveal mixin.
+  // Content-driven, not a font-metric patch: at line-height .8 the line box's top sits .712em
+  // above the baseline (ascent .812 minus the .1em negative half-leading) while the digits'
+  // round tops reach .719em, so the reveal mask trimmed the apex of the 0/2/6 by ~.007em
+  // (a visibly flat-topped 0 at desktop size) — on every engine. A hair of headroom, paid
+  // back by the margin so the section's height, the digits and the cut line do not move.
+  padding-top: .02em;
+  margin-top: -.02em;
   // The trailing letter-spacing pulls the box's right edge .045em inside the 6's ink, so a
   // centred box is not centred ink (measured: +.0208em to the right). The extra right padding
   // puts the ink centre on the viewport centre, so both edges crop equally.

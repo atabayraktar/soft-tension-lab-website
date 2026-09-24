@@ -58,8 +58,10 @@ export default function Document() {
             rel="stylesheet"
           />
         </noscript>
-        <link rel="preload" href="/fonts/WhyteInktrap-Heavy.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/WhyteInktrap-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* ?v=2 matches the @font-face src in globals.scss: the files are served immutable for a
+            year (firebase.json), and v2 is the metric-fixed build of the font — see globals.scss. */}
+        <link rel="preload" href="/fonts/WhyteInktrap-Heavy.woff2?v=2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/WhyteInktrap-Regular.woff2?v=2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />

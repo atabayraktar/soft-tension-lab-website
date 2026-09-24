@@ -30,7 +30,6 @@
   font-size: clamp(2.5rem, 9vw, 6.5rem);
   letter-spacing: -.035em;
   line-height: 1;
-  // Top headroom for the caps inside the reveal mask comes from the shared mask-reveal mixin.
 }
 
 .shop__notify { width: 100%; display: grid; justify-items: center; }

@@ -42,13 +42,9 @@ export default function BandMarquee({ text, tone = 'dark', reverse = false }) {
       aria-label={text}
     >
       <p className="sr-only">{text}</p>
-      {/* .band__clip hides the track's seam; it is taller than the band so the glyph tops are
-          never cut (see BandMarquee.scss) — the section itself keeps its painted box and rect. */}
-      <div className="band__clip" aria-hidden="true">
-        <div className="band__track">
-          {group('a')}
-          {group('b')}
-        </div>
+      <div className="band__track" aria-hidden="true">
+        {group('a')}
+        {group('b')}
       </div>
     </section>
   );

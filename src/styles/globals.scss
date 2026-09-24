@@ -3,41 +3,67 @@
 // ---------------------------------------------------------------------------
 // Fonts — Whyte Inktrap is local (public/fonts), Archivo comes from Google Fonts
 // (linked in _document). Only the weights actually used are declared.
+//
+// Vertical metrics. As shipped by the foundry, Whyte Inktrap's metric tables disagree:
+// hhea/typo ascender .393em + descender .095em, OS/2 win 812/188 (USE_TYPO_METRICS off).
+// Windows Chrome (DirectWrite) sizes the line box from the win pair — every headless
+// screenshot this site was tuned against — while iOS/macOS WebKit, Android and Firefox
+// read hhea, so on a phone the same line-height put the baseline .16em higher and the
+// caps / İ-dots overshot every tight overflow:hidden box (band, mask reveals, nav sheet).
+// Fixed at the source, in two layers that resolve to the same 812/188 line box:
+//   1. the served font files (public/fonts) have hhea, typo and win all set to 812/-188/0
+//      (scripts/fix-font-metrics.mjs — re-run it on any freshly copied foundry file, and
+//      bump ?v= below: /fonts is served immutable for a year, see firebase.json). This is
+//      the layer iOS honours: WebKit ignores the descriptors below (MDN, 2026-09);
+//   2. the metric-override descriptors pin the same numbers in CSS for every engine that
+//      supports them (Chrome/Edge 87+, Firefox 89+), so a re-copied unpatched font file
+//      cannot silently reintroduce the mismatch there.
+// Windows Chrome already used exactly these values, so nothing moves on it.
 // ---------------------------------------------------------------------------
+@mixin whyte-metrics {
+  ascent-override: 81.2%;
+  descent-override: 18.8%;
+  line-gap-override: 0%;
+}
 @font-face {
   font-family: 'Whyte Inktrap';
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/WhyteInktrap-Regular.woff2') format('woff2'), url('/fonts/WhyteInktrap-Regular.woff') format('woff');
+  @include whyte-metrics;
+  src: url('/fonts/WhyteInktrap-Regular.woff2?v=2') format('woff2'), url('/fonts/WhyteInktrap-Regular.woff?v=2') format('woff');
 }
 @font-face {
   font-family: 'Whyte Inktrap';
   font-weight: 500;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/WhyteInktrap-Medium.woff2') format('woff2'), url('/fonts/WhyteInktrap-Medium.woff') format('woff');
+  @include whyte-metrics;
+  src: url('/fonts/WhyteInktrap-Medium.woff2?v=2') format('woff2'), url('/fonts/WhyteInktrap-Medium.woff?v=2') format('woff');
 }
 @font-face {
   font-family: 'Whyte Inktrap';
   font-weight: 500;
   font-style: italic;
   font-display: swap;
-  src: url('/fonts/WhyteInktrap-MediumItalic.woff2') format('woff2'), url('/fonts/WhyteInktrap-MediumItalic.woff') format('woff');
+  @include whyte-metrics;
+  src: url('/fonts/WhyteInktrap-MediumItalic.woff2?v=2') format('woff2'), url('/fonts/WhyteInktrap-MediumItalic.woff?v=2') format('woff');
 }
 @font-face {
   font-family: 'Whyte Inktrap';
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/WhyteInktrap-Bold.woff2') format('woff2'), url('/fonts/WhyteInktrap-Bold.woff') format('woff');
+  @include whyte-metrics;
+  src: url('/fonts/WhyteInktrap-Bold.woff2?v=2') format('woff2'), url('/fonts/WhyteInktrap-Bold.woff?v=2') format('woff');
 }
 @font-face {
   font-family: 'Whyte Inktrap';
   font-weight: 800;
   font-style: normal;
   font-display: swap;
-  src: url('/fonts/WhyteInktrap-Heavy.woff2') format('woff2'), url('/fonts/WhyteInktrap-Heavy.woff') format('woff');
+  @include whyte-metrics;
+  src: url('/fonts/WhyteInktrap-Heavy.woff2?v=2') format('woff2'), url('/fonts/WhyteInktrap-Heavy.woff?v=2') format('woff');
 }
 
 // ---------------------------------------------------------------------------

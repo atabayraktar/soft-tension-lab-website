@@ -7,6 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "images": "node scripts/optimize-images.mjs",
+    "fonts:metrics": "node scripts/fix-font-metrics.mjs public/fonts",
+    "fonts:verify": "node scripts/fix-font-metrics.mjs public/fonts --verify",
     "og": "node scripts/render-og.mjs",
     "check:overflow": "node .claude/check-overflow.mjs",
     "shots": "node .claude/screenshot-responsive.mjs",

@@ -149,16 +149,28 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
   }
 }
 
-// The title, in a mask so it can slide up out of view on wide.
+// The title, in a mask so it can slide up out of view on wide. The size lives on the mask
+// (the title inherits it) so the mask's headroom below can be in title-ems.
 .svc__title {
   display: block;
   overflow: hidden;
+  font-size: clamp(1.375rem, 3.4vw, 1.875rem);
+  // Headroom for the diacritics: Ğ's breve and the İ/Ö/Ü dots rise ~.12em above the font's
+  // .812em ascent, so at line-height 1.12 the mask trimmed their tops by 1–2.6px (measured,
+  // every engine). Paid back by the margin, so nothing below moves.
+  padding-top: .12em;
+  margin-top: -.12em;
+  @include up($bp-xl) {
+    // Sized from the list so the longest single word ("ENTEGRASYONU", ~8.9em wide) fits
+    // whole inside a squeezed strip — the six that shrink while one is open are 1/(open+6)
+    // of the band, less the head's side padding.
+    font-size: clamp(.625rem, calc((100cqw / #{$open + 6} - 2 * #{$pad-x}) / 8.9), 1.25rem);
+  }
 }
 .svc__title-in {
   display: block;
   font-family: $font-display;
   font-weight: 700;
-  font-size: clamp(1.375rem, 3.4vw, 1.875rem);
   line-height: 1.12;
   letter-spacing: -.01em;
   text-transform: none;                // capitalised in the data (upper() in Services.jsx), not by CSS — same as Nav.scss
@@ -169,11 +181,8 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
   .is-open & { color: $signal; }
 
   @include up($bp-xl) {
-    // Sized from the list so the longest single word ("ENTEGRASYONU", ~8.9em wide) fits
-    // whole inside a squeezed strip — the six that shrink while one is open are 1/(open+6)
-    // of the band, less the head's side padding. Titles wrap word by word, never mid-word,
-    // never hyphenated (break-word only as the last resort against overflow).
-    font-size: clamp(.625rem, calc((100cqw / #{$open + 6} - 2 * #{$pad-x}) / 8.9), 1.25rem);
+    // Titles wrap word by word, never mid-word, never hyphenated (break-word only as the
+    // last resort against overflow). The size is on .svc__title above.
     letter-spacing: -.02em;
     text-wrap: initial;
     hyphens: none;
