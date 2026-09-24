@@ -1,0 +1,39 @@
+# Soft Tension Lab
+
+> Lead With Tension. Sanat, tasarım ve kültürün kesişiminde bağımsız bir kreatif stüdyo.
+
+Soft Tension Lab; sanat, tasarım ve kültürün kesişiminde yer alan bağımsız bir kreatif stüdyodur. Multidisipliner sanatçıların oyun alanı; sürece açık, canlı bir stüdyo. Stüdyo, kavramsal düşünceyi somut görsel kimliklere dönüştürerek markalar ve sanatçılarla çalışır; sistematik tasarım ile sanatsal sezgi arasındaki gerilimden beslenir. Türkiye merkezli olarak hizmet verir; web sitesi Türkçedir.
+
+Soft Tension Lab is an independent creative studio working at the intersection of art, design and culture. It is a playground for multidisciplinary artists: a live, process-open studio that turns conceptual thinking into tangible visual identities for brands and artists, drawing on the tension between systematic design and artistic intuition.
+
+## Kurucular / Founders
+
+- Ömer & Cemre
+
+## Hizmetler / Services
+
+- Marka Kimliği & Logo Sistemleri
+- Tipografi
+- İçerik Geliştirme
+- Geleneksel & Dijital Sanat Entegrasyonu
+- Editöryel & Baskılı Tasarım
+- Kreatif Danışmanlık & Geleneksel Sanat Eğitimi
+- Sanat Üretimi
+
+## Sayfalar / Pages
+
+- [Ana Sayfa / Home](https://softtensionlab.com/): Manifesto, hizmetler (#hizmetler) ve seçilmiş işlerden kesitler.
+- [Hakkında / About](https://softtensionlab.com/about/): Stüdyo manifestosu ve ekip.
+- [Çalışmalar / Works](https://softtensionlab.com/work/): Selected works.
+- [Mağaza / Shop](https://softtensionlab.com/shop/): Yakında (coming soon).
+- [İletişim / Contact](https://softtensionlab.com/contact/): Proje talebi formu ve iletişim bilgileri.
+
+## İletişim / Contact
+
+- E-posta / Email: hello@softtensionlab.com
+- Instagram: https://www.instagram.com/softtensionlab (@softtensionlab)
+- Behance: https://www.behance.net/softtensionlab
+
+## Optional
+
+- [Sitemap](https://softtensionlab.com/sitemap.xml)

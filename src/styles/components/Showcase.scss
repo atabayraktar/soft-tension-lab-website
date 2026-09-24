@@ -14,6 +14,12 @@
   background: $paper;
 }
 
+// The wall is a grid, not a reading column: above ~1700px it keeps growing with the screen
+// (--wrap-wide) instead of centring inside the shared 1440px .wrap ceiling — same idea as
+// the footer's uncapped row, with a ceiling so ultrawides don't oversize the pieces.
+// Below that width the value equals --wrap, so nothing changes on a 1280–1440 desktop.
+.showcase .wrap { max-width: var(--wrap-wide); }
+
 .showcase__wall {
   --step: clamp(1rem, 2.4vw, 2.5rem);       // one unit of vertical offset on the wall
   list-style: none;

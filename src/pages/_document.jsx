@@ -62,6 +62,7 @@ export default function Document() {
         <link rel="preload" href="/fonts/WhyteInktrap-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#F0EEE9" />
         {/* Marks the document as JS-capable before first paint so reveal/mask styles only
             apply when something will actually reveal them. */}

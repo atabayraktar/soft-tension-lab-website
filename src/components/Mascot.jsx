@@ -18,6 +18,7 @@ export default function Mascot({ variant = 'b', className = '', decorative = fal
       alt={decorative ? '' : m.alt}
       aria-hidden={decorative ? 'true' : undefined}
       loading={eager ? 'eager' : 'lazy'}
+      fetchPriority={eager ? 'high' : undefined}
       decoding="async"
     />
   );

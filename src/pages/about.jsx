@@ -1,11 +1,28 @@
 import { useEffect, useRef } from 'react';
-import Seo from '../components/Seo';
+import Seo, { ORG_ID, WEBSITE_ID } from '../components/Seo';
 import Logo from '../components/Logo';
 import GlassCard from '../components/GlassCard';
 import ScrollCut from '../components/ScrollCut';
-import { MANIFESTO } from '../lib/site';
+import { SITE, MANIFESTO } from '../lib/site';
 
 const AVATARS = Array.from({ length: 5 }, (_, i) => String(i + 1).padStart(2, '0'));
+
+// Page-level structured data: the About page + the two founders (first names only —
+// that is all the studio has published; see the `founder` array in Seo.jsx).
+const ABOUT_URL = `${SITE.url}/about/`;
+const ABOUT_JSON_LD = [
+  {
+    '@type': 'AboutPage',
+    '@id': `${ABOUT_URL}#aboutpage`,
+    url: ABOUT_URL,
+    name: `About — ${SITE.name}`,
+    inLanguage: 'tr',
+    isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': ORG_ID },
+  },
+  { '@type': 'Person', '@id': `${SITE.url}/#omer`, name: 'Ömer', worksFor: { '@id': ORG_ID } },
+  { '@type': 'Person', '@id': `${SITE.url}/#cemre`, name: 'Cemre', worksFor: { '@id': ORG_ID } },
+];
 
 // MANIFESTO is stored verbatim in uppercase (site.js); it is displayed in sentence case.
 // Turkish-locale casing: İ/i and I/ı are distinct letters. The studio name is English and a
@@ -45,6 +62,7 @@ export default function About() {
         title="About"
         description="Soft Tension Lab; sanat, tasarım ve kültürün kesişiminde yer alan bağımsız bir kreatif stüdyodur. Sistematik tasarım ile sanatsal sezgi arasındaki gerilimden besleniyoruz."
         path="/about/"
+        jsonLd={ABOUT_JSON_LD}
       />
 
       <h1 className="sr-only">Hakkımızda</h1>

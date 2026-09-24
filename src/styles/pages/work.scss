@@ -11,3 +11,9 @@
   padding-top: clamp(4.5rem, 12vw, 8.5rem);
   padding-bottom: var(--section);
 }
+
+// The logo wall is a 3-column grid on a full-bleed dark ground: on a 27" QHD monitor the
+// 1440px .wrap ceiling left it as a small block in the middle of the dark. It follows
+// --wrap-wide (equal to --wrap up to ~1700px, then growing with the viewport) so the
+// tiles keep filling the wall on wide screens.
+.work .work__inner { max-width: var(--wrap-wide); }

@@ -2,4 +2,41 @@ User-agent: *
 Allow: /
 Disallow: /holding/
 
+# AI answer-engine crawlers — explicitly open, mirroring the default above.
+User-agent: GPTBot
+Allow: /
+Disallow: /holding/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /holding/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /holding/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /holding/
+
+User-agent: Claude-User
+Allow: /
+Disallow: /holding/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /holding/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /holding/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /holding/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /holding/
+
 Sitemap: https://softtensionlab.com/sitemap.xml

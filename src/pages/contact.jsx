@@ -1,6 +1,19 @@
-import Seo from '../components/Seo';
+import Seo, { WEBSITE_ID } from '../components/Seo';
 import ContactForm from '../components/ContactForm';
 import SocialLinks from '../components/SocialLinks';
+import { SITE } from '../lib/site';
+
+const CONTACT_URL = `${SITE.url}/contact/`;
+const CONTACT_JSON_LD = [
+  {
+    '@type': 'ContactPage',
+    '@id': `${CONTACT_URL}#contactpage`,
+    url: CONTACT_URL,
+    name: `Contact — ${SITE.name}`,
+    inLanguage: 'tr',
+    isPartOf: { '@id': WEBSITE_ID },
+  },
+];
 
 // Contact: headline, socials, then the Tally-register form — that order on
 // every breakpoint. On wide screens the headline + socials sit in a left
@@ -9,7 +22,7 @@ import SocialLinks from '../components/SocialLinks';
 export default function Contact() {
   return (
     <main id="main" className="page contact">
-      <Seo title="Contact" description="Hadi tanışalım. hello@softtensionlab.com — proje talebi formu." path="/contact/" />
+      <Seo title="Contact" description="Hadi tanışalım. hello@softtensionlab.com — proje talebi formu." path="/contact/" jsonLd={CONTACT_JSON_LD} />
       <div className="contact__split wrap">
         <div className="contact__left">
           <section className="contact__title-block" aria-labelledby="contact-title">

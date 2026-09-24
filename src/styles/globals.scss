@@ -23,7 +23,7 @@
   font-weight: 500;
   font-style: italic;
   font-display: swap;
-  src: url('/fonts/WhyteInktrap-MediumItalic.woff') format('woff');
+  src: url('/fonts/WhyteInktrap-MediumItalic.woff2') format('woff2'), url('/fonts/WhyteInktrap-MediumItalic.woff') format('woff');
 }
 @font-face {
   font-family: 'Whyte Inktrap';
@@ -68,6 +68,12 @@
   --nav-top: .75rem;
   --nav-h: 3.25rem;
   --wrap: 90rem;
+  // The wide ceiling for grid/image-driven sections (Home gallery wall, Works logo wall):
+  // identical to --wrap up to ~1700px, then grows with the viewport so a 27" QHD screen
+  // (2560px) is not left with ~560px of dead Paper on each side, and stops at 140rem so
+  // ultrawides don't blow the pieces up. Reading columns (About manifesto, Contact, KVKK,
+  // 404/Shop) keep --wrap — a centred column is correct for text on a wide monitor.
+  --wrap-wide: clamp(90rem, 85vw, 140rem);
 
   color-scheme: light;
 }

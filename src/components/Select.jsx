@@ -3,9 +3,11 @@ import { useEffect, useId, useRef, useState } from 'react';
 /**
  * Custom-styled listbox replacing the native <select> — the browser's own
  * dropdown panel can't be restyled and clashed with the brand system.
- * Follows the ARIA APG "select-only" listbox-button pattern: focus stays on
- * the trigger button the whole time; the open list is announced via
- * aria-activedescendant, never receives DOM focus itself.
+ * Follows the ARIA APG "select-only combobox" pattern: the trigger is a
+ * <button role="combobox"> (the role that permits aria-required and
+ * aria-activedescendant — neither is allowed on a plain button), focus stays on
+ * it the whole time; the open list is announced via aria-activedescendant and
+ * never receives DOM focus itself.
  */
 export default function Select({ id, options, value, onChange, onBlur, required, invalid, describedBy, placeholder = 'Seçin' }) {
   const [open, setOpen] = useState(false);
@@ -86,6 +88,7 @@ export default function Select({ id, options, value, onChange, onBlur, required,
         id={id}
         ref={triggerRef}
         className="select__trigger"
+        role="combobox"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={listboxId}

@@ -36,10 +36,12 @@ const MIME_TYPES = {
 // wastes CPU and gains nothing, so it's deliberately excluded.
 const COMPRESSIBLE = new Set(['.html', '.css', '.js', '.mjs', '.json', '.xml', '.txt', '.svg']);
 
-// Approximates the caching a real static host (Vercel/Netlify/Cloudflare Pages/S3+CDN) would
-// apply: Next's hashed build assets are immutable forever, page/data files revalidate.
+// Mirrors the Cache-Control rules in firebase.json (the production host) so a local
+// Lighthouse run reports the same caching production gets: hashed build assets and the
+// local fonts are immutable, archive imagery/logos cache for 30 days, pages revalidate.
 function cacheControlFor(urlPath, ext) {
-  if (urlPath.startsWith('/_next/static/')) return 'public, max-age=31536000, immutable';
+  if (urlPath.startsWith('/_next/static/') || urlPath.startsWith('/fonts/')) return 'public, max-age=31536000, immutable';
+  if (urlPath.startsWith('/images/') || urlPath.startsWith('/logos/')) return 'public, max-age=2592000';
   if (ext === '.html') return 'public, max-age=0, must-revalidate';
   return 'public, max-age=3600';
 }
