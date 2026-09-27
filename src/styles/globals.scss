@@ -65,6 +65,14 @@
   @include whyte-metrics;
   src: url('/fonts/WhyteInktrap-Heavy.woff2?v=2') format('woff2'), url('/fonts/WhyteInktrap-Heavy.woff?v=2') format('woff');
 }
+@font-face {
+  font-family: 'Whyte Inktrap';
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+  @include whyte-metrics;
+  src: url('/fonts/WhyteInktrap-HeavyItalic.woff?v=2') format('woff');
+}
 
 // ---------------------------------------------------------------------------
 // Runtime tokens

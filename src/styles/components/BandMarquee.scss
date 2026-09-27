@@ -6,14 +6,16 @@
   overflow: hidden;
   font-family: $font-display;
   font-weight: 800;
+  font-style: italic;
   // Phones (below md): twice the tablet/desktop scale — the band is a wall on a small
-  // screen too. From md up the original scale.
-  font-size: clamp(8.5rem, 38vw, 17rem);
+  // screen too. From md up the original scale. Both tiers bumped (mobile ~32%, desktop
+  // ~17%) so the phrase reads heavier against the italic set.
+  font-size: clamp(11.2rem, 50vw, 22.5rem);
   line-height: .86;
   letter-spacing: -.045em;
   padding-block: .16em .1em;                 // optical: caps sit on the baseline, no descenders
   --band-dur: 30s;                           // a wider track at the same duration would race; slower keeps it readable
-  @include up($bp-md) { font-size: clamp(4.25rem, 19vw, 17rem); --band-dur: 26s; }
+  @include up($bp-md) { font-size: clamp(5rem, 22.3vw, 20rem); --band-dur: 26s; }
   @include up($bp-xl) { --band-dur: 34s; }
 
   &--dark  { background: $black; color: $paper; }
@@ -39,9 +41,20 @@
 }
 
 .band__item {
+  display: inline-flex;
+  align-items: center;                       // safe here: content is always all-caps, no x-height/descender variance
   flex-shrink: 0;
-  padding-right: .4em;                       // the gap between repeats
+  gap: .22em;
+  padding-right: .22em;                      // the gap between the dot and the next repeat
   white-space: nowrap;
+}
+
+.band__dot {
+  width: .13em;
+  height: .13em;
+  border-radius: 50%;
+  background: $signal;
+  flex-shrink: 0;
 }
 
 @keyframes band-slide {

@@ -10,7 +10,7 @@
 .marquee__track {
   display: flex;
   width: max-content;
-  animation: marquee 42s linear infinite;
+  animation: marquee 32s linear infinite;
   animation-play-state: paused;
   .is-live & { animation-play-state: running; will-change: transform; }
   @include reduced-motion { animation: none; }
@@ -24,7 +24,11 @@
 
 .marquee__item {
   display: inline-flex;
-  align-items: center;
+  // Baseline, not center: the line box's ascent/descent varies slightly across engines
+  // for this font (see globals.scss Whyte Inktrap metrics note) and Turkish diacritics
+  // (İ, ç, ş, ğ) sit unevenly inside it. The baseline itself is stable, so the dot is
+  // anchored there with a fixed nudge instead of "centered" on a box that moves.
+  align-items: baseline;
   gap: clamp(.5rem, 1vw, .75rem);
   padding-right: clamp(.5rem, 1vw, .75rem);
   font-weight: 500;
@@ -40,8 +44,9 @@
   width: .28em;
   height: .28em;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #ff9a52 0%, $signal 70%);
+  background: $signal;
   flex-shrink: 0;
+  transform: translateY(-.32em);            // lifts it from the baseline to x-height mid
 }
 
 @keyframes marquee {

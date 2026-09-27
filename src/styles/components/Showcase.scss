@@ -142,7 +142,7 @@ $desk: (
   .showcase__item:hover .showcase__cap { color: $signal; }   // captions turn Signal with the zoom
 
   .showcase__wall:has(.showcase__item:hover) .showcase__item:not(:hover) {
-    .showcase__frame { filter: blur(6px); opacity: .5; }
+    .showcase__frame { filter: blur(4px); opacity: .5; }
     .showcase__caps { opacity: .35; }
   }
 }

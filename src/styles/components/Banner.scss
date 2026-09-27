@@ -2,14 +2,13 @@
 
 // ---------------------------------------------------------------------------
 // Banner — a wide, low frame running edge to edge, the two-line statement set on
-// it. A little Paper above (breathing room after the gallery), NONE below: the
-// frame ends and the black finale starts. The only runtime input is --p
+// it. No padding on either side: the light band above and the black finale below
+// both sit flush against the frame. The only runtime input is --p
 // (−1 entering … 1 leaving), set by Banner.jsx, driving the field's drift.
 // ---------------------------------------------------------------------------
 
 .banner {
-  padding-top: clamp(2rem, 5vw, 4rem);
-  padding-bottom: 0;
+  padding-block: 0;
   background: $paper;
 }
 
@@ -105,7 +104,6 @@
 
 // Landscape phones: a wide, low frame with the type sized to the height.
 @include short-landscape {
-  .banner { padding-top: 1.5rem; }
   .banner__frame { aspect-ratio: 21 / 7; padding: 1rem var(--gutter); }
   .banner__copy { font-size: clamp(.95rem, 3.4vh, 1.25rem); }
 }

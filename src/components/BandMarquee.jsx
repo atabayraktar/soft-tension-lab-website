@@ -21,16 +21,24 @@ export default function BandMarquee({ text, tone = 'dark', reverse = false }) {
     // The observer can hand over several queued entries at once (mount off-screen, then a
     // section landing that jumps the band on-screen in the same frame): the LAST one is the
     // current state — reading the first left the band paused after a "Hizmetler" landing.
+    // rootMargin fires the toggle ~40% of a screen height early, so `will-change` promotes
+    // the band to its own layer while it's still off-screen — doing that promotion exactly
+    // as the band crosses into view (threshold 0, no margin) was the occasional stutter.
     const io = new IntersectionObserver((entries) => {
       el.classList.toggle('is-live', entries[entries.length - 1].isIntersecting);
-    }, { threshold: 0 });
+    }, { threshold: 0, rootMargin: '35% 0px' });
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
   const group = (key) => (
     <ul className="band__group" key={key}>
-      {Array.from({ length: PER_GROUP }, (_, i) => <li key={i} className="band__item">{text}</li>)}
+      {Array.from({ length: PER_GROUP }, (_, i) => (
+        <li key={i} className="band__item">
+          {text}
+          <span className="band__dot" aria-hidden="true" />
+        </li>
+      ))}
     </ul>
   );
 

@@ -104,7 +104,8 @@ export const SERVICE_DETAILS = [
 // Home marquee band (design_architecture.html §01).
 export const MARQUEE = [
   'Marka Kimliği & Logo Sistemleri',
-  'Tipografi / İçerik Geliştirme',
+  'Tipografi',
+  'İçerik Geliştirme',
   'Web Design',
   'Motion Design',
   'Geleneksel & Dijital Sanat Entegrasyonu',
