@@ -105,6 +105,30 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   @include hover { color: $signal; }
   &.is-active { color: $signal; transform: scale(1.04); }
   &:active { transform: scale(.98); }
+
+  // The underline: grows left-to-right on press (word-width, not padding-width — it sits
+  // inset from the item's own click padding), and holds while the item is lit (pressed or
+  // the current page — see isLit in Nav.jsx).
+  &::after {
+    content: '';
+    position: absolute;
+    left: .15rem;
+    right: .15rem;
+    bottom: .5rem;
+    height: 1.5px;
+    background: $signal;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 280ms $ease-out-expo;
+  }
+  // `:active` engages the instant a finger/pointer goes down — well before the click (and
+  // whatever it triggers: a page swap, the sheet closing) has a chance to touch this element
+  // again. Tying the grow to that, not only to the React-driven `.is-active`, means it always
+  // gets a real "from 0" frame to animate from instead of landing pre-grown together with
+  // everything else that same commit changes (seen on real phones: the line as no motion,
+  // just already full width the moment the tap registered).
+  &:active::after,
+  &.is-active::after { transform: scaleX(1); }
 }
 
 // Mobile toggle — icon-only (accessible name via aria-label, not visible text)
@@ -215,6 +239,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
 .nav__sheet-item {
   overflow: hidden;
   .nav__sheet-link {
+    position: relative;
     display: inline-block;
     font-family: $font-display;
     font-weight: 800;
@@ -232,6 +257,24 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
     padding-block: .1em;
     @include hover { color: $signal; }
     &.is-active { color: $signal; }
+    // Same underline as the desktop bar, sized in em so it holds its weight across the
+    // clamp()'d display size — grows on press, holds while lit.
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: .1em;
+      height: .035em;
+      background: $signal;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 280ms $ease-out-expo;
+    }
+    // `:active` fires on touch-down, ahead of the tap's own click/close/navigate chain —
+    // see the desktop rule in .nav__link for why that matters more than it sounds.
+    &:active::after,
+    &.is-active::after { transform: scaleX(1); }
     // The item clips its own box (the slide-up reveal, above) tight to the link's line —
     // the global focus ring's default +3px offset pokes past that on three sides and gets
     // cut, leaving a stray sliver on the one side the clip happens not to reach (seen on
@@ -263,6 +306,7 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
   .nav__sheet .lg__effect, .nav__sheet .lg__tint, .nav__sheet .lg__shine { clip-path: none; transition: none; }
   .nav__sheet-item .nav__sheet-link { transform: none; transition: none; }
   .nav__bar, .nav__bar .lg__effect, .nav__bar .lg__tint, .nav__bar .lg__shine { transition: none; }
+  .nav__link::after, .nav__sheet-item .nav__sheet-link::after { transition: none; }
 }
 
 // ---------------------------------------------------------------------------

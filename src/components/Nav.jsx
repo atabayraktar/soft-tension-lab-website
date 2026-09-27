@@ -80,9 +80,14 @@ export default function Nav({ theme = 'light' }) {
   const invert = useNavInvert(navRef, theme !== 'light', router.asPath);
   const navTheme = invert ? 'dark' : 'light';
   const pending = useRef(null);   // section to land on once the Home page has mounted
+  // The item just tapped/clicked: its underline grows immediately, before the page
+  // transition even starts, and holds through it — `isActive` below then keeps it lit if
+  // this turns out to be the landed-on page, so there's no gap between "pressed" and "active".
+  const [pressedHref, setPressedHref] = useState(null);
 
   // A section link is never "the current page".
   const isActive = (href) => !href.includes('#') && (router.asPath === href || router.asPath.startsWith(href));
+  const isLit = (item) => isActive(item.href) || pressedHref === item.href;
 
   // iOS WebKit (Safari and, since it's the same engine, Chrome-for-iOS too) spends a tap
   // outside a focused text field just dismissing the keyboard — it does not also deliver a
@@ -98,6 +103,7 @@ export default function Nav({ theme = 'light' }) {
   };
 
   const onItemClick = (item) => (e) => {
+    setPressedHref(item.href);
     if (!item.scroll) return;
     if (router.pathname === '/') {
       // Same page. PageVeil leaves in-page anchors alone, but Lenis's own anchor handler
@@ -108,12 +114,27 @@ export default function Nav({ theme = 'light' }) {
       // Two frames: the menu sheet's close (if it was open) has unpinned the page and put
       // the scroll offset back by then, so the section is measured against the real page.
       requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(item.scroll)));
+      // Services never becomes "the current page" (see isActive), so nothing else clears
+      // its underline the way a real navigation does — fade it back out once the scroll lands.
+      setTimeout(() => setPressedHref((h) => (h === item.href ? null : h)), 900);
     } else {
       // Other page: let the veiled navigation run (PageVeil pushes the hash URL); the
       // landing happens in the routeChangeComplete handler below.
       pending.current = item.scroll;
     }
   };
+
+  // Once a navigation actually lands (or fails), `isActive` has taken over the underline
+  // for whichever item that turned out to be — the temporary "pressed" one can let go.
+  useEffect(() => {
+    const clear = () => setPressedHref(null);
+    router.events.on('routeChangeComplete', clear);
+    router.events.on('routeChangeError', clear);
+    return () => {
+      router.events.off('routeChangeComplete', clear);
+      router.events.off('routeChangeError', clear);
+    };
+  }, [router.events]);
 
   // Close on route change, on Escape, and lock scroll while open.
   useEffect(() => {
@@ -216,7 +237,7 @@ export default function Nav({ theme = 'light' }) {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`nav__link ${isActive(item.href) ? 'is-active' : ''}`.trim()}
+                  className={`nav__link ${isLit(item) ? 'is-active' : ''}`.trim()}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   onClick={onItemClick(item)}
                 >
@@ -258,7 +279,7 @@ export default function Nav({ theme = 'light' }) {
               <li key={item.href} className={`nav__sheet-item nav__sheet-item--${i + 1}`}>
                 <Link
                   href={item.href}
-                  className={`nav__sheet-link ${isActive(item.href) ? 'is-active' : ''}`.trim()}
+                  className={`nav__sheet-link ${isLit(item) ? 'is-active' : ''}`.trim()}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   onClick={onItemClick(item)}
                 >

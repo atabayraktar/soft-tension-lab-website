@@ -13,18 +13,19 @@ html[data-sbar][data-glass='solid'] {
 }
 html[data-sbar-drag] { user-select: none; -webkit-user-select: none; cursor: grabbing; }
 
-// Geometry — a glass rod, 8px at rest, 12px when you reach for it. The rod's right edge
-// stays put ($gutter); it grows leftward. The hit zone is the slide (16px), never the rod.
-$rod: 12px;
-$rod-rest: .667;          // 8px / 12px
-$gutter: 3px;
+// Geometry — a glass rod, ~9px at rest, 14px when you reach for it, held a touch off the
+// edge ($gutter) instead of flush against it. The rod's right edge stays put; it grows
+// leftward. The hit zone is the slide (20px), never the rod.
+$rod: 14px;
+$rod-rest: .667;          // ~9px / 14px
+$gutter: 7px;
 
 // A full-height, click-through strip: only the slide (the moving hit zone) takes the
 // pointer, so the bar never swallows clicks on whatever sits at the right edge of the page.
 .sbar {
   position: fixed;
   inset: 0 0 0 auto;
-  width: 1rem;
+  width: 1.5rem;
   z-index: 130;                  // over the nav (120), under the page veil (150)
   pointer-events: none;
   &[data-hidden='true'] { display: none; }
@@ -37,7 +38,7 @@ $gutter: 3px;
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 6.5px;                // $gutter + (8px resting rod) / 2 − half its own width
+    right: 11.2px;               // $gutter + (resting rod) / 2 − half its own width
     width: 1px;
     background: rgba(3, 23, 58, .16);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 140px, #000 calc(100% - 56px), transparent);
@@ -57,7 +58,7 @@ $gutter: 3px;
   position: absolute;
   top: 0;
   right: 0;
-  width: 1rem;
+  width: 1.5rem;
   pointer-events: auto;
   cursor: grab;
   opacity: .72;
@@ -69,7 +70,7 @@ $gutter: 3px;
 }
 
 // The rod is a plain GlassCard. Its own hover "puff" is switched off (the rod has its own
-// breath), and refraction is dropped: a 12px pill has nothing to bend, so it is one
+// breath), and refraction is dropped: a 14px pill has nothing to bend, so it is one
 // backdrop pass — blur + tint + shine.
 .sbar .sbar__thumb,
 .sbar__signal {
