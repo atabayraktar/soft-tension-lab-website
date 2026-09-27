@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Seo, { ORG_ID, WEBSITE_ID } from '../components/Seo';
 import Logo from '../components/Logo';
 import GlassCard from '../components/GlassCard';
 import ScrollCut from '../components/ScrollCut';
+import TeamModal from '../components/TeamModal';
 import { SITE, MANIFESTO, TEAM } from '../lib/site';
 
 // Page-level structured data: the About page + the two founders (first names only —
@@ -35,6 +36,11 @@ function toSentenceCase(str) {
 
 export default function About() {
   const clusterRef = useRef(null);
+  // The expanded card: index into TEAM while one is open. The modal owns its own close
+  // choreography and only reports back once it has landed (then it unmounts here); the
+  // <li> refs are what it measures to lift off from / land back on.
+  const [active, setActive] = useState(null);
+  const itemRefs = useRef([]);
 
   // The cards' idle float is paused while the page is actually scrolling (a moving
   // backdrop-filter re-samples every frame, and that plus scroll cost frames) and resumes
@@ -80,26 +86,46 @@ export default function About() {
           {TEAM.map((person, i) => {
             const n = String(i + 1).padStart(2, '0');
             return (
-              <li key={person.name} className="about__avatar" data-reveal>
+              <li key={person.name} ref={(el) => { itemRefs.current[i] = el; }} className="about__avatar" data-reveal>
                 <GlassCard radius="small" variant="frost" refraction="card" className="about__avatar-card" contentClassName="about__avatar-card-content">
-                  <span className="about__avatar-slot">
-                    <span className="about__avatar-label">Avatar · {n}</span>
-                    <span className="about__avatar-note">Yer tutucu</span>
-                  </span>
-                  <span className="about__avatar-caps">
-                    <span className="about__avatar-cap about__avatar-cap--name">{person.name}</span>
-                    <span className="about__avatar-cap about__avatar-cap--role">
-                      {person.role.split(' / ').map((line) => (
-                        <span key={line} className="about__avatar-cap-line" style={{ '--chars': line.length }}>{line}</span>
-                      ))}
+                  {/* The whole card is the button (phrasing content only inside, so the markup stays valid); the expanded view is TeamModal. */}
+                  <button
+                    type="button"
+                    className="about__avatar-btn"
+                    aria-haspopup="dialog"
+                    aria-expanded={active === i}
+                    onClick={() => setActive(i)}
+                  >
+                    <span className="about__avatar-slot">
+                      <span className="about__avatar-label">Avatar · {n}</span>
+                      <span className="about__avatar-note">Yer tutucu</span>
                     </span>
-                  </span>
+                    <span className="about__avatar-caps">
+                      <span className="about__avatar-cap about__avatar-cap--name">{person.name}</span>
+                      <span className="about__avatar-cap about__avatar-cap--role">
+                        {person.role.split(' / ').map((line) => (
+                          <span key={line} className="about__avatar-cap-line" style={{ '--chars': line.length }}>{line}</span>
+                        ))}
+                      </span>
+                    </span>
+                    <span className="sr-only"> — detayları göster</span>
+                  </button>
                 </GlassCard>
               </li>
             );
           })}
         </ul>
       </section>
+
+      {active !== null && (
+        <TeamModal
+          key={active}
+          person={TEAM[active]}
+          index={active}
+          sourceEl={itemRefs.current[active]}
+          onClose={() => setActive(null)}
+        />
+      )}
 
       <section className="about__manifesto wrap" aria-label="Manifesto">
         {MANIFESTO.map((para, i) => (

@@ -33,6 +33,10 @@ export default function ScrollCut({ as: Tag = 'section', className = '', range =
     };
     const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(apply); } };
     const onScroll = () => {
+      // While an overlay pins the body (nav sheet, team modal — see scrollLock.js) the page
+      // has not moved, but window.scrollY reads 0: ignore that event or the cut un-cuts
+      // behind the overlay and re-cuts on close.
+      if (document.documentElement.classList.contains('is-menu-open')) return;
       // Never ask for more scroll than the page has (tall tablets): the cut always completes.
       const room = document.documentElement.scrollHeight - window.innerHeight;
       let span = Math.min(window.innerHeight * range, room);

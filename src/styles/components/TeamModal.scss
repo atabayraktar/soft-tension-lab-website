@@ -1,0 +1,211 @@
+@use 'tokens' as *;
+
+// ---------------------------------------------------------------------------
+// The About team card, expanded (TeamModal.jsx). Laid out here at its final size and
+// place; the open/close choreography is Web Animations in the component (transform +
+// opacity only). Two glass layers in this scene: the scrim (a plain blur, not a card)
+// and the card itself — the budget's maximum.
+// ---------------------------------------------------------------------------
+.team-modal {
+  // The close badge straddles the card's corner and reaches ~1rem past it, so the
+  // gutter is never smaller than that plus room to breathe.
+  --tm-gutter: 1.5rem;
+  --tm-w: min(100vw - 2 * var(--tm-gutter), 30rem);
+  --tm-h: calc(100vh - 2 * var(--tm-gutter));
+  --tm-h: calc(100dvh - 2 * var(--tm-gutter));
+  @include up($bp-md) { --tm-gutter: 2rem; }
+  // Phones held sideways: too short to stack the circle over the text — the card goes
+  // wide and the body turns into a row (see .team-modal__body below).
+  @include short-landscape { --tm-w: min(100vw - 2 * var(--tm-gutter), 40rem); }
+}
+
+// Over the nav (120) and the glass scrollbar (130), under the page veil (150).
+// Started at the Showcase's hover blur (4px) + the faintest Ink line tint, but the card
+// itself is a translucent frost glass (22% Paper) sitting on top of this — early in the
+// page, behind the still-uncut "2026" numeral, that little blur left its dark Ink shape
+// legible enough to bleed through the card and fight its own (Ink) text. Heavier blur
+// smears the numeral into a flat wash instead of a hard dark edge, and the stronger tint
+// (still an existing Ink token, not a one-off) gives the card a darkened, even ground to
+// sit on regardless of scroll position.
+.team-modal__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  background: $ink-40;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.team-modal__layer {
+  position: fixed;
+  inset: 0;
+  z-index: 141;
+  display: grid;
+  place-items: center;
+  padding: var(--tm-gutter);
+  overflow: hidden;
+}
+
+// The animated wrapper: the glass + the close badge move as one.
+.team-modal__card {
+  position: relative;
+  display: flex;
+  width: var(--tm-w);
+  max-height: var(--tm-h);
+  // 12% of the width, as the grid cards — capped at the portrait card's value so the
+  // wide landscape-phone card does not round off into a pill.
+  border-radius: calc(min(var(--tm-w), 30rem) * .12);
+  @include focus-ring;
+}
+
+// The same rounded-square card as the grid (radius = 12% of the width, so at the start
+// of the open it lands exactly on the small card's corners). A dialog, not chrome: the
+// droplet inflate is off; the edge light and the light spot stay.
+.team-modal__glass {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: var(--tm-h);
+  border-radius: inherit;
+  --glass-hover-scale: 1;
+  --glass-press-scale: 1;
+}
+
+// The content is the scroll container (a short phone + a long bio): the glass layers
+// stay put behind it.
+.team-modal__content {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.team-modal__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 2.6vw, 1.375rem);
+  padding: clamp(1.25rem, 5vw, 2rem);
+  text-align: center;
+  @include short-landscape {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    column-gap: 1.5rem;
+    align-items: center;
+    text-align: left;
+  }
+}
+
+// The circle: the grid card's placeholder, bigger. Opaque Paper under the tint, as there.
+.team-modal__slot {
+  position: relative;
+  width: min(100%, 16rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  gap: .35rem;
+  text-align: center;
+  border-radius: $r-pill;
+  border: 1px solid $ink-15;
+  overflow: hidden;
+  background: $paper;
+  color: $ink-65;
+  &::before { content: ''; position: absolute; inset: 0; background: $ink-05; }
+  > * { position: relative; }
+  @include up($bp-md) { width: min(100%, 20rem); }
+  @include short-landscape { width: 100%; }
+}
+.team-modal__label { @include label(.8125rem, .2em); }
+.team-modal__note  { @include label(.6875rem, .14em); }
+
+.team-modal__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(.875rem, 2.2vw, 1.125rem);
+  @include short-landscape { align-items: flex-start; }
+}
+.team-modal__caps {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+.team-modal__name {
+  @include label(.8125rem, .16em);
+  margin: 0;
+  color: $paper;
+  text-wrap: balance;
+  @include up($bp-md) { font-size: .875rem; }
+}
+.team-modal__role {
+  @include label(.6875rem, .14em);
+  margin: 0;
+  max-width: none;
+  color: $paper-70;
+  text-wrap: balance;
+}
+// A role with a "/" (co-founder titles) breaks there, slash dropped — as in the grid.
+.team-modal__role-line { display: block; }
+
+// The bio: the only body copy in the card — Whyte, sentence case, mute Paper (the card is
+// a dark tint glass, so its type reads in Paper tones, same family as the footer finale).
+.team-modal__bio {
+  margin: 0;
+  max-width: 34ch;
+  font-family: $font-display;
+  font-weight: 500;
+  font-size: clamp(.9375rem, 2.4vw, 1.0625rem);
+  line-height: 1.55;
+  letter-spacing: -.005em;
+  color: $paper-70;
+  text-wrap: pretty;
+}
+
+// The close badge: an Ink disc centred on the card's top-right corner, half outside it.
+// 2.75rem hit area (touch), 2rem visible. Hover: the cross turns Signal and quarter-turns.
+.team-modal__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  translate: 50% -50%;
+  border-radius: $r-pill;
+  color: $paper;
+  -webkit-tap-highlight-color: transparent;
+  @include focus-ring;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: .375rem;
+    border-radius: inherit;
+    background: $ink;
+  }
+  .team-modal__close-icon {
+    position: relative;
+    width: .875rem;
+    height: .875rem;
+    transition: transform $dur-base $ease-out-expo;
+    i {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1.5px;
+      margin-top: -.75px;
+      background: currentColor;
+      &:first-child { transform: rotate(45deg); }
+      &:last-child  { transform: rotate(-45deg); }
+    }
+  }
+  @include hover {
+    color: $signal;
+    .team-modal__close-icon { transform: rotate(90deg); }
+  }
+  &:active .team-modal__close-icon { transform: rotate(90deg) scale(.9); }
+  @include reduced-motion {
+    .team-modal__close-icon { transition: none; }
+  }
+}

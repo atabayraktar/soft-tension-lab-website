@@ -115,14 +115,32 @@
   --glass-hover-scale: 1.025;
   animation: about-float 5.2s ease-in-out infinite;
   animation-delay: calc(var(--reveal-delay, 0ms) * -8);
+  // The glass root stacks so the button inside can fill the whole card (the quiet glass
+  // below a short caption is clickable too); the absolute glass layers are unaffected.
+  display: flex;
+  flex-direction: column;
+  // Lifted: while this card's expanded view (TeamModal) is open, the card itself is
+  // gone from the grid — the modal took off from its rect and lands back on it.
+  transition: opacity 120ms $ease-out-cubic;
+  .about__avatar[data-lifted] & { opacity: 0; }
   // Paused while the page scrolls (about.jsx toggles the attribute) — keeps scroll at 60fps.
   .about__cluster[data-scrolling] & { animation-play-state: paused; }
   @include fine-pointer {
     transition:
+      opacity 120ms $ease-out-cubic,
       translate $dur-base $ease-out-expo,
       scale var(--glass-dur) var(--glass-ease),
       box-shadow var(--glass-dur) var(--glass-ease);
     &:hover { translate: 0 -5px; }
+    // The press lives on the inner button (GlassCard's own :active hook is for a root
+    // that is itself a button/link).
+    &:has(.about__avatar-btn:active) { scale: var(--glass-press-scale); }
+  }
+  // The focus ring belongs on the card's outline, outside its rounded edge — the button
+  // inside is clipped by the glass root's overflow, so the ring is drawn here instead.
+  &:has(.about__avatar-btn:focus-visible) {
+    outline: 2px solid $signal;
+    outline-offset: 3px;
   }
   @include reduced-motion {
     animation: none;
@@ -130,10 +148,21 @@
   }
 }
 .about__avatar-card-content {
+  flex: 1;
+  display: flex;
+}
+// The card's button: the circle + caption stack, filling the card.
+.about__avatar-btn {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: clamp(.5rem, 1.2vw, .75rem);
+  width: 100%;
   padding: var(--avatar-pad);
+  border-radius: inherit;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  outline: none; // drawn on .about__avatar-card via :has() above — never removed, moved
 }
 
 // Opaque Paper under the placeholder tint — the circle sits over the year's digits.

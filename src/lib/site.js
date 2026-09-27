@@ -49,13 +49,34 @@ export const MANIFESTO = [
   'SÜRECE AÇIK, CANLI BİR STÜDYO OLARAK; SİSTEMATİK TASARIM İLE SANATSAL SEZGİ ARASINDAKİ GERİLİMDEN BESLENİYORUZ. HİKAYESİ OLAN, SAMİMİ VE BÜTÜNSEL İŞLER ORTAYA KOYMAK İÇİN SÜRECİ BAŞTAN SONA BİRLİKTE KURGULUYORUZ.',
 ];
 
-// About page team cluster (§ team, five cards) — this exact order.
+// About page team cluster (§ team, five cards) — this exact order. `bio` is the
+// paragraph shown in the card's expanded view (TeamModal); verbatim studio copy.
 export const TEAM = [
-  { name: 'Cemre Ece Kurtman', role: 'Kurucu Ortak / Ressam & İllüstratör' },
-  { name: 'Ömer Akbaş', role: 'Kurucu Ortak / Marka Kimliği & Tasarım Sistemleri' },
-  { name: 'Celal Karakuş', role: 'Motion Design & Ses Tasarımı' },
-  { name: 'Ata Bayraktar', role: 'Web Tasarımı & Arayüz' },
-  { name: 'Atike & Çocuk', role: 'Duygusal Destek' },
+  {
+    name: 'Cemre Ece Kurtman',
+    role: 'Kurucu Ortak / Ressam & İllüstratör',
+    bio: 'Tuval, kâğıt ve fiziksel üretim teknikleriyle projelere organik dokunuşlar katıyor. Stüdyonun "sanatsal sezgi" tarafını ve bağımsız üretim pratiğini yönlendiriyor.',
+  },
+  {
+    name: 'Ömer Akbaş',
+    role: 'Kurucu Ortak / Marka Kimliği & Tasarım Sistemleri',
+    bio: 'Markaların görsel dünyalarını mimari bir titizlikle inşa ediyor. Logo sistemlerini ve marka kılavuzlarını kurgulayarak, stüdyonun o "sistematik tasarım" aklını temsil ediyor.',
+  },
+  {
+    name: 'Celal Karakuş',
+    role: 'Motion Design & Ses Tasarımı',
+    bio: 'Statik tasarımları ve markanın sesini ekranda harekete geçiriyor. İşin kurgusunu, hareketli grafiklerini ve işitsel dünyasını tasarlayarak projelerin dinamik ritmini belirliyor.',
+  },
+  {
+    name: 'Ata Bayraktar',
+    role: 'Web Tasarımı & Arayüz',
+    bio: 'Kimliği dijital dünyaya taşıyor, markanın ekrandaki yaşam alanını kodlar ve piksellerle kuruyor. Görselin arkasında pürüzsüz çalışan, temiz arayüzler ve web mimarileri tasarlıyor.',
+  },
+  {
+    name: 'Atike & Çocuk',
+    role: 'Duygusal Destek',
+    bio: 'Stüdyonun en yoğun anlarında sürece doğrudan müdahale ederek stresi sıfırlıyorlar. Ekran önünde uyuyarak veya kritik anlarda klavyeye basarak ekibi dengede tutuyorlar.',
+  },
 ];
 
 // The two lead lines from brand_guidelines.html §01 — used as the short copy
