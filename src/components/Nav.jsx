@@ -84,6 +84,19 @@ export default function Nav({ theme = 'light' }) {
   // A section link is never "the current page".
   const isActive = (href) => !href.includes('#') && (router.asPath === href || router.asPath.startsWith(href));
 
+  // iOS WebKit (Safari and, since it's the same engine, Chrome-for-iOS too) spends a tap
+  // outside a focused text field just dismissing the keyboard — it does not also deliver a
+  // click to whatever was tapped. On Contact, where a form field is often still focused,
+  // that ate the first tap on the toggle (and any nav link): open the menu, then tap it
+  // again and nothing happens. Blurring on the physical touch-down, ahead of that, lets the
+  // same tap's click go through once the field lets go.
+  const onNavPointerDown = () => {
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT' || active.isContentEditable)) {
+      active.blur();
+    }
+  };
+
   const onItemClick = (item) => (e) => {
     if (!item.scroll) return;
     if (router.pathname === '/') {
@@ -113,12 +126,21 @@ export default function Nav({ theme = 'light' }) {
   // PageVeil (registered after this, so its reveal is queued behind this) is still holding
   // it invisible, and the app-level scroll-to-top has run — so land here, without motion,
   // and the section is what fades in.
+  //
+  // Same font wait as the direct-URL effect below, and for the same reason: the Home hero
+  // runs Whyte Inktrap Heavy/Black at a huge display size, so the fallback-font layout it
+  // paints with before the font swaps in is a materially different height. Landing against
+  // that transient layout (this used to fire on the very next two frames) computes a
+  // scroll position for a page that is about to reflow out from under it — on a phone,
+  // where the font is slower to arrive, that was enough to land near the very bottom of the
+  // page instead of at #hizmetler once everything settled.
   useEffect(() => {
     const done = () => {
       const id = pending.current;
       if (!id) return;
       pending.current = null;
-      requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(id, { immediate: true })));
+      const land = () => requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(id, { immediate: true })));
+      (document.fonts?.ready ?? Promise.resolve()).then(land, land);
     };
     const fail = () => { pending.current = null; };
     router.events.on('routeChangeComplete', done);
@@ -180,11 +202,11 @@ export default function Nav({ theme = 'light' }) {
   }, [open]);
 
   return (
-    <header ref={navRef} className={`nav nav--${navTheme} ${open ? 'is-open' : ''}`.trim()}>
+    <header ref={navRef} className={`nav nav--${navTheme} ${open ? 'is-open' : ''}`.trim()} onPointerDown={onNavPointerDown}>
       <a href="#main" className="skip-link">İçeriğe atla</a>
 
       <GlassCard as="div" variant="frost" refraction="nav" radius="pill" className="nav__bar" contentClassName="nav__inner">
-        <Link href="/" className="nav__brand" aria-label="Soft Tension Lab — ana sayfa">
+        <Link href="/" className="nav__brand" aria-label="SOFT TENSION LAB — ana sayfa">
           <Logo variant="ana" className="nav__ana" decorative />
         </Link>
 

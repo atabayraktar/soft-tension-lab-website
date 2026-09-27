@@ -13,7 +13,7 @@ export default function HoldingPage() {
     <main className="holding grain" id="main">
       <Seo title="Website Coming Soon" description={`${SITE.name} — website coming soon. ${SITE.email}`} path="/" />
       <header className="holding__top">
-        <Logo variant="logotype" className="holding__mark" title="Soft Tension Lab" />
+        <Logo variant="logotype" className="holding__mark" title="SOFT TENSION LAB" />
       </header>
 
       <div className="holding__center" data-topple-scope>

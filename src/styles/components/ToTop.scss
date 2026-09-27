@@ -1,9 +1,10 @@
 @use 'tokens' as *;
 
-// Round glass button, bottom-right, phones and tablets (the component is not rendered
-// elsewhere). It only exists at the very bottom of a page, where the footer fills the
-// bottom of the screen — so it is lifted by the footer's own height (--footer-h, set by
-// Footer) and rests just above it.
+// Round glass button, bottom-right, every breakpoint. It only exists at the very bottom of
+// a page, where the footer fills the bottom of the screen — so it is lifted by the footer's
+// own height (--footer-h, set by Footer) and rests just above it. Genuinely transparent
+// (GlassCard's `clear` tint, not a solid fill) — only the arrow's colour flips to match
+// whichever footer it happens to sit on (light Paper footer vs. a dark/black one).
 .totop {
   position: fixed;
   right: max(1rem, env(safe-area-inset-right));
@@ -13,13 +14,13 @@
   height: 2.75rem;
   padding: 0;
   border: 0;
-  color: $paper;
+  color: $ink;
   cursor: pointer;
   @include focus-ring;
   animation: totop-in 320ms $ease-out-expo both;
 }
-// A denser Ink veil than the stock tint so the Paper arrow keeps its contrast on any footer.
-.totop .lg__tint { background: rgba(3, 23, 58, .66); }
+.totop--dark,
+.totop--black { color: $paper; }
 .totop__inner {
   display: grid;
   place-items: center;

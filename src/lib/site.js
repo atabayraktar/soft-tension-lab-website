@@ -2,7 +2,7 @@
 // Copy is inherited from the brief / existing site — never paraphrase it here.
 
 export const SITE = {
-  name: 'Soft Tension Lab',
+  name: 'SOFT TENSION LAB',
   shortName: 'STL',
   url: 'https://softtensionlab.com',
   email: 'hello@softtensionlab.com',
@@ -15,7 +15,7 @@ export const SITE = {
   tagline: 'Lead With Tension',
   locale: 'tr_TR',
   description:
-    'Soft Tension Lab; sanat, tasarım ve kültürün kesişiminde yer alan bağımsız bir kreatif stüdyodur. Multidisipliner sanatçıların oyun alanı; sürece açık, canlı bir stüdyo.',
+    'SOFT TENSION LAB; sanat, tasarım ve kültürün kesişiminde yer alan bağımsız bir kreatif stüdyodur. Multidisipliner sanatçıların oyun alanı; sürece açık, canlı bir stüdyo.',
   ogImage: '/og.png',
 };
 

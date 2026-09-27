@@ -31,7 +31,7 @@ export default function Footer({ theme = 'light' }) {
   return (
     <footer ref={ref} className={`footer footer--${theme} ${grain}`.trim()} data-nav-invert={theme !== 'light' ? true : undefined}>
       <div className="wrap footer__row">
-        <Link href="/" className="footer__brand" aria-label="Soft Tension Lab — ana sayfa">
+        <Link href="/" className="footer__brand" aria-label="SOFT TENSION LAB — ana sayfa">
           <Logo variant="monogram" className="footer__mark" decorative />
           <Logo variant="logotype" className="footer__mark" decorative />
         </Link>

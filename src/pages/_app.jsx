@@ -51,7 +51,7 @@ export default function App({ Component, pageProps }) {
         <Component {...pageProps} />
         {!bare ? <Footer theme={footerTheme} /> : null}
       </PageVeil>
-      <ToTop />
+      <ToTop theme={bare ? 'light' : footerTheme} />
     </>
   );
 }

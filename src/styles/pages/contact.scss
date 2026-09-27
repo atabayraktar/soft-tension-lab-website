@@ -10,6 +10,10 @@
   gap: clamp(2rem, 6vw, 4rem) var(--gutter);
   padding-top: clamp(2.5rem, 7vw, 5rem);
   padding-bottom: var(--section);
+  // Done state: the tall form's own bottom padding was sized for it, not for the short
+  // "Teşekkürler." block left behind — keeping it just pushes the footer off-screen for
+  // no reason, so a normal viewport ends up scrolling to show nothing but empty space.
+  &:has(.cform--done) { @include up($bp-lg) { padding-bottom: clamp(1.5rem, 4vw, 2.5rem); } }
   @include up($bp-lg) {
     // Desktop: a plain 2-column grid — .contact__left (title+socials, its
     // own natural height) beside .contact__right (the form). Deliberately
@@ -21,7 +25,12 @@
     grid-template-columns: 1.15fr 1fr;
     align-items: start;
   }
-  @include up($bp-xl) { min-height: calc(100svh - var(--nav-top) - var(--nav-h)); }
+  // Footer's real measured height (--footer-h, set by Footer.jsx) comes off the floor too —
+  // otherwise this min-height fills the viewport right up to the fold and the footer always
+  // adds an extra footer-height of scroll below it, whatever the content's actual size (the
+  // long form is always taller than the floor anyway, but the short post-submit "Teşekkürler."
+  // state is not).
+  @include up($bp-xl) { min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--footer-h, 0px)); }
 }
 
 .contact__left {
@@ -58,17 +67,39 @@
   // loosening the line spacing visibly. (No top-side room is needed: the caps sit inside
   // the line box now that every engine uses the same font metrics — see globals.scss.)
   .mask { padding-bottom: .08em; }
+  // mask--2 ("Tanışalım.") needs more than mask--1 ("Hadi", no descenders): its own
+  // cedilla sits lower still once italic (the synthesized slant nudges the glyph's
+  // rendered extent down a bit further on top of the .08em headroom above).
+  .mask--2 { padding-bottom: .18em; }
 }
+
+// No Heavy Italic face exists for Whyte Inktrap — the browser synthesizes the slant on
+// this weight, which is the intended look here (there's nothing to fall back to).
+.contact__title-italic { font-style: italic; }
 
 .contact__right {
   order: 3;
-  @include up($bp-lg) { order: initial; padding-top: .75rem; }
+  @include up($bp-lg) {
+    order: initial;
+    padding-top: .75rem;
+    // Done state: no need for the nudge that aligns the form's first field with the
+    // title baseline — "Teşekkürler." sits flush at the top instead.
+    &:has(.cform--done) { padding-top: 0; }
+  }
 }
 
 .contact__social-block {
-  order: 2;
-  display: flex;
-  justify-content: flex-end;   // right-aligned at every breakpoint now
-  @include up($bp-lg) { order: initial; }
-  .contact__social { margin-right: -.6rem; }   // optically align the last icon's glyph to the true edge
+  // Footer already carries these on every page/breakpoint — on mobile/tablet the
+  // Contact page itself skips them to keep the stacked layout tight.
+  display: none;
+  @include up($bp-lg) {
+    display: flex;
+    order: initial;
+    justify-content: flex-end;   // right-aligned
+  }
+  .contact__social {
+    margin-right: -1rem;   // optically align the last icon's glyph to the true edge
+    .social__link { width: 4.25rem; height: 4.25rem; }
+    svg { width: 2.15rem; height: 2.15rem; }
+  }
 }

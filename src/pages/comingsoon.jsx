@@ -9,7 +9,7 @@ import NotifyForm from '../components/NotifyForm';
 export default function ComingSoon() {
   return (
     <main className="comingsoon grain on-dark" id="main">
-      <Seo title="Yakında" description="Soft Tension Lab — yakında." path="/comingsoon/" noindex />
+      <Seo title="Yakında" description="SOFT TENSION LAB — yakında." path="/comingsoon/" noindex />
 
       <div className="comingsoon__center">
         <img src="/images/burgu.webp" alt="" className="comingsoon__mark" width={841} height={497} decoding="async" />

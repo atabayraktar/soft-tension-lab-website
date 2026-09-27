@@ -30,7 +30,7 @@ html,body{margin:0}body{width:1200px;height:630px;background:#03173A;color:#F0EE
 </style></head><body>
 <div class="mark">${logotype}</div>
 <div class="line">Multidisipliner sanatçıların oyun alanı.<br>Sürece açık, canlı bir stüdyo.</div>
-<div class="label">Soft Tension Lab · Lead With Tension · hello@softtensionlab.com</div>
+<div class="label">SOFT TENSION LAB · Lead With Tension · hello@softtensionlab.com</div>
 <div class="sig"></div>
 </body></html>`;
 

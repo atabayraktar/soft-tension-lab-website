@@ -1,13 +1,16 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button';
 import Select from './Select';
 import { SITE } from '../lib/site';
+import { getLenis } from '../lib/useSmoothScroll';
 
 const PROJECT_TYPES = [
   'Logo tasarımı',
   'Marka kimlik sistemi',
   'Marka yenileme (rebranding)',
-  'Sunum / pitch deck tasarımı',
+  'Web tasarımı & arayüz',
+  'Motion design',
+  'Kreatif danışmanlık & geleneksel sanat eğitimi',
   'Diğer',
 ];
 
@@ -60,6 +63,15 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({});
   const honeypotRef = useRef(null);
 
+  // The form can be many screens tall by the time it's submitted — once it collapses to
+  // the short "Teşekkürler." message, snap back to the top so that message sits beside
+  // "Hadi Tanışalım." instead of wherever the scroll happened to be.
+  useEffect(() => {
+    if (!sent) return;
+    getLenis()?.scrollTo(0, { immediate: true, force: true });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [sent]);
+
   const setFieldError = (id, msg) => {
     setErrors((prev) => {
       if (!msg) {
@@ -91,8 +103,6 @@ export default function ContactForm() {
     setFieldError(id, validate(values[id]));
   };
 
-  const isValid = REQUIRED_IDS.every((id) => !VALIDATORS[id](values[id]));
-
   const onSubmit = async (e) => {
     e.preventDefault();
     const next = {};
@@ -123,7 +133,7 @@ export default function ContactForm() {
         body: JSON.stringify({
           access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
           subject: `Proje talebi — ${values.name}`,
-          from_name: 'Soft Tension Lab — İletişim Formu',
+          from_name: 'SOFT TENSION LAB — İletişim Formu',
           email: values.email,
           botcheck: false,
           'Ad Soyad': values.name,
@@ -258,7 +268,7 @@ export default function ContactForm() {
       )}
 
       <div className="cform__actions">
-        <Button type="submit" surface="glass" arrow={null} disabled={!isValid || sending}>
+        <Button type="submit" surface="glass" arrow={null} disabled={sending}>
           {sending ? 'Gönderiliyor…' : 'Gönder'}
         </Button>
         {submitError ? (

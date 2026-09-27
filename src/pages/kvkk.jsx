@@ -11,10 +11,10 @@ export default function Kvkk() {
     <main id="main" className="kvkk">
       <Seo
         title="KVKK Aydınlatma Metni"
-        description="Soft Tension Lab — 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel verilerin işlenmesine ilişkin aydınlatma metni."
+        description="SOFT TENSION LAB — 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel verilerin işlenmesine ilişkin aydınlatma metni."
         path="/kvkk/"
       />
-      <a href="/" className="kvkk__stamp" aria-label="Soft Tension Lab — ana sayfa">
+      <a href="/" className="kvkk__stamp" aria-label="SOFT TENSION LAB — ana sayfa">
         <Logo variant="monogram" decorative />
       </a>
       <div className="kvkk__inner wrap">
@@ -26,7 +26,7 @@ export default function Kvkk() {
           <h2>1. Veri Sorumlusu</h2>
           <p>
             6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, veri sorumlusu sıfatıyla
-            Soft Tension Lab ("Stüdyo", "biz"), softtensionlab.com internet sitesi ("Site") üzerinden
+            SOFT TENSION LAB ("Stüdyo", "biz"), softtensionlab.com internet sitesi ("Site") üzerinden
             iletişim formunu doldurmanız halinde ilettiğiniz kişisel verilerinizi işbu aydınlatma
             metninde açıklanan kapsam ve amaçlarla işlemektedir.
           </p>

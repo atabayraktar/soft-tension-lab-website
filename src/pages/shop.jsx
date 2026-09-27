@@ -6,7 +6,7 @@ import NotifyForm from '../components/NotifyForm';
 export default function Shop() {
   return (
     <main id="main" className="page shop">
-      <Seo title="Shop" description="Soft Tension Lab shop — coming soon." path="/shop/" />
+      <Seo title="Mağaza" description="SOFT TENSION LAB shop — coming soon." path="/shop/" />
       <section className="shop__inner wrap" aria-labelledby="shop-title">
         <div className="shop__illo" data-reveal>
           <Mascot variant="b" eager />

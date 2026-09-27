@@ -42,7 +42,7 @@ const VARIANTS = {
   },
 };
 
-export default function Logo({ variant = 'ana', className = '', title = 'Soft Tension Lab', decorative = false }) {
+export default function Logo({ variant = 'ana', className = '', title = 'SOFT TENSION LAB', decorative = false }) {
   const v = VARIANTS[variant] || VARIANTS.ana;
   return (
     <svg

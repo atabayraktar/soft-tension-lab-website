@@ -232,6 +232,12 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
     padding-block: .1em;
     @include hover { color: $signal; }
     &.is-active { color: $signal; }
+    // The item clips its own box (the slide-up reveal, above) tight to the link's line —
+    // the global focus ring's default +3px offset pokes past that on three sides and gets
+    // cut, leaving a stray sliver on the one side the clip happens not to reach (seen on
+    // "Hizmetler", auto-focused when the sheet opens). Same fix as Services.scss's
+    // full-bleed rows: draw the ring inside instead.
+    &:focus-visible { outline-offset: -3px; }
   }
   @for $i from 1 through 5 {
     &--#{$i} .nav__sheet-link { transition-delay: 15ms * (5 - $i); }

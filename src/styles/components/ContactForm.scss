@@ -9,6 +9,7 @@
 // "Son sorular") lifted verbatim from the studio's Tally question set.
 .cform__section {
   @include label(.6875rem, .2em);
+  font-style: italic;
   // .65, not .40: these are words at 11px — the faint tier is 2.5:1 on Paper and fails
   // AA (see the .label rule in globals.scss); .65 is 5.3:1.
   color: $ink-65;
@@ -117,6 +118,7 @@
 .cform--done {
   padding-top: 1.5rem;
   gap: 1rem;
+  @include up($bp-lg) { padding-top: 0; }
   .cform__done-title { font-weight: 800; font-size: clamp(1.75rem, 4vw, 2.75rem); letter-spacing: -.03em; line-height: 1; }
   .cform__done-copy { color: $ink-65; max-width: 40ch; }
 }

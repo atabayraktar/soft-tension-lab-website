@@ -15,7 +15,7 @@ const ABOUT_JSON_LD = [
     '@type': 'AboutPage',
     '@id': `${ABOUT_URL}#aboutpage`,
     url: ABOUT_URL,
-    name: `About — ${SITE.name}`,
+    name: `Hakkında — ${SITE.name}`,
     inLanguage: 'tr',
     isPartOf: { '@id': WEBSITE_ID },
     about: { '@id': ORG_ID },
@@ -25,13 +25,14 @@ const ABOUT_JSON_LD = [
 ];
 
 // MANIFESTO is stored verbatim in uppercase (site.js); it is displayed in sentence case.
-// Turkish-locale casing: İ/i and I/ı are distinct letters. The studio name is English and a
-// proper noun, so it is restored after the Turkish pass (which would give "tensıon").
+// Turkish-locale casing: İ/i and I/ı are distinct letters. The studio name stays full-caps
+// everywhere on the site, so it is restored after the Turkish pass (which would otherwise
+// give "tensıon" — plus the site never uses "Soft Tension Lab", only "SOFT TENSION LAB").
 function toSentenceCase(str) {
   const lower = str.toLocaleLowerCase('tr-TR');
   return lower
     .replace(/(^\s*\p{L}|[.!?]\s+\p{L})/gu, (m) => m.toLocaleUpperCase('tr-TR'))
-    .replace(/soft tens[ıi]on lab/gi, 'Soft Tension Lab');
+    .replace(/soft tens[ıi]on lab/gi, 'SOFT TENSION LAB');
 }
 
 export default function About() {
@@ -59,8 +60,8 @@ export default function About() {
   return (
     <main id="main" className="page about">
       <Seo
-        title="About"
-        description="Soft Tension Lab; sanat, tasarım ve kültürün kesişiminde yer alan bağımsız bir kreatif stüdyodur. Sistematik tasarım ile sanatsal sezgi arasındaki gerilimden besleniyoruz."
+        title="Hakkında"
+        description="SOFT TENSION LAB; sanat, tasarım ve kültürün kesişiminde yer alan bağımsız bir kreatif stüdyodur. Sistematik tasarım ile sanatsal sezgi arasındaki gerilimden besleniyoruz."
         path="/about/"
         jsonLd={ABOUT_JSON_LD}
       />

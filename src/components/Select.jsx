@@ -106,7 +106,7 @@ export default function Select({ id, options, value, onChange, onBlur, required,
         </span>
       </button>
       {open ? (
-        <ul id={listboxId} className="select__panel" role="listbox" aria-label={placeholder}>
+        <ul id={listboxId} className="select__panel" role="listbox" aria-label={placeholder} data-lenis-prevent>
           {options.map((o, i) => (
             <li
               key={o}

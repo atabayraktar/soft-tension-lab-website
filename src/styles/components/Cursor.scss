@@ -15,12 +15,12 @@
   opacity: 0;
   display: none;
 
-  &--v { width: 1px; height: 100vh; transform: translate3d(-100px, 0, 0); }
-  &--h { width: 100vw; height: 1px; transform: translate3d(0, -100px, 0); }
+  &--v { width: .75px; height: 100vh; transform: translate3d(-100px, 0, 0); }
+  &--h { width: 100vw; height: .75px; transform: translate3d(0, -100px, 0); }
 
   @include fine-pointer {
     display: block;
-    &.is-visible { opacity: .3; }
+    &.is-visible { opacity: .22; }
   }
   @include reduced-motion { display: none; }
 }
