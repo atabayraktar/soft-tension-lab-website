@@ -4,8 +4,8 @@
 .about {
   --year: 42.6vw; // the ink runs ~1.8% wider than the viewport: a small, equal crop of the 2 and the 6
   // --avatar is the glass card's footprint (the grid unit); the circle inside is that minus the padding.
-  --avatar: clamp(6.25rem, 27vw, 15rem);
-  --avatar-pad: clamp(.625rem, 1.4vw, 1rem);
+  --avatar: clamp(6.75rem, 29vw, 16.25rem);
+  --avatar-pad: clamp(.75rem, 1.5vw, 1.125rem);
   --avatar-gap: clamp(.75rem, 2vw, 1.5rem);
   --overlap: calc(var(--year) * .3);
   @include up($bp-md) { --overlap: calc(var(--year) * .42); }
@@ -20,7 +20,7 @@
   // and the labels keep their phone sizes inside the smaller circle.
   @include short-landscape {
     --year: 42.6vw;
-    --avatar: clamp(5.5rem, 17vw, 8.5rem);
+    --avatar: clamp(6rem, 18.5vw, 9.25rem);
     --overlap: calc(var(--year) * .42);
   }
 }
@@ -106,6 +106,11 @@
 }
 .about__avatar-card {
   width: 100%;
+  // The grid row already stretches each <li> to the row's tallest card (default
+  // align-items: stretch) — this makes the glass surface itself fill that height too,
+  // instead of just hugging its own (shorter) content. Same row, same card height; a
+  // shorter caption just leaves quiet glass below it rather than a visibly smaller card.
+  height: 100%;
   border-radius: calc(var(--avatar) * .12);
   --glass-hover-scale: 1.025;
   animation: about-float 5.2s ease-in-out infinite;
@@ -148,37 +153,58 @@
   &::before { content: ''; position: absolute; inset: 0; background: $ink-05; }
   > * { position: relative; }
 }
-.about__avatar-label { @include label(.625rem, .16em); }
-.about__avatar-note  { @include label(.5625rem, .14em); }
+.about__avatar-label { @include label(.6875rem, .16em); }
+.about__avatar-note  { @include label(.625rem, .14em); }
 @include up($bp-md) {
-  .about__avatar-label { font-size: .75rem; letter-spacing: .2em; }
-  .about__avatar-note  { font-size: .625rem; }
+  .about__avatar-label { font-size: .8125rem; letter-spacing: .2em; }
+  .about__avatar-note  { font-size: .6875rem; }
 }
 @include short-landscape {
-  .about__avatar-label { font-size: .625rem; letter-spacing: .16em; }
-  .about__avatar-note  { font-size: .5625rem; }
+  .about__avatar-label { font-size: .6875rem; letter-spacing: .16em; }
+  .about__avatar-note  { font-size: .625rem; }
 }
 
-// Caption pair under the circle, inside the card, left + right: where the pair does not
-// fit on one line (phone-sized cards) the right one drops to its own line and keeps its
-// edge, so neighbouring cards never touch.
+// Name + role, stacked under the circle, inside the card. Real copy (unlike the circle's
+// still-placeholder illustration), so it wraps freely instead of the single-line caption
+// pair this card was first built around — roles range from three words to eight.
 .about__avatar-caps {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  row-gap: .125rem;
-  column-gap: .5rem;
+  flex-direction: column;
+  gap: .2rem;
+  text-align: center;
 }
 .about__avatar-cap {
-  @include label(.5rem, .12em);
-  white-space: nowrap;
+  @include label(.625rem, .1em);
   color: $ink-65;
-  &--right { margin-left: auto; }
-  @include up($bp-md) { font-size: .5625rem; letter-spacing: .16em; }
+  text-wrap: balance;
+  &--name { color: $ink; font-weight: 700; }
+  @include up($bp-md) { font-size: .6875rem; letter-spacing: .14em; }
+}
+// A role with a "/" (co-founder titles) breaks there instead of showing the slash —
+// "Kurucu Ortak" on its own line, the specialty below it, which still wraps normally
+// (it can run to two lines, e.g. Ömer's — see the card-height note above).
+.about__avatar-cap-line { display: block; }
+.about__avatar-cap-line:first-child:not(:last-child) { white-space: nowrap; letter-spacing: .04em; }
+
+// A role with no "/" (one segment — Motion Design, Web Design, the acknowledgement line)
+// is kept to one line too, from tablet up: the reference-fit trick above only had one known
+// string ("Kurucu Ortak") to size for; here the length varies per person, so `--chars` (its
+// character count, set inline in about.jsx) drives the shrink instead of a fixed number —
+// each one only shrinks as much as it actually needs to fit the card. Phone-width cards
+// (< md) simply don't have the room for the longest one ("Motion Design & Ses Tasarımı")
+// at any legible size without forcing the whole 3-across row wider than the screen, so
+// there it keeps the normal two-line wrap instead.
+@include up($bp-md) {
+  .about__avatar-cap-line:only-child {
+    white-space: nowrap;
+    letter-spacing: .04em;
+    font-size: clamp(.5625rem, calc((var(--avatar) - 2 * var(--avatar-pad)) / (var(--chars, 20) * .64)), .6875rem);
+  }
 }
 
 // ---------------------------------------------------------------------------
-// Manifesto — the two paragraphs side by side, paragraph 1 ragged right, 2 ragged left.
+// Manifesto — the two paragraphs side by side, each ragged toward the outer edge and
+// aligned toward the centre gap: paragraph 1 (left) right-aligned, 2 (right) left-aligned.
 // Sentence case is applied at render time (see toSentenceCase in about.jsx).
 // ---------------------------------------------------------------------------
 .about__manifesto {
@@ -191,7 +217,7 @@
 }
 
 .about__para {
-  font-weight: 700;
+  font-weight: 500;
   font-size: clamp(.72rem, 2vw, 1.4rem);
   line-height: 1.3;
   letter-spacing: -.015em;
@@ -199,8 +225,8 @@
   text-wrap: pretty;
   // Portrait phones: larger type against the same column gap (the gap is not touched).
   @media (max-width: #{$bp-md - 1px}) { font-size: .875rem; }
-  &--1 { text-align: left; }
-  &--2 { text-align: right; }
+  &--1 { text-align: right; }
+  &--2 { text-align: left; }
 }
 
 // ---------------------------------------------------------------------------

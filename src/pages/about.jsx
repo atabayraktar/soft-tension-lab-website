@@ -3,9 +3,7 @@ import Seo, { ORG_ID, WEBSITE_ID } from '../components/Seo';
 import Logo from '../components/Logo';
 import GlassCard from '../components/GlassCard';
 import ScrollCut from '../components/ScrollCut';
-import { SITE, MANIFESTO } from '../lib/site';
-
-const AVATARS = Array.from({ length: 5 }, (_, i) => String(i + 1).padStart(2, '0'));
+import { SITE, MANIFESTO, TEAM } from '../lib/site';
 
 // Page-level structured data: the About page + the two founders (first names only —
 // that is all the studio has published; see the `founder` array in Seo.jsx).
@@ -77,22 +75,29 @@ export default function About() {
       </ScrollCut>
 
       <section className="about__team wrap" aria-label="Ekip">
-        {/* Five full-refraction glass cards + the nav: intentionally over the glass-surface budget (4 per screen, 2 on mobile) — a page-specific exception per explicit client direction for /about. GlassCard still degrades on its own (data-glass). */}
-        <ul ref={clusterRef} className="about__cluster" aria-label="İllüstrasyon avatarlar (yer tutucu)">
-          {AVATARS.map((n) => (
-            <li key={n} className="about__avatar" data-reveal>
-              <GlassCard radius="small" variant="frost" refraction="card" className="about__avatar-card" contentClassName="about__avatar-card-content">
-                <span className="about__avatar-slot">
-                  <span className="about__avatar-label">Avatar · {n}</span>
-                  <span className="about__avatar-note">Yer tutucu</span>
-                </span>
-                <span className="about__avatar-caps" lang="en">
-                  <span className="about__avatar-cap about__avatar-cap--left">info text</span>
-                  <span className="about__avatar-cap about__avatar-cap--right">info text</span>
-                </span>
-              </GlassCard>
-            </li>
-          ))}
+        {/* Five full-refraction glass cards + the nav: intentionally over the glass-surface budget (4 per screen, 2 on mobile) — a page-specific exception per explicit client direction for /about. GlassCard still degrades on its own (data-glass). The circle illustration itself is still a placeholder (no real portraits yet); the name/role caption underneath is real. */}
+        <ul ref={clusterRef} className="about__cluster" aria-label="Ekip üyeleri">
+          {TEAM.map((person, i) => {
+            const n = String(i + 1).padStart(2, '0');
+            return (
+              <li key={person.name} className="about__avatar" data-reveal>
+                <GlassCard radius="small" variant="frost" refraction="card" className="about__avatar-card" contentClassName="about__avatar-card-content">
+                  <span className="about__avatar-slot">
+                    <span className="about__avatar-label">Avatar · {n}</span>
+                    <span className="about__avatar-note">Yer tutucu</span>
+                  </span>
+                  <span className="about__avatar-caps">
+                    <span className="about__avatar-cap about__avatar-cap--name">{person.name}</span>
+                    <span className="about__avatar-cap about__avatar-cap--role">
+                      {person.role.split(' / ').map((line) => (
+                        <span key={line} className="about__avatar-cap-line" style={{ '--chars': line.length }}>{line}</span>
+                      ))}
+                    </span>
+                  </span>
+                </GlassCard>
+              </li>
+            );
+          })}
         </ul>
       </section>
 

@@ -45,8 +45,17 @@ export const HERO_LINES = [
 ];
 
 export const MANIFESTO = [
-  'SOFT TENSION LAB; SANAT, TASARIM VE KÜLTÜRÜN KESİŞİMİNDE YER ALAN BAĞIMSIZ BİR KREATİF STÜDYODUR. KAVRAMSAL DÜŞÜNCEYİ SOMUT GÖRSEL KİMLİKLERE DÖNÜŞTÜREREK, MARKALAR VE SANATÇILAR İÇİN ESTETİK DUVARLARI YIKIYORUZ.',
-  'SÜRECE AÇIK, CANLI BİR STÜDYO OLARAK; SİSTEMATİK TASARIM İLE SANATSAL SEZGİ ARASINDAKİ GERİLİMDEN BESLENİYORUZ. HİKAYESİ OLAN, SAMİMİ VE BÜTÜNSEL DENEYİMLER YARATMAK İÇİN BİRLİKTE HAREKETE GEÇELİM.',
+  'SOFT TENSION LAB; SANAT, TASARIM VE KÜLTÜRÜN KESİŞİMİNDE YER ALAN BAĞIMSIZ BİR KREATİF STÜDYODUR. KAVRAMSAL DÜŞÜNCEYİ SOMUT GÖRSEL KİMLİKLERE DÖNÜŞTÜRÜYOR; MARKALAR VE SANATÇILAR İÇİN ÖZGÜN, YAŞAYAN SİSTEMLER KURUYORUZ.',
+  'SÜRECE AÇIK, CANLI BİR STÜDYO OLARAK; SİSTEMATİK TASARIM İLE SANATSAL SEZGİ ARASINDAKİ GERİLİMDEN BESLENİYORUZ. HİKAYESİ OLAN, SAMİMİ VE BÜTÜNSEL İŞLER ORTAYA KOYMAK İÇİN SÜRECİ BAŞTAN SONA BİRLİKTE KURGULUYORUZ.',
+];
+
+// About page team cluster (§ team, five cards) — this exact order.
+export const TEAM = [
+  { name: 'Cemre Ece Kurtman', role: 'Kurucu Ortak / Ressam & İllüstratör' },
+  { name: 'Ömer Akbaş', role: 'Kurucu Ortak / Marka Kimliği & Tasarım Sistemleri' },
+  { name: 'Celal Karakuş', role: 'Motion Design & Ses Tasarımı' },
+  { name: 'Ata Bayraktar', role: 'Web Tasarımı & Arayüz' },
+  { name: 'Atike & Çocuk', role: 'Duygusal Destek' },
 ];
 
 // The two lead lines from brand_guidelines.html §01 — used as the short copy
