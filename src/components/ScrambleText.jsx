@@ -11,8 +11,10 @@ const HALF = 500;         // ms — colour in; the same again going back (yoyo).
 const TICK = 3400;        // ms between waves; each wave takes the next line
 const FIRST = 1200;       // ms before the first wave
 const RESIZE_WAIT = 150;  // ms debounce before lines are re-measured
+const REST = 4000;        // ms of plain text between auto-waves — `hoverGate` on touch only
 
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fine = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /**
  * Per-line "glyph wave": from a line's centre outward, each glyph flips to a random
@@ -33,7 +35,10 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matc
 // `once`: a single wave over every line at once, then the engine stops and the root gets
 // `is-settled` (state, so a re-render never wipes it) — the services title runs its wave
 // only while its column opens and then settles into its final colour.
-export default function ScrambleText({ text, as: Tag = 'p', className = '', startDelay = 0, firstDelay = FIRST, once = false, ...rest }) {
+// `hoverGate`: the footer-finale lines' variant — never autoplays on a fine pointer (hover
+// triggers one all-lines wave instead); on touch it still autoplays, but as a wave-then-rest
+// cycle (REST of plain text between waves) rather than the default's endless per-line chain.
+export default function ScrambleText({ text, as: Tag = 'p', className = '', startDelay = 0, firstDelay = FIRST, once = false, hoverGate = false, ...rest }) {
   const rootRef = useRef(null);
   const engineRef = useRef(null);
   const words = useMemo(() => text.split(' '), [text]);
@@ -141,36 +146,54 @@ export default function ScrambleText({ text, as: Tag = 'p', className = '', star
       line.forEach((c, i) => glitch(c, Math.abs(i - mid) * WAVE_STEP));
     };
 
-    // Once: every line waves together, and the root settles when the last glyph has reset.
-    const waveAll = () => {
-      if (!lineChars.length) return;
+    // Every line waves together; returns the wave's total duration (ms) and, when given,
+    // calls `onDone` once the last glyph involved has reset (used by `once` to settle).
+    const waveAll = (onDone) => {
+      if (!lineChars.length) return 0;
       let longest = 0;
       lineChars.forEach((line) => {
         const mid = (line.length - 1) / 2;
         line.forEach((c, i) => glitch(c, Math.abs(i - mid) * WAVE_STEP));
         longest = Math.max(longest, mid * WAVE_STEP * 1000);
       });
-      later(() => setSettled(true), longest + HALF * 2 + 20);
+      const total = longest + HALF * 2;
+      if (onDone) later(onDone, total + 20);
+      return total;
     };
 
     // `startDelay` staggers several instances on one screen so their waves cascade
     // instead of firing in unison.
     let loop = 0;
+    let onEnter = null;
     const first = setTimeout(() => {
-      if (once) { waveAll(); return; }
+      if (once) { waveAll(() => setSettled(true)); return; }
+      if (hoverGate) {
+        // Fine pointer: never autoplays — a hover triggers one all-lines wave.
+        // Coarse pointer: still autoplays, but as wave-then-rest, not an endless chain.
+        if (fine()) {
+          onEnter = () => { if (!chars.some((c) => c.dataset.busy)) waveAll(); };
+          root.addEventListener('mouseenter', onEnter);
+        } else {
+          const cycle = () => { loop = setTimeout(cycle, waveAll() + REST); };
+          cycle();
+        }
+        return;
+      }
       wave();
       loop = setInterval(wave, TICK);
     }, firstDelay + startDelay);
     const stop = () => {
       clearTimeout(first);
       clearInterval(loop);
+      clearTimeout(loop);
+      if (onEnter) root.removeEventListener('mouseenter', onEnter);
       timers.forEach(clearTimeout);
       timers.clear();
       chars.forEach(reset);
     };
     engineRef.current = stop;
     return () => { stop(); if (engineRef.current === stop) engineRef.current = null; };
-  }, [frozen, startDelay, firstDelay, once, settled]);
+  }, [frozen, startDelay, firstDelay, once, settled, hoverGate]);
 
   const renderWord = (wi) => (
     <span key={wi}>
