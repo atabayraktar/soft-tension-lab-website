@@ -59,12 +59,12 @@ export const LEAD_LINES = [
 // The seven services (long-form list on /services).
 export const SERVICES = [
   'Marka Kimliği & Logo Sistemleri',
-  'Tipografi',
-  'İçerik Geliştirme',
-  'Geleneksel & Dijital Sanat Entegrasyonu',
-  'Editöryel & Baskılı Tasarım',
-  'Kreatif Danışmanlık & Geleneksel Sanat Eğitimi',
+  'Tipografi & Editöryel Tasarım',
   'Sanat Üretimi',
+  'Geleneksel & Dijital Sanat Entegrasyonu',
+  'Web Tasarımı & Arayüz',
+  'Motion Design',
+  'Kreatif Danışmanlık & Geleneksel Sanat Eğitimi',
 ];
 
 // Home services accordion (#hizmetler): one entry per SERVICES title, same order.
@@ -73,45 +73,36 @@ export const SERVICES = [
 export const SERVICE_DETAILS = [
   {
     items: ['LOGO SİSTEMLERİ', 'RENK & TİPOGRAFİ', 'MARKA KILAVUZU', 'UYGULAMA ÖRNEKLERİ'],
-    copy: 'Bir markanın nasıl göründüğünü değil, nasıl hissettirdiğini tasarlıyoruz; tutarlı, tekrar edilebilir bir kimlik sistemi kuruyoruz. Markayı ve hedefini konuşarak başlıyor, eskizlerden ve ara durumlardan birlikte geçiyoruz. Sonunda logo, renk ve tipografiyi bir araya getiren, uygulanabilir bir marka kılavuzu teslim ediyoruz.',
+    copy: 'Bir markanın sadece nasıl göründüğünü değil, nasıl hissettirdiğini tasarlıyor; tutarlı ve sürdürülebilir bir kimlik sistemi kuruyoruz. Markanızın hedeflerini dinliyor, eskizlerden son rötuşlara kadar süreci birlikte yönetiyoruz. Sonuç olarak; logo, renk paleti ve tipografinin uyum içinde çalıştığı, uygulanabilir bir marka kılavuzu teslim ediyoruz.',
   },
   {
-    items: ['ÖZEL YAZI SİSTEMLERİ', 'HARF FORMU ÇALIŞMASI', 'DİJİTAL & BASKI KULLANIMI'],
-    copy: 'Tipografiyi süs değil, markanın sesi olarak ele alıyoruz. Harf formlarını markanın karakterine göre çiziyor, ekranda ve baskıda nasıl davranacağını birlikte deniyoruz. Teslimde kullanım kuralları belli, dijitale ve kâğıda hazır bir yazı sistemi bırakıyoruz.',
-  },
-  {
-    items: ['METİN & SES TONU', 'SOSYAL İÇERİK', 'KAMPANYA DİLİ'],
-    copy: 'Görselin arkasındaki dili kuruyoruz; markanın nasıl konuştuğunu tanımlıyoruz. Ses tonunu birlikte belirliyor, sosyal içerikten kampanya diline aynı sesi taşıyoruz. Elinize geçen şey tek seferlik metin değil, sonrasında kendi başınıza yazabileceğiniz bir dil kılavuzu.',
-  },
-  {
-    items: ['EL İŞÇİLİĞİ', 'DİJİTAL ÜRETİM', 'KARMA TEKNİK'],
-    copy: 'Geleneksel tekniklerle dijital üretimi aynı çalışmada buluşturuyoruz. Elle üretilen doku, baskı ya da çizim dijital ortamda işleniyor; hangi katmanın nerede kalacağına işin ihtiyacına göre karar veriyoruz. Ortaya çıkan iş hem basılabilir hem ekranda yaşayabilir halde teslim ediliyor.',
-  },
-  {
-    items: ['YAYIN TASARIMI', 'SAYFA DÜZENİ', 'BASKI ÜRETİMİ'],
-    copy: 'Basılı işi bir vitrin değil, kendi başına bir deneyim olarak tasarlıyoruz. Kâğıdı, formatı ve sayfa düzenini içerikle birlikte kuruyor, baskı öncesi provaları sizinle birlikte kontrol ediyoruz. Baskıya hazır dosyaları, matbaayla konuşulmuş teknik notlarla birlikte teslim ediyoruz.',
-  },
-  {
-    items: ['ATÖLYE & EĞİTİM', 'SANAT DANIŞMANLIĞI', 'SÜREÇ YÖNETİMİ'],
-    copy: 'Stüdyonun birikimini atölyeler ve danışmanlıkla paylaşıyoruz. Atölyelerde geleneksel teknikleri küçük gruplarla, elle çalışarak öğretiyoruz; danışmanlıkta ise süren bir projenin sanat yönünü birlikte netleştiriyoruz. Süre ve içerik ihtiyaca göre şekilleniyor.',
+    items: ['ÖZEL YAZI SİSTEMLERİ', 'HARF FORMU ÇALIŞMASI', 'YAYIN VE SAYFA TASARIMI', 'BASKI ÜRETİMİ'],
+    copy: 'Harfleri ve kâğıdı, markanın dokunsal ve görsel sesi olarak konumlandırıyoruz. İhtiyaca özel harf formları şekillendiriyor; bu yazı sistemlerinin yayın ve sayfa tasarımlarında nasıl davranacağını kurguluyoruz. Sonuç olarak; hem dijital dünyada tutarlı çalışan özel bir yazı sistemi hem de matbaaya gitmeye hazır, okuma akışı tasarlanmış basılı işler teslim ediyoruz.',
   },
   {
     items: ['ORİJİNAL ÜRETİM', 'SERGİ HAZIRLIĞI', 'SINIRLI ÜRETİM'],
-    copy: 'Kendi sanat pratiğimizi sürdürüyor, stüdyonun sezgisini somutlaştırıyoruz. Orijinal işler, sergi hazırlığı ve sınırlı sayıda üretimler bu pratiğin içinden çıkıyor. Bir iş ya da iş birliği için yazdığınızda süreci ve takvimi birlikte planlıyoruz.',
+    copy: 'Kendi bağımsız sanat pratiğimizi sürdürüyor, stüdyonun yaratıcı sezgilerini somutlaştırıyoruz. Orijinal işler, sergi hazırlıkları ve sınırlı edisyon üretimler bu pratiğin içinden çıkıyor. Özel bir eser siparişi ya da sanat odaklı bir iş birliği istediğinizde, süreci ve takvimi birlikte planlıyoruz. Sonuç olarak; alanınıza veya projenize özel bağımsız sanat eserleri teslim ediyoruz.',
+  },
+  {
+    items: ['EL İŞÇİLİĞİ', 'DİJİTAL ÜRETİM', 'KARMA TEKNİK'],
+    copy: 'Geleneksel tekniklerle dijital üretimi aynı çalışmada buluşturuyoruz. Elle üretilen doku, baskı ya da çizimi dijital ortama taşıyor; hangi katmanın nerede kalacağına işin ihtiyacına göre karar veriyoruz. Sonuç olarak; sadece kâğıt üzerinde kalmayan, hem basılabilir hem de ekranlarda yaşayabilen işler teslim ediyoruz.',
+  },
+  {
+    items: ['SİTE MİMARİSİ', 'ARAYÜZ TASARIMI', 'İNTERAKTİF TİPOGRAFİ'],
+    copy: 'Markanın dijitaldeki yaşam alanını baştan inşa ediyoruz. Sayfa mimarisini ve ziyaretçinin yolculuğunu kurguluyor; interaktif tipografi ve görsellerle arayüzü şekillendiriyoruz. Sadece durağan bir görünüme değil, sitenin ekranda nasıl hareket ettiğine ve nasıl tepki verdiğine odaklanıyoruz. Sonuç olarak; ziyaretçiyi yormayan, markanın karakterini net bir şekilde yansıtan ve pürüzsüz çalışan web arayüzleri teslim ediyoruz.',
+  },
+  {
+    items: ['HAREKETLİ GRAFİK', 'KURGU', 'MÜZİK & SES TASARIMI'],
+    copy: 'Statik tasarımları harekete geçiriyor, görsel hikayeleri profesyonel kurguyla şekillendiriyoruz. Hareketli grafiklerle projelere dinamizm katarken, işin duygu dünyasını müzik ve ses tasarımıyla tamamlıyoruz. Sonuç olarak; hem görsel hem de işitsel detayları incelikle işlenmiş, markanın ritmine uygun dinamik videolar teslim ediyoruz.',
+  },
+  {
+    items: ['ATÖLYE & EĞİTİM', 'SANAT DANIŞMANLIĞI', 'SÜREÇ YÖNETİMİ'],
+    copy: 'Stüdyonun birikimini atölyeler ve danışmanlıkla paylaşıyoruz. Atölyelerde geleneksel teknikleri küçük gruplarla, elle çalışarak öğretiyoruz; danışmanlık tarafında ise süren bir projenin, yeni kurulan bir yaratıcı alanın ya da inşası başlayan bağımsız bir kimliğin sanat yönünü birlikte netleştiriyoruz. İşin arkasındaki dili ve süreç yönetimini tamamen ihtiyaca göre şekillendiriyoruz. Sonuç olarak; kendi yolunu çizenlere özel, net ve uygulanabilir bir yol haritası teslim ediyoruz.',
   },
 ];
 
-// Home marquee band (design_architecture.html §01).
-export const MARQUEE = [
-  'Marka Kimliği & Logo Sistemleri',
-  'Tipografi',
-  'İçerik Geliştirme',
-  'Web Design',
-  'Motion Design',
-  'Geleneksel & Dijital Sanat Entegrasyonu',
-  'Editöryel & Baskılı Tasarım',
-  'Sanat Üretimi',
-];
+// Home marquee band (design_architecture.html §01) — same seven services, same order.
+export const MARQUEE = SERVICES;
 
 // About page minimal service row (design_architecture.html §A1).
 export const SERVICE_TAGS = [

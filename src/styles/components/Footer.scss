@@ -33,8 +33,12 @@
 }
 
 // Single line, every page: monogram · copyright stack · social + KVKK.
-// Centered on mobile (each piece stacks and wraps to its own row); the
-// three-column space-between layout only kicks in from tablet up.
+// Centered on mobile (each piece stacks and wraps to its own row); from tablet up it's a
+// true 3-column grid (1fr auto 1fr) rather than flex space-between — with flex, the middle
+// item only centres between the other two, so it drifts off the page's actual centre
+// whenever the brand mark and the social icons aren't the same width (they aren't, since
+// KVKK moved out from beside the icons). The grid's middle column is centred on the row
+// itself, independent of what the flanking columns measure.
 .footer__row {
   display: flex;
   flex-wrap: wrap;
@@ -46,8 +50,9 @@
   text-align: center;
 
   @include up($bp-md) {
-    flex-direction: row;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
     text-align: left;
   }
 }
@@ -56,7 +61,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .75rem;
+  gap: 1.25rem;
+  @include up($bp-md) { gap: 1.75rem; justify-self: start; }
   @include focus-ring;
   // Same height, same colour (both inherit currentColor) — the two logos
   // read as one signature, not a size mismatch. The link wraps both, so
@@ -73,14 +79,19 @@
   gap: .3rem;
   text-align: center;
   order: 2;
-  @include up($bp-md) { order: initial; }
+  @include up($bp-md) { order: initial; justify-self: center; }
   .footer__label { @include label(.7rem, .14em); }  // color comes from the shared .footer__label rule below
+
+  // The copyright line only: kept to one row on any phone width by shrinking with the
+  // viewport instead of wrapping (the KVKK link below it keeps the fixed size above).
+  p.footer__label { white-space: nowrap; font-size: clamp(.5rem, 2.5vw, .7rem); }
 }
 
 .footer__actions {
   display: flex;
   align-items: center;
   gap: 1rem;
+  @include up($bp-md) { justify-self: end; }
 }
 
 .footer__social { margin-left: -.6rem; }   // optically align the first icon's glyph, not its padded touch box, to the column edge
@@ -92,10 +103,12 @@ a.footer__label { color: inherit; opacity: .8; @include hover { opacity: 1; colo
 // pieces (brand 172 + copyright 368 + social 305 + gaps ≈ 885px) need more than the width
 // minus the side insets, which only exists from ~936px — so the row wrapped unevenly:
 // copyright top-right, socials orphaned bottom-left. Two rows on purpose instead: brand
-// left + socials right, then the copyright centred underneath. Pure reflow via
-// order/basis; the mobile stack (<768) and the single row from 936 are untouched.
+// left + socials right, then the copyright centred underneath (still centred on the full
+// row, not just between the two — same grid, just a second explicit row). The mobile
+// stack (<768) and the single row from 936 are untouched.
 @media (min-width: #{$bp-md}) and (max-width: 935px) {
-  .footer__brand   { order: 1; }
-  .footer__actions { order: 2; }
-  .footer__copy    { order: 3; flex-basis: 100%; }
+  .footer__row { grid-template-columns: 1fr 1fr; row-gap: 1rem; }
+  .footer__brand   { grid-row: 1; grid-column: 1; }
+  .footer__actions { grid-row: 1; grid-column: 2; }
+  .footer__copy    { grid-row: 2; grid-column: 1 / -1; }
 }

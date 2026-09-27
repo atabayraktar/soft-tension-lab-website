@@ -20,17 +20,18 @@
 
 $open: 3.7;            // the open column's share — 3.7 / 9.7 ≈ 38% of the band, as the reference
 
-// Timing, measured on the reference: one curve for the whole band, .8s for the column
-// (and the fill), .2s for the title slipping away, .6s per line dropping in with delays
-// .7 → .5s (first line last), the copy fading in after .8s. Closing runs the same curve
-// with no delays, so a hover-out is a soft fold rather than a snap.
+// Timing: one curve for the whole band, tightened from the original reference measurements
+// (which read as sluggish — items and copy landed noticeably late) to a snappier column
+// growth with items dropping in sooner (last line first) and the copy following close
+// behind. Closing runs the same curve with no delays, so a hover-out is a soft fold rather
+// than a snap.
 $ease-band: cubic-bezier(.11, .82, .39, .92);
-$dur-col:   800ms;     // column growth + fill
-$dur-row:   800ms;     // row fold-out (narrow)
-$dur-title: 200ms;     // the title slipping up out of its mask
-$dur-drop:  600ms;     // a line dropping into place
-$dur-copy:  400ms;     // the copy fading in
-$dur-out:   300ms;     // lines and copy folding away on close
+$dur-col:   550ms;     // column growth + fill
+$dur-row:   550ms;     // row fold-out (narrow)
+$dur-title: 150ms;     // the title slipping up out of its mask
+$dur-drop:  420ms;     // a line dropping into place
+$dur-copy:  280ms;     // the copy fading in
+$dur-out:   220ms;     // lines and copy folding away on close
 
 // Rules: the reference draws 2px black; here 2px Ink on wide, 1px Ink on the narrow rows.
 $rule-wide:   2px solid $ink;
@@ -272,7 +273,7 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
 .svc__item-in {
   display: inline-block;
   font-family: $font-display;
-  font-weight: 700;
+  font-weight: 500;             // thinner than the (700) title above it
   font-size: clamp(1rem, 2.6vw, 1.25rem);
   line-height: 1.1;
   letter-spacing: -.02em;
@@ -281,13 +282,15 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
   transition: transform $dur-out $ease-band;
   @include up($bp-xl) { font-size: clamp(1rem, 1.25vw, 1.375rem); }
 
+  &::before { content: '•\a0'; }   // \a0 = nbsp, so the gap never collapses or wraps away from the glyph
+
   .is-open & { transform: none; transition-duration: $dur-drop; }
   @for $i from 1 through 5 {
-    .is-open .svc__item:nth-child(#{$i}) & { transition-delay: #{250ms + (5 - $i) * 50ms}; }
+    .is-open .svc__item:nth-child(#{$i}) & { transition-delay: #{120ms + (5 - $i) * 35ms}; }
   }
   @include up($bp-xl) {
     @for $i from 1 through 5 {
-      .is-open .svc__item:nth-child(#{$i}) & { transition-delay: #{500ms + (5 - $i) * 50ms}; }
+      .is-open .svc__item:nth-child(#{$i}) & { transition-delay: #{260ms + (5 - $i) * 35ms}; }
     }
   }
 }
@@ -297,11 +300,14 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
   margin: 0;
   max-width: 44ch;
   font-size: 1rem;
+  // No Regular Italic face exists for Whyte Inktrap — the browser synthesizes the slant,
+  // same accepted pattern as .contact__title-italic.
+  font-style: italic;
   line-height: 1.55;
   color: $ink-65;
   opacity: 0;
   transition: opacity $dur-out $ease-band;
-  .is-open & { opacity: 1; transition: opacity $dur-copy $ease-band 400ms; }
+  .is-open & { opacity: 1; transition: opacity $dur-copy $ease-band 200ms; }
 
   @include up($bp-xl) {
     margin-top: auto;                  // sits at the foot of the column, as in the reference
@@ -309,7 +315,7 @@ $pad-x: clamp(.75rem, 1.3vw, 1.5rem);
     max-width: 56ch;                   // three sentences stay a readable measure in the wide column
     font-size: clamp(.9rem, 1vw, 1.0625rem);
     line-height: 1.5;
-    .is-open & { transition-delay: 800ms; }
+    .is-open & { transition-delay: 450ms; }
   }
 }
 

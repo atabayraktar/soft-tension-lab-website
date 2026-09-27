@@ -57,7 +57,39 @@
   @include short-landscape { font-size: clamp(1.75rem, 11vh, 3.25rem); }
 }
 
-.finale__notify { width: 100%; display: grid; justify-items: center; }
+// Extra room above the notify row, on top of .finale__inner's own gap — so the button
+// breathes on its own before the mail form starts, on every breakpoint.
+.finale__notify { width: 100%; margin-top: clamp(4rem, 9vw, 7.5rem); display: grid; justify-items: center; }
+
+// The mail line under the notify form: click the address to mail, or the small icon to
+// copy it instead. Plain text, no glass — a quiet caption, not a second CTA.
+.finale__mail {
+  margin-top: clamp(1.5rem, 3.5vw, 2.25rem);
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: clamp(.9rem, 1.6vw, 1.0625rem);
+}
+.finale__mail-link {
+  @include focus-ring;
+  color: $paper;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+  text-decoration-thickness: 1px;
+  &:hover, &:focus-visible { color: $signal; }
+}
+.finale__mail-copy {
+  @include focus-ring;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border-radius: 50%;
+  color: $paper-70;
+  &:hover, &:focus-visible { color: $signal; }
+  svg { width: 1.05rem; height: 1.05rem; }
+}
 
 // One speed for the whole effect: the loop bursts for 16% of its cycle, and the hover
 // burst lasts exactly as long — so hovering feels the same as watching it run.

@@ -38,11 +38,11 @@ export default function Footer({ theme = 'light' }) {
 
         <div className="footer__copy">
           <p className="footer__label">© {year} {SITE.name} | Tüm hakları saklıdır.</p>
+          <a href="/kvkk/" target="_blank" rel="noopener noreferrer" className="footer__label link">KVKK</a>
         </div>
 
         <div className="footer__actions">
           <SocialLinks className="footer__social" />
-          <a href="/kvkk/" target="_blank" rel="noopener noreferrer" className="footer__label link">KVKK</a>
         </div>
       </div>
     </footer>

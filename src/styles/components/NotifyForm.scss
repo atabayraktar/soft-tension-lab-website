@@ -117,7 +117,9 @@
     letter-spacing: -.03em;
     line-height: 1.05;
   }
-  .notify__copy { color: $paper-70; font-size: clamp(.875rem, 1.1vw, .95rem); line-height: 1.45; max-width: 32ch; }
+  // Kept to one line at every width — it reads as a single caption, not a wrapped
+  // paragraph — so it shrinks with the viewport instead of breaking.
+  .notify__copy { color: $paper-70; font-size: clamp(.6rem, 1.7vw, .95rem); line-height: 1.45; max-width: none; white-space: nowrap; }
 
   // Underlined field on black: Paper line, Paper text; the floated label stays legible.
   .cform__field {
