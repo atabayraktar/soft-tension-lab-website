@@ -40,7 +40,7 @@
 .notify__field {
   width: 100%;
   margin-bottom: .5rem;                       // stacked: room for the floating error above the button
-  @media (min-width: 52rem) { margin-bottom: 0; }
+  @media (min-width: 52rem) { margin-bottom: 0; margin-top: .25rem; }
 }
 .notify__error {
   position: absolute;
@@ -63,7 +63,7 @@
     align-items: end;
     column-gap: .75rem;
     .notify__text { grid-column: 1 / -1; }
-    .notify__field { margin-bottom: 0; }
+    .notify__field { margin-bottom: 0; margin-top: .5rem; }
   }
 }
 // Short phones (≈ 740px and under): the one-line copy goes, the title still says it — that

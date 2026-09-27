@@ -9,9 +9,7 @@ export const SITE = {
   instagram: 'https://www.instagram.com/softtensionlab',
   instagramHandle: '@softtensionlab',
   behance: 'https://www.behance.net/softtensionlab',
-  // TODO verify: same @softtensionlab handle convention as Instagram/Behance —
-  // confirm these are the studio's actual YouTube/TikTok accounts before launch.
-  youtube: 'https://www.youtube.com/@softtensionlab',
+  youtube: 'https://www.youtube.com/@SOFTTENSIONLAB',
   tiktok: 'https://www.tiktok.com/@softtensionlab',
   founders: 'Ömer & Cemre',
   tagline: 'Lead With Tension',

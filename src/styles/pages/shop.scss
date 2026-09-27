@@ -23,6 +23,8 @@
   @include short-landscape { width: 22svh; }
 }
 
+.shop__heading { display: grid; justify-items: center; gap: clamp(.6rem, 2vw, 1rem); }
+
 .shop__title {
   --glitch-echo: #{$ink};  // Paper ground: the echo copy is Ink, not Paper
   text-transform: uppercase;
@@ -32,25 +34,47 @@
   line-height: 1;
 }
 
+.shop__lead {
+  // No forced wrap point: at mobile/tablet-portrait widths the sentence still wraps to two
+  // lines on its own (there just isn't 52rem of room), but tablet-landscape and desktop have
+  // enough width to hold it on one line — natural reflow, not a hard single-line rule.
+  max-width: 52rem;
+  font-style: italic;
+  font-weight: 500;
+  color: $ink-65;
+  font-size: clamp(.95rem, 2.4vw, 1.15rem);
+  line-height: 1.5;
+}
+
 .shop__notify { width: 100%; display: grid; justify-items: center; }
 
 // Fit-to-screen (tall enough): page + footer share exactly one viewport, so there is no
-// scroll — on phones too (the notify box keeps field + button in one row there). The
-// mascot takes whatever height the nav, title, box and footer leave over. Short
-// landscape keeps the normal flow.
+// scroll — on phones too (the notify box keeps field + button in one row there). Flexbox
+// (not the width-from-magic-constant grid below) lets the mascot claim whatever height the
+// nav, heading, notify box and the footer's own measured height (--footer-h, set by
+// Footer.jsx) actually leave over — real leftover space, not a guessed budget, so it stays
+// correct as copy changes and grows the mascot as large as the screen allows. Short
+// landscape keeps the normal flow (that one may scroll, per the fit-to-screen rule).
 @media (min-height: 40rem) {
-  .page.shop {
-    --shop-footer: 16rem;   // footer height on phones (stacked)
-    min-height: 0;
-  }
-  @media (min-width: 48rem) { .page.shop { --shop-footer: 12rem; } }   // wraps to two rows
-  @media (min-width: 64rem) { .page.shop { --shop-footer: 8rem; } }    // single row
+  .page.shop { min-height: 0; }
 
   .shop__inner {
-    min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--shop-footer));
-    padding-block: clamp(1rem, 3svh, 2rem);
-    gap: clamp(1rem, 3svh, 2.5rem);
+    min-height: 0;
+    height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--footer-h, 0px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-block: clamp(.75rem, 2.5svh, 1.5rem);
+    gap: clamp(.75rem, 2.5svh, 1.75rem);
   }
-  .shop__illo { width: clamp(5rem, min(40vw, calc(100svh - var(--shop-footer) - 28.5rem)), 20rem); }
-  @media (min-width: 52rem) { .shop__illo { width: clamp(6rem, min(40vw, calc(100svh - var(--shop-footer) - 30rem)), 20rem); } }
+  .shop__illo, .shop__heading, .shop__notify { flex: 0 0 auto; }
+  .shop__illo {
+    flex: 1 1 0;
+    min-height: 0;
+    width: auto;
+    max-width: min(48vw, 24rem);
+    max-height: 24rem;
+    .mascot { width: auto; height: 100%; }
+  }
 }
