@@ -7,7 +7,8 @@ import { SERVICES, SERVICE_DETAILS, SERVICES_ID } from '../lib/site';
 const WIDE = '(min-width: 1280px)';
 const REDUCED = '(prefers-reduced-motion: reduce)';
 
-const upper = (s) => s.toLocaleUpperCase('tr-TR');
+// Turkish casing everywhere, except the English "Motion Design" — it keeps a plain "I", not "İ".
+const upper = (s) => s.toLocaleUpperCase(s === 'Motion Design' ? 'en-US' : 'tr-TR');
 
 /**
  * Home services — #hizmetler, the nav's "Hizmetler" target. Full-bleed, on Paper, no

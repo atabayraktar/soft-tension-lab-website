@@ -37,10 +37,12 @@ function MailLine() {
 
   return (
     <p className="finale__mail">
-      <a href={`mailto:${SITE.email}`} className="finale__mail-link">{SITE.email}</a>
-      <button type="button" className="finale__mail-copy" onClick={onCopy} aria-label={copied ? 'Kopyalandı' : 'E-postayı kopyala'} title="Kopyala">
-        {copied ? CHECK_ICON : COPY_ICON}
-      </button>
+      <span className="finale__mail-wrap">
+        <a href={`mailto:${SITE.email}`} className="finale__mail-link">{SITE.email}</a>
+        <button type="button" className="finale__mail-copy" onClick={onCopy} aria-label={copied ? 'Kopyalandı' : 'E-postayı kopyala'} title="Kopyala">
+          {copied ? CHECK_ICON : COPY_ICON}
+        </button>
+      </span>
       <span className="sr-only" role="status" aria-live="polite">{copied ? 'E-posta adresi kopyalandı.' : ''}</span>
     </p>
   );

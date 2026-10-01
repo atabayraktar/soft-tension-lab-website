@@ -65,11 +65,13 @@
 // copy it instead. Plain text, no glass — a quiet caption, not a second CTA.
 .finale__mail {
   margin-top: clamp(1.5rem, 3.5vw, 2.25rem);
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
+  display: flex;
+  justify-content: center;
   font-size: clamp(.9rem, 1.6vw, 1.0625rem);
 }
+// The copy icon hangs off the address' right edge (absolute) so it adds no width —
+// the address itself stays optically centred on every breakpoint.
+.finale__mail-wrap { position: relative; display: inline-block; max-width: 100%; }
 .finale__mail-link {
   @include focus-ring;
   color: $paper;
@@ -80,6 +82,11 @@
 }
 .finale__mail-copy {
   @include focus-ring;
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-left: .5rem;
+  transform: translateY(-50%);
   display: grid;
   place-items: center;
   width: 1.75rem;
