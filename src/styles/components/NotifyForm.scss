@@ -55,6 +55,13 @@
 
 .notify--done { gap: .75rem; }
 
+// The shared field reserves 2.6rem above the control for a label that may wrap to two lines;
+// "E-POSTA" is one line, so the headroom (and the label's float distance) shrink to 1.1rem at
+// every width — the title block sits closer to the field.
+.notify:not(.notify--finale) .notify__field { padding-top: 1.1rem; .cform__label { top: 1.1rem; } }
+.notify:not(.notify--finale) .notify__field input:focus ~ .cform__label,
+.notify:not(.notify--finale) .notify__field input:not(:placeholder-shown) ~ .cform__label { transform: translateY(-1.1rem); }
+
 // Phones, page variant (Shop): title/copy on top, then field + button in ONE row, so the
 // whole screen fits without a scroll.
 @media (max-width: 51.99rem) {
@@ -62,15 +69,17 @@
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
     column-gap: .75rem;
-    .notify__text { grid-column: 1 / -1; }
-    .notify__field { margin-bottom: 0; margin-top: .5rem; }
+    padding-block: .25rem;                       // the box's own air is wasted height on a phone
+    row-gap: .25rem;
+    .notify__text { grid-column: 1 / -1; gap: .3rem; }
+    .notify__title { font-size: 1.1rem; }
+    .notify__copy { font-size: .85rem; line-height: 1.4; }
+    .notify__field { margin-bottom: 0; margin-top: 0; }
   }
 }
-// Short phones (≈ 740px and under): the one-line copy goes, the title still says it — that
-// is what lets the Shop screen fit without a scroll.
-@media (max-width: 51.99rem) and (max-height: 47rem) {
-  .notify:not(.notify--finale):not(.notify--done) .notify__copy { display: none; }
-}
+// (The copy under the title stays on every phone — real iPhone Safari has only ~690px of
+// visible height, and hiding it there left the Shop with no explanation line at all. The
+// Shop layout now gets its room from smaller type + a mascot floor instead; see shop.scss.)
 
 // Bots fill it, people never see it.
 .notify__honeypot {

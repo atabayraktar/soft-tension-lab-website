@@ -8,16 +8,16 @@ import { getLenis } from '../lib/useSmoothScroll';
 import { NAV } from '../lib/site';
 
 const LAND_LOWER = 0.2;   // desktop: extra scroll, as a share of the band below's height
+const HOLD_MS = 1600;     // how long a cross-page / direct-URL landing keeps re-asserting itself
 
 /**
- * Scrolls to an in-page section, clearing the floating bar: through Lenis where it runs
- * (fine pointers — same easing as every other scroll on the site), the native smooth
- * scroll elsewhere. `immediate` lands without motion (a page swap behind PageVeil, or
- * reduced motion).
+ * Where the page has to scroll to for the section to sit under the floating bar — a
+ * document offset, clamped to what the page can actually scroll. null if the section
+ * isn't on the page.
  */
-function scrollToSection(id, { immediate = false } = {}) {
+function sectionTarget(id) {
   const el = document.getElementById(id);
-  if (!el) return false;
+  if (!el) return null;
   const bar = document.querySelector('.nav__bar');
   const offset = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0;
   // What is landed on: the section, or (data-land-with="siblings") the section with the
@@ -43,6 +43,19 @@ function scrollToSection(id, { immediate = false } = {}) {
   // position (stale right after a native jump) and subtract scroll-margin-top on top of
   // the offset.
   const top = Math.round(spanTop + window.scrollY - offset - centre);
+  const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  return Math.min(Math.max(0, top), max);
+}
+
+/**
+ * Scrolls to an in-page section, clearing the floating bar: through Lenis where it runs
+ * (fine pointers — same easing as every other scroll on the site), the native smooth
+ * scroll elsewhere. `immediate` lands without motion (a page swap behind PageVeil, or
+ * reduced motion).
+ */
+function scrollToSection(id, { immediate = false } = {}) {
+  const top = sectionTarget(id);
+  if (top == null) return false;
   const calm = immediate || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const lenis = getLenis();
   if (lenis) {
@@ -55,6 +68,71 @@ function scrollToSection(id, { immediate = false } = {}) {
   }
   return true;
 }
+
+/**
+ * Lands on a section without motion and then HOLDS it there for a while: every frame the
+ * target is recomputed against the live layout and, if the page has drifted off it, put
+ * back — until it has sat still for HOLD_MS, the user scrolls themselves, or `stop()` is
+ * called (next navigation, unmount).
+ *
+ * A one-shot landing was not enough on a phone, because the position keeps being moved
+ * out from under it after the page swap, by things this component doesn't control:
+ *   - Next's own hash handling: Container#componentDidUpdate calls scrollIntoView() in a
+ *     setTimeout(0) with no smooth-scroll guard, so under html { scroll-behavior: smooth }
+ *     it animated across the whole page for ~1s — native smooth scrolling is switched off
+ *     for the hold so that (and anything else) lands instantly and is corrected next frame;
+ *   - the menu sheet's scroll-lock restore (a passive-effect cleanup from the close);
+ *   - the layout settling: the hero's display face swapping in, the pin's svh height, the
+ *     footer publishing --footer-h — each moves the section's offset after the first land.
+ * (The browser's scroll anchoring, which sent the page to its very end on the swap, is
+ * switched off in globals.scss rather than fought here.)
+ * Only instant, idempotent scrolls are issued, so the user never sees it work.
+ */
+function holdLanding(id) {
+  const html = document.documentElement;
+  const lenis = getLenis();
+  let alive = true;
+  let raf = 0;
+  let timer = 0;
+  const prevBehavior = html.style.scrollBehavior;
+  html.style.scrollBehavior = 'auto';
+
+  const stop = () => {
+    if (!alive) return;
+    alive = false;
+    cancelAnimationFrame(raf);
+    clearTimeout(timer);
+    html.style.scrollBehavior = prevBehavior;
+    STOP_ON.forEach((ev) => window.removeEventListener(ev, stop));
+  };
+  const land = () => {
+    if (!alive) return;
+    const top = sectionTarget(id);
+    if (top == null) { stop(); return; }
+    if (Math.abs(window.scrollY - top) <= 1) return;
+    if (lenis) {
+      lenis.resize();
+      lenis.scrollTo(top, { immediate: true, force: true });
+    } else {
+      window.scrollTo({ top, behavior: 'instant' });
+    }
+  };
+  const tick = () => { if (!alive) return; land(); raf = requestAnimationFrame(tick); };
+
+  land();
+  // Queued after Next's own setTimeout(0) scrollIntoView (registered during the commit,
+  // before routeChangeComplete) — so the first thing after it is the correction.
+  setTimeout(land, 0);
+  // Fonts: the hero runs Whyte Inktrap Heavy at display size; the fallback-font layout it
+  // paints with first is a different height, so the offset moves when the face arrives.
+  (document.fonts?.ready ?? Promise.resolve()).then(() => requestAnimationFrame(land), () => {});
+  raf = requestAnimationFrame(tick);
+  timer = setTimeout(stop, HOLD_MS);
+  // The user taking over ends the hold at once — it must never fight a real scroll.
+  STOP_ON.forEach((ev) => window.addEventListener(ev, stop, { passive: true }));
+  return stop;
+}
+const STOP_ON = ['touchstart', 'wheel', 'keydown', 'pointerdown'];
 
 /**
  * The floating liquid-glass pill bar. Logotype left (Ana mark on compact widths),
@@ -80,6 +158,7 @@ export default function Nav({ theme = 'light' }) {
   const invert = useNavInvert(navRef, theme !== 'light', router.asPath);
   const navTheme = invert ? 'dark' : 'light';
   const pending = useRef(null);   // section to land on once the Home page has mounted
+  const holding = useRef(null);   // stop() of the landing currently being held (see holdLanding)
   // The item just tapped/clicked: its underline grows immediately, before the page
   // transition even starts, and holds through it — `isActive` below then keeps it lit if
   // this turns out to be the landed-on page, so there's no gap between "pressed" and "active".
@@ -143,49 +222,44 @@ export default function Nav({ theme = 'light' }) {
     return () => router.events.off('routeChangeStart', close);
   }, [router.events]);
 
-  // Cross-page section landing. routeChangeComplete fires once the new page has rendered;
-  // PageVeil (registered after this, so its reveal is queued behind this) is still holding
-  // it invisible, and the app-level scroll-to-top has run — so land here, without motion,
-  // and the section is what fades in.
-  //
-  // Same font wait as the direct-URL effect below, and for the same reason: the Home hero
-  // runs Whyte Inktrap Heavy/Black at a huge display size, so the fallback-font layout it
-  // paints with before the font swaps in is a materially different height. Landing against
-  // that transient layout (this used to fire on the very next two frames) computes a
-  // scroll position for a page that is about to reflow out from under it — on a phone,
-  // where the font is slower to arrive, that was enough to land near the very bottom of the
-  // page instead of at #hizmetler once everything settled.
+  // Cross-page section landing. routeChangeComplete fires synchronously once the new page
+  // has been committed, before it is painted; PageVeil (registered after this, so its
+  // reveal is queued behind this) is still holding it invisible and — for a section URL —
+  // neither it nor Next (pushed with scroll: false) moves the page. So the landing starts
+  // here, under the veil, and is then held while the page settles (see holdLanding): the
+  // section is what fades in, and it stays.
   useEffect(() => {
     const done = () => {
       const id = pending.current;
       if (!id) return;
       pending.current = null;
-      const land = () => requestAnimationFrame(() => requestAnimationFrame(() => scrollToSection(id, { immediate: true })));
-      (document.fonts?.ready ?? Promise.resolve()).then(land, land);
+      holding.current?.();
+      holding.current = holdLanding(id);
     };
+    const start = () => { holding.current?.(); holding.current = null; };
     const fail = () => { pending.current = null; };
+    router.events.on('routeChangeStart', start);
     router.events.on('routeChangeComplete', done);
     router.events.on('routeChangeError', fail);
     return () => {
+      router.events.off('routeChangeStart', start);
       router.events.off('routeChangeComplete', done);
       router.events.off('routeChangeError', fail);
+      holding.current?.();
+      holding.current = null;
     };
   }, [router.events]);
 
-  // A section URL opened directly (`/#hizmetler`): the browser's own hash jump happens
-  // before the fonts and the hero's pin have their final height, so the section drifts
-  // away from the top — land on it again, without motion, once the layout has settled.
+  // A section URL opened directly (`/#hizmetler`): the browser's own hash jump (and
+  // Next's repeat of it on mount) happen before the fonts and the hero's pin have their
+  // final height, so the section drifts away from the top — land on it and hold it while
+  // the layout settles. Without JS the native jump + scroll-margin-top stands on its own.
   useEffect(() => {
     const id = window.location.hash.slice(1);
     if (!id || !NAV.some((item) => item.scroll === id)) return undefined;
-    let alive = true;
-    let raf = 0;
-    const land = () => {
-      if (!alive) return;
-      raf = requestAnimationFrame(() => requestAnimationFrame(() => { if (alive) scrollToSection(id, { immediate: true }); }));
-    };
-    (document.fonts?.ready ?? Promise.resolve()).then(land, land);
-    return () => { alive = false; cancelAnimationFrame(raf); };
+    holding.current?.();
+    holding.current = holdLanding(id);
+    return () => { holding.current?.(); holding.current = null; };
     // Once, on mount: the in-app navigations are handled by the handlers above.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -237,6 +311,10 @@ export default function Nav({ theme = 'light' }) {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  // A section link lands itself (holdLanding): Next must neither reset to
+                  // the top nor do its own hash scroll — this covers the reduced-motion
+                  // path, where the Link navigates by itself; PageVeil's push does the same.
+                  scroll={item.scroll ? false : undefined}
                   className={`nav__link ${isLit(item) ? 'is-active' : ''}`.trim()}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   onClick={onItemClick(item)}
@@ -279,6 +357,7 @@ export default function Nav({ theme = 'light' }) {
               <li key={item.href} className={`nav__sheet-item nav__sheet-item--${i + 1}`}>
                 <Link
                   href={item.href}
+                  scroll={item.scroll ? false : undefined}
                   className={`nav__sheet-link ${isLit(item) ? 'is-active' : ''}`.trim()}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   onClick={onItemClick(item)}

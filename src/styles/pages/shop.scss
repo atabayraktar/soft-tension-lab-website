@@ -29,7 +29,7 @@
   --glitch-echo: #{$ink};  // Paper ground: the echo copy is Ink, not Paper
   text-transform: uppercase;
   font-weight: 800;
-  font-size: clamp(2.5rem, 9vw, 6.5rem);
+  font-size: clamp(2rem, 8.4vw, 6.5rem);
   letter-spacing: -.035em;
   line-height: 1;
 }
@@ -42,11 +42,11 @@
   font-style: italic;
   font-weight: 500;
   color: $ink-65;
-  font-size: clamp(.95rem, 2.4vw, 1.15rem);
-  line-height: 1.5;
+  font-size: clamp(.8rem, 2.4vw, 1.15rem);
+  line-height: 1.45;
 }
 
-.shop__notify { width: 100%; display: grid; justify-items: center; }
+.shop__notify { width: 100%; display: grid; justify-items: center; margin-top: clamp(1.25rem, 5vw, 1.75rem); }   // air between the lead line and the sign-up block
 
 // Fit-to-screen (tall enough): page + footer share exactly one viewport, so there is no
 // scroll — on phones too (the notify box keeps field + button in one row there). Flexbox
@@ -60,7 +60,10 @@
 
   .shop__inner {
     min-height: 0;
-    height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--footer-h, 0px));
+    // min-height, not height: the page fits one screen when it can, but on a short phone
+    // (real iPhone Safari ≈ 690px visible) it grows past it — a small scroll beats a mascot
+    // squeezed to 25px.
+    min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--footer-h, 0px));
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -69,12 +72,46 @@
     gap: clamp(.75rem, 2.5svh, 1.75rem);
   }
   .shop__illo, .shop__heading, .shop__notify { flex: 0 0 auto; }
-  .shop__illo {
-    flex: 1 1 0;
-    min-height: 0;
-    width: auto;
-    max-width: min(48vw, 24rem);
-    max-height: 24rem;
-    .mascot { width: auto; height: 100%; }
+
+  // Mascot height is computed, not flex-resolved: Safari/WebKit does not resolve
+  // height: 100% on an <img> inside a flex-basis-0 item, so the mascot overflowed its box
+  // (drip over the heading, page far taller than the viewport) while Chrome looked right.
+  // Height = what the viewport leaves after nav, footer and the text blocks (--shop-rest),
+  // never below a 7rem floor, never above --shop-max. Phones and tablets use the same rule.
+  // Sized by WIDTH (artwork is 646:721), derived from the computed height — an <img> with
+  // height:auto inside a width-only box is the one thing every engine resolves identically.
+  .shop__inner {
+    --shop-rest: 19.5rem;
+    --shop-max: 12rem;
+    --shop-h: clamp(7rem, calc(100svh - var(--nav-top) - var(--nav-h) - var(--footer-h, 16rem) - var(--shop-rest)), var(--shop-max));
   }
+  .shop__illo {
+    width: calc(var(--shop-h) * .896);
+    aspect-ratio: auto;
+    margin-bottom: clamp(.5rem, 2vw, 1rem);       // air between the mascot and COMING SOON.
+    .mascot { width: 100%; height: auto; }
+  }
+  @media (min-width: 52rem) {
+    .shop__inner { --shop-rest: 23.5rem; --shop-max: 17rem; }
+  }
+}
+
+// Short landscape (phones held sideways): the mascot moves beside the text instead of
+// stacking above it, so it can be a decent size; this layout may scroll (footer is taller
+// than the screen's spare height anyway).
+@include short-landscape {
+  .shop__inner {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'illo heading' 'illo notify';
+    column-gap: clamp(1.5rem, 6vw, 3rem);
+    row-gap: .75rem;
+    align-content: center;
+    justify-items: center;
+    padding-block: 1.25rem;
+  }
+  .shop__illo { grid-area: illo; align-self: center; width: clamp(9rem, 48svh, 14rem); height: auto; margin: 0; }
+  .shop__heading { grid-area: heading; }
+  .shop__notify { grid-area: notify; margin-top: 0; }
 }

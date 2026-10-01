@@ -99,12 +99,13 @@
 .footer__label { @include label; color: $ink-65; }
 a.footer__label { color: inherit; opacity: .8; @include hover { opacity: 1; color: $signal; } }
 
-// Tablets (768–1099px): the three-column row is too tight here — brand 188 + copyright 368 +
+// Tablets (768–935px any orientation, 936–1099px portrait): the three-column row is too tight here — brand 188 + copyright 368 +
 // social 246 + gaps leave ~20px between pieces from 936px and do not fit at all below it, so the
 // row either wrapped unevenly or looked crammed. Use the phone's centred stack instead (brand,
 // socials, then the copyright + KVKK), which is already the approved look. The single
-// three-column row starts at 1100px, where it has real breathing room.
-@media (min-width: #{$bp-md}) and (max-width: 1099px) {
+// three-column row starts at 1100px — and from 936px in landscape (iPad mini/Air held sideways), where
+// it fits with room and the short screen cannot afford a 259px-tall stack.
+@media (min-width: #{$bp-md}) and (max-width: 935px), (min-width: 936px) and (max-width: 1099px) and (orientation: portrait) {
   .footer__row {
     display: flex;
     flex-direction: column;

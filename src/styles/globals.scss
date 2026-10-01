@@ -129,6 +129,13 @@
 html {
   background: $paper;
   scroll-behavior: smooth;
+  // No scroll anchoring for the document. On a page swap behind PageVeil the footer is the
+  // one node React keeps (same element in the same slot), so the browser picked it as its
+  // anchor and shifted the scroll by the whole height difference between the two pages to
+  // keep it in view — a /contact → /#hizmetler tap landed on the Home page's very end
+  // (measured: 420 + (8150 − 1290) = 7280, Chrome and WebKit alike) before the section
+  // landing could run. Nothing on the site relies on anchoring: media reserves its space.
+  overflow-anchor: none;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   @include reduced-motion { scroll-behavior: auto; }

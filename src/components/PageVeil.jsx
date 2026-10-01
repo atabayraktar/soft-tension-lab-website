@@ -53,7 +53,9 @@ export default function PageVeil({ children }) {
       const url = target;
       target = null;
       pushed = true;
-      router.push(url).catch(() => {});
+      // A section URL (`/#hizmetler`) is landed on by Nav.jsx itself, under the veil: Next
+      // must neither reset the page to the top nor run its own hash scroll for it.
+      router.push(url, undefined, { scroll: !url.includes('#') }).catch(() => {});
       clearTimeout(stuck);
       stuck = setTimeout(reveal, STUCK_MS);
     };
