@@ -84,8 +84,9 @@
 }
 
 // ── finale variant: black footer finale — light type ────────────────────────────
-// Phones/tablets: a centred stack. From 52rem up: one horizontal row, the words on
-// the left (heavy title over a small muted line), the field and the button beside them.
+// Every width: the words on top (heavy title over a small muted line, centred), the field
+// and the button below them. Phones stack field over button; from 52rem up they share one
+// row, bottom-aligned on a common line.
 .notify--finale {
   color: $paper;
   width: min(100%, 34rem);
@@ -94,12 +95,17 @@
   padding-inline: 0;
 
   @media (min-width: 52rem) {
-    width: min(100%, 62rem);
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) auto;
+    width: min(100%, 40rem);
+    grid-template-columns: minmax(0, 18rem) auto;      // a compact field beside the button, not a full-width bar
+    justify-content: center;
     align-items: end;
-    justify-items: start;
-    text-align: left;
+    justify-items: center;
+    text-align: center;
     column-gap: clamp(1.5rem, 3vw, 2.5rem);
+    row-gap: .5rem;
+    // inline-size containment: the one-line caption must not widen the field/button tracks
+    .notify__text { grid-column: 1 / -1; contain: inline-size; width: 100%; }
+    .notify__field { justify-self: stretch; text-align: left; }
   }
   &.notify--done { grid-template-columns: none; justify-items: center; text-align: center; }
 
@@ -107,10 +113,11 @@
   // error message would otherwise sit right on it).
   @media (max-width: 51.99rem) {
     padding-inline: 1.25rem;
-    .notify__field { margin-bottom: 1.5rem; }
+    gap: .5rem;                                   // caption sits close above the field
+    .notify__field { width: min(100%, 15rem); margin-top: -.9rem; margin-bottom: 1.5rem; }   // the field's own label headroom is pulled up under the caption   // a compact field, not edge to edge
   }
 
-  .notify__text { justify-items: center; @media (min-width: 52rem) { justify-items: start; } }
+  .notify__text { justify-items: center; }
   .notify__title {
     font-size: clamp(1.375rem, 2.6vw, 2rem);
     font-weight: 800;

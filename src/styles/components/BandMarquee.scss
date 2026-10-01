@@ -2,6 +2,14 @@
 
 // The big single-phrase bands. Type is sized from the viewport (capped), and the band's
 // height follows the type — tall, so the phrase reads as a wall, not a ticker.
+//
+// Perf (mobile): the track is a flex row of two identical groups and slides half its width,
+// so the loop is one group long. A group is ONE phrase up to $band-two (a phrase is wider
+// than any viewport below it); the second item per group only exists for ultra-wide
+// screens. The loop distance halved against the old two-phrase group, so the durations are
+// halved too — the speed in px/s is unchanged.
+$band-two: 2300px;
+
 .band {
   overflow: hidden;
   font-family: $font-display;
@@ -14,9 +22,10 @@
   line-height: .86;
   letter-spacing: -.045em;
   padding-block: .16em .1em;                 // optical: caps sit on the baseline, no descenders
-  --band-dur: 30s;                           // a wider track at the same duration would race; slower keeps it readable
-  @include up($bp-md) { font-size: clamp(5rem, 22.3vw, 20rem); --band-dur: 26s; }
-  @include up($bp-xl) { --band-dur: 34s; }
+  --band-dur: 15s;                           // one phrase per loop (was 30s for two)
+  @include up($bp-md) { font-size: clamp(5rem, 22.3vw, 20rem); --band-dur: 13s; }
+  @include up($bp-xl) { --band-dur: 17s; }
+  @include up($band-two) { --band-dur: 34s; } // two phrases per loop again
 
   &--dark  { background: $black; color: $paper; }
   &--light { background: $paper; color: $black; }
@@ -27,7 +36,11 @@
   width: max-content;
   animation: band-slide var(--band-dur) linear infinite;
   animation-play-state: paused;
-  .is-live & { animation-play-state: running; will-change: transform; }
+  // Promoted for good: every painted thing inside is its own layer (words, dot), so this
+  // layer has no backing store of its own — it only moves. Toggling will-change with
+  // `.is-live` rebuilt and re-rasterised the band right as it entered the viewport.
+  will-change: transform;
+  .is-live & { animation-play-state: running; }
   .band--reverse & { animation-direction: reverse; }
   @include reduced-motion { animation: none; }
 }
@@ -44,17 +57,32 @@
   display: inline-flex;
   align-items: center;                       // safe here: content is always all-caps, no x-height/descender variance
   flex-shrink: 0;
-  gap: .22em;
   padding-right: .22em;                      // the gap between the dot and the next repeat
   white-space: nowrap;
+  // One phrase per group below $band-two (see the note at the top).
+  &:nth-child(n + 2) { display: none; }
+  @include up($band-two) { &:nth-child(n + 2) { display: inline-flex; } }
+}
+
+// A word (or half of a long one, see BandMarquee.jsx) is a small layer that WebKit paints
+// once, whole: at phone sizes every piece stays under 1024 CSS px, WebKit's tiling threshold
+// even on a memory-starved device. The padding gives the italic/cap ink room inside the
+// layer's box; the matching negative margin keeps layout exactly where it was.
+.band__word {
+  white-space: pre;                          // keeps the word space inside the span
+  padding: .08em;                            // measured: the ink overflows the line box by ≤ .07em
+  margin: -.08em;
+  will-change: transform;
 }
 
 .band__dot {
   width: .13em;
   height: .13em;
+  margin-left: .22em;                        // the gap after the phrase (was the item's flex gap)
   border-radius: 50%;
   background: $signal;
   flex-shrink: 0;
+  will-change: transform;                    // its own tiny layer, so the track paints nothing
 }
 
 @keyframes band-slide {
