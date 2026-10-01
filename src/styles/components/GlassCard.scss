@@ -120,11 +120,50 @@ html[data-glass='flat'] .lg__effect {
 .lg--clear .lg__tint { background: $glass-clear; }
 .lg--tint  .lg__tint { background: $glass-tint; }
 
-// Fallback 3 — no backdrop support at all: a 92% opaque brand surface.
-html[data-glass='solid'] .lg__effect { display: none; }
-html[data-glass='solid'] .lg--frost .lg__tint,
-html[data-glass='solid'] .lg--clear .lg__tint { background: rgba(240, 238, 233, .92); }
-html[data-glass='solid'] .lg--tint .lg__tint { background: rgba(3, 23, 58, .92); }
+// Fallback 3 — no backdrop support at all (or the user asked for less transparency): a
+// 92% opaque brand surface + the shine stack + a hairline edge, deliberately. The fill
+// follows the TONE OF THE SCENE, not only the variant: a frost/clear surface whose content
+// is Paper (dark nav state, the black footer and finale, the Work page, the hero, the
+// ToTop over a dark footer) gets the Ink surface, otherwise Paper text would sit on a
+// near-white slab and vanish (seen 2026-10 in Instagram's in-app browser, which was being
+// routed here). `.lg.lg--x > .lg__tint` outranks every consumer's own tint override.
+@mixin glass-solid {
+  .lg__effect { display: none; }
+  .lg.lg--frost > .lg__tint,
+  .lg.lg--clear > .lg__tint { background: rgba(240, 238, 233, .92); }
+  .lg.lg--tint > .lg__tint,
+  .nav--dark .lg.lg--frost > .lg__tint,
+  .nav.is-open .lg.lg--frost > .lg__tint,
+  .on-dark .lg.lg--frost > .lg__tint,
+  .on-dark .lg.lg--clear > .lg__tint,
+  .page--dark .lg.lg--frost > .lg__tint,
+  .page--dark .lg.lg--clear > .lg__tint,
+  .footer--dark .lg.lg--frost > .lg__tint,
+  .footer--black .lg.lg--frost > .lg__tint,
+  .hero .lg.lg--clear > .lg__tint,
+  .lg.totop--dark > .lg__tint,
+  .lg.totop--black > .lg__tint { background: rgba(3, 23, 58, .92); }
+  // The edge: the shine's white stops vanish on Paper, so the thickness gets a hairline
+  // (Ink on a Paper surface, Paper on an Ink one) — the brand's "on flat Paper there is a
+  // hairline" rule, applied to the one tier where the surface IS flat.
+  .lg.lg--frost > .lg__shine,
+  .lg.lg--clear > .lg__shine { box-shadow: $glass-shine, inset 0 0 0 1px $ink-15; }
+  .lg.lg--tint > .lg__shine,
+  .nav--dark .lg.lg--frost > .lg__shine,
+  .nav.is-open .lg.lg--frost > .lg__shine,
+  .on-dark .lg > .lg__shine,
+  .page--dark .lg > .lg__shine,
+  .footer--dark .lg > .lg__shine,
+  .footer--black .lg > .lg__shine,
+  .hero .lg > .lg__shine,
+  .lg.totop--dark > .lg__shine,
+  .lg.totop--black > .lg__shine { box-shadow: $glass-shine, inset 0 0 0 1px $paper-15; }
+}
+html[data-glass='solid'] { @include glass-solid; }
+// A system-level "reduce transparency" wins over whatever the device could afford.
+@media (prefers-reduced-transparency: reduce) {
+  html { @include glass-solid; }
+}
 
 // 03 — the thickness. Fixed stack; plus the two cursor-following lights: a soft spot
 // inside the surface (::before — the reference's "liquid glass moves on hover") and the
