@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
@@ -10,6 +11,7 @@ import useReveal from '../lib/useReveal';
 import useGlassMode from '../lib/useGlassMode';
 import useSmoothScroll from '../lib/useSmoothScroll';
 import { IS_HOLDING } from '../lib/site';
+import { applyCanvas } from '../lib/canvas';
 import 'lenis/dist/lenis.css';
 import '../styles/main.scss';
 
@@ -18,6 +20,14 @@ export default function App({ Component, pageProps }) {
   useGlassMode();
   useReveal(router.asPath);
   useSmoothScroll();
+
+  // The canvas behind the page (html/body colour, theme-color) follows the route — see
+  // lib/canvas.js. PageVeil already switches it as a veiled navigation starts, so the fade
+  // runs against the incoming page's ground; this is the authority for everything else
+  // (back/forward, reduced motion, a direct visit after hydration).
+  useEffect(() => {
+    applyCanvas(IS_HOLDING ? '/holding' : router.pathname);
+  }, [router.pathname]);
 
   // Pre-launch: NEXT_PUBLIC_HOLDING=1 serves the holding page for every route.
   // The real site stays in the codebase; flip the flag off at launch.

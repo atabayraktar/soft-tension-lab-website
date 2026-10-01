@@ -13,7 +13,8 @@
   align-content: center;
   justify-items: center;
   text-align: center;
-  padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) max(2.5rem, calc(1.5rem + env(safe-area-inset-bottom)));
+  // Black runs under the iOS bars (viewport-fit=cover); the centre group keeps to the safe area.
+  padding: calc(clamp(1.5rem, 5vh, 3rem) + var(--sat)) var(--gutter) max(2.5rem, calc(1.5rem + var(--sab)));
   @media (min-width: 52rem) { padding-inline: clamp(1.25rem, 3vw, 2.25rem); }
   ::selection { background: $paper; color: $black; }
 }
@@ -102,8 +103,8 @@
 .comingsoon__stamp {
   position: absolute;
   z-index: 1;
-  left: .9rem;
-  bottom: max(.9rem, env(safe-area-inset-bottom));
+  left: calc(.9rem + var(--sal));
+  bottom: calc(.9rem + var(--sab));
   width: 44px;
   height: 44px;
   color: $signal;

@@ -93,13 +93,29 @@
   --paper-15: #{$paper-15};
   --paper-08: #{$paper-08};
 
-  // Fluid layout rhythm
-  --gutter: clamp(1.25rem, 4.2vw, 3.75rem);
+  // Safe-area insets. The viewport is laid out edge to edge (`viewport-fit=cover`, Seo.jsx)
+  // so page BACKGROUNDS run under the iPhone status bar / Dynamic Island and Safari's
+  // floating bottom toolbar — iOS 26 then shows the page through its translucent bars
+  // instead of painting a flat strip (the client's screenshot: a Paper band above the black
+  // hero, a flat slab under the toolbar). UI never goes there: every pinned or edge-laid
+  // piece of chrome keeps its position relative to the SAFE area, which these add to.
+  // Always read through these — never a bare env() — so a headless check can set them.
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sai: max(var(--sal), var(--sar));   // phones held sideways: the notch side, mirrored
+
+  // Fluid layout rhythm. The gutter carries the side inset, so every section's content
+  // (and the hero's width-derived type size) clears the notch in landscape by itself.
+  --gutter-base: clamp(1.25rem, 4.2vw, 3.75rem);
+  --gutter: calc(var(--gutter-base) + var(--sai));
   // How far the header bar and the footer content sit from the screen edge: the content
   // gutter on phones, a little less on tablets (chrome hugs the edge more than content).
   --chrome-inset: var(--gutter);
   --section: clamp(4.5rem, 11vw, 10rem);
-  --nav-top: .75rem;
+  // The bar sits .75rem under the status bar — below the Dynamic Island, never in it.
+  --nav-top: calc(.75rem + var(--sat));
   --nav-h: 3.25rem;
   --wrap: 90rem;
   // The wide ceiling for grid/image-driven sections (Home gallery wall, Works logo wall):
@@ -114,10 +130,22 @@
 
 @include up($bp-md) {
   :root {
-    --nav-top: 1rem;
+    --nav-top: calc(1rem + var(--sat));
     --nav-h: 3.5rem;
-    --chrome-inset: calc(var(--gutter) * .6);
+    --chrome-inset: calc(var(--gutter-base) * .6 + var(--sai));
   }
+}
+
+// The canvas: what the browser paints beyond the page (overscroll) and, on iOS 26 Safari,
+// what tints its bars when nothing else qualifies — it reads the <body> colour, and ignores
+// <meta theme-color>. So html AND body carry the colour of the page's two ENDS (set per
+// route on <html data-canvas>, see lib/canvas.js): black for Home (black hero at the top,
+// black finale + footer at the bottom), the Works ground for Works, Paper elsewhere. The
+// page itself paints its own Paper (.page / .home) — body is no longer the page surface.
+:root {
+  --canvas: #{$paper};
+  &[data-canvas='black'] { --canvas: #{$black}; }
+  &[data-canvas='dark']  { --canvas: #{$ink-deep}; }
 }
 
 // ---------------------------------------------------------------------------
@@ -127,7 +155,7 @@
 * { margin: 0; padding: 0; }
 
 html {
-  background: $paper;
+  background: var(--canvas);
   scroll-behavior: smooth;
   // No scroll anchoring for the document. On a page swap behind PageVeil the footer is the
   // one node React keeps (same element in the same slot), so the browser picked it as its
@@ -143,7 +171,7 @@ html {
 
 body {
   min-height: 100dvh;
-  background: $paper;
+  background: var(--canvas);   // same as the canvas — the page surface is .page / .home
   color: $ink;
   font-family: $font-display;
   font-size: 1.0625rem;
@@ -273,6 +301,7 @@ html[data-js] .mask--3 > * { transition-delay: 240ms; }
   // Page + footer fill one screen when the content is short (--footer-h is set by Footer);
   // a long page just grows and scrolls as usual.
   min-height: calc(100dvh - var(--footer-h, 0px));
+  background: $paper;   // the page paints its own ground (body is the canvas, see above)
 }
 .page--dark {
   background: $ink-deep;

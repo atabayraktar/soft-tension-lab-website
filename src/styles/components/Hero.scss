@@ -62,7 +62,9 @@
     flex-direction: column;
     justify-content: center;          // the headline stands mid-panel so its letters have room to fall
     gap: 1.5rem;
-    padding: calc(var(--nav-top) + var(--nav-h) + .75rem) var(--gutter) var(--gutter);
+    // The black scene runs under the iOS status bar and bottom toolbar (viewport-fit=cover);
+    // the headline keeps clear of both — the top via --nav-top, the bottom via --sab.
+    padding: calc(var(--nav-top) + var(--nav-h) + .75rem) var(--gutter) calc(var(--gutter) + var(--sab));
     @include up($bp-md) { padding-top: calc(var(--nav-top) + var(--nav-h) + 1rem); }
   }
 }

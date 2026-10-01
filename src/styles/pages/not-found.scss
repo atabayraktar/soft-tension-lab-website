@@ -46,9 +46,12 @@
   @media (min-width: 48rem) { .page.nf { --nf-footer: 12rem; } }   // wraps to two rows
   @media (min-width: 64rem) { .page.nf { --nf-footer: 8rem; } }    // single row
 
+  // --nf-footer is the footer's content height; its bottom safe-area padding (--sab) and
+  // the status-bar inset inside --nav-top come off the viewport as well, so the page still
+  // fits one screen edge to edge.
   .nf__inner {
-    min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--nf-footer));
+    min-height: calc(100svh - var(--nav-top) - var(--nav-h) - var(--nf-footer) - var(--sab));
     padding-block: clamp(1rem, 3svh, 2rem);
   }
-  .nf__code { font-size: clamp(5rem, min(22vw, calc(100svh - var(--nf-footer) - 26rem)), 14rem); }
+  .nf__code { font-size: clamp(5rem, min(22vw, calc(100svh - var(--sat) - var(--sab) - var(--nf-footer) - 26rem)), 14rem); }
 }

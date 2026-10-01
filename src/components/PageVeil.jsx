@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { getLenis } from '../lib/useSmoothScroll';
+import { applyCanvas } from '../lib/canvas';
 
 const OUT_MS = 280;      // old page fades to the Paper ground
 const IN_MS = 380;       // new page fades up from it
@@ -73,6 +74,10 @@ export default function PageVeil({ children }) {
       e.preventDefault();
       target = url.pathname + url.search + url.hash;
       router.prefetch(url.pathname).catch(() => {});
+      // The ground the fade runs against is the INCOMING page's canvas (black for Home,
+      // Paper for most): switched now, so the outgoing page fades into it and the new one
+      // fades up from it — never a hard colour cut while the page is hidden.
+      applyCanvas(url.pathname);
 
       if (pushed) { push(); return; }     // already navigating: retarget immediately
       if (node.dataset.phase === 'out') return;   // fade-out in flight: it will push `target`

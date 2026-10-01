@@ -219,7 +219,9 @@ $bar-in-delay:      $sheet-close-delay + $sheet-close - $bar-in;
     align-items: flex-end;       // …and the right edge, corner-fixed
     gap: 2rem;
     // right edge lines up with the menu icon in the bar (bar inset + its inner padding)
-    padding: calc(var(--nav-top) + var(--nav-h) + 1.5rem) calc(var(--chrome-inset) + 1.4rem) max(1.5rem, env(safe-area-inset-bottom));
+    // top clears the bar (--nav-top carries the status-bar inset); bottom stays above the
+    // home indicator / Safari's toolbar — the sheet's glass bleeds under both, its links don't
+    padding: calc(var(--nav-top) + var(--nav-h) + 1.5rem) calc(var(--chrome-inset) + 1.4rem) calc(1.5rem + var(--sab));
     overflow-y: auto;
     overscroll-behavior: contain; // its own scroll never chains to the locked page behind
   }

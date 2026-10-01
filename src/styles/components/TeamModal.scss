@@ -10,13 +10,15 @@
   // The close badge straddles the card's corner and reaches ~1rem past it, so the
   // gutter is never smaller than that plus room to breathe.
   --tm-gutter: 1.5rem;
-  --tm-w: min(100vw - 2 * var(--tm-gutter), 30rem);
-  --tm-h: calc(100vh - 2 * var(--tm-gutter));
-  --tm-h: calc(100dvh - 2 * var(--tm-gutter));
+  // The card lives inside the safe area (the scrim bleeds under the iOS bars, the card
+  // does not): the insets come off the available width/height here and pad the layer below.
+  --tm-w: min(100vw - 2 * var(--tm-gutter) - var(--sal) - var(--sar), 30rem);
+  --tm-h: calc(100vh - 2 * var(--tm-gutter) - var(--sat) - var(--sab));
+  --tm-h: calc(100dvh - 2 * var(--tm-gutter) - var(--sat) - var(--sab));
   @include up($bp-md) { --tm-gutter: 2rem; }
   // Phones held sideways: too short to stack the circle over the text — the card goes
   // wide and the body turns into a row (see .team-modal__body below).
-  @include short-landscape { --tm-w: min(100vw - 2 * var(--tm-gutter), 40rem); }
+  @include short-landscape { --tm-w: min(100vw - 2 * var(--tm-gutter) - var(--sal) - var(--sar), 40rem); }
 }
 
 // Over the nav (120) and the glass scrollbar (130), under the page veil (150).
@@ -42,7 +44,7 @@
   z-index: 141;
   display: grid;
   place-items: center;
-  padding: var(--tm-gutter);
+  padding: calc(var(--tm-gutter) + var(--sat)) calc(var(--tm-gutter) + var(--sar)) calc(var(--tm-gutter) + var(--sab)) calc(var(--tm-gutter) + var(--sal));
   overflow: hidden;
 }
 

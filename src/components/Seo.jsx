@@ -63,7 +63,11 @@ export default function Seo({ title, description = SITE.description, path = '/',
     <Head>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      {/* viewport-fit=cover: edge-to-edge layout on iOS, so page backgrounds run under the
+          status bar / Dynamic Island and Safari's translucent bottom toolbar (iOS 26 shows
+          the page through them); every pinned piece of UI keeps clear via the --sa* insets
+          in globals.scss. Without it Safari paints a flat strip in both gaps. */}
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <link rel="canonical" href={url} />
       {noindex ? (
         <meta name="robots" content="noindex,nofollow" />

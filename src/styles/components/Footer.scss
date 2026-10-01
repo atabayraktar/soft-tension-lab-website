@@ -46,7 +46,10 @@
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
-  padding-bottom: 2.5rem;
+  // The footer's colour runs under the home indicator / Safari's bottom toolbar; its
+  // content stops above them (the inset is part of the measured --footer-h, so the
+  // fit-to-screen pages and ToTop account for it too).
+  padding-bottom: calc(2.5rem + var(--sab));
   text-align: center;
 
   @include up($bp-md) {

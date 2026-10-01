@@ -7,7 +7,9 @@
   min-height: 100dvh;
   background: $paper;
   color: $ink;
-  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3rem, 8vw, 5rem);
+  // Paper runs under the iOS bars; the text starts below the status bar and ends above the
+  // home indicator / toolbar.
+  padding-block: calc(clamp(2.5rem, 6vw, 4.5rem) + var(--sat)) calc(clamp(3rem, 8vw, 5rem) + var(--sab));
 }
 
 .kvkk__inner {
@@ -19,8 +21,8 @@
 // float over the text on a page this long). Desktop: fixed, top-left, as before.
 .kvkk__stamp {
   position: absolute;
-  top: clamp(1.25rem, 3vw, 2rem);
-  right: clamp(1.25rem, 3vw, 2rem);
+  top: calc(clamp(1.25rem, 3vw, 2rem) + var(--sat));
+  right: calc(clamp(1.25rem, 3vw, 2rem) + var(--sar));
   z-index: 10;
   display: block;
   width: clamp(2.75rem, 5vw, 3.5rem);
@@ -31,7 +33,7 @@
 
   @include up($bp-md) {
     position: fixed;
-    left: clamp(1.25rem, 3vw, 2rem);
+    left: calc(clamp(1.25rem, 3vw, 2rem) + var(--sal));
     right: auto;
   }
 

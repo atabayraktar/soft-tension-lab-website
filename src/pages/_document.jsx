@@ -66,6 +66,16 @@ export default function Document() {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#F0EEE9" />
+        {/* The canvas (html/body colour behind the iOS bars + theme-color) for this route,
+            before first paint — the same mapping as lib/canvas.js (kept in step by hand: this
+            must be an inline string). With the holding flag on, every route is the black
+            holding screen. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              `(function(){var p=location.pathname.replace(/\\/+$/,'')||'/';var c=${process.env.NEXT_PUBLIC_HOLDING === '1' ? "'black'" : "p==='/'||p==='/holding'||p==='/comingsoon'?'black':p==='/work'?'dark':''"};if(c){document.documentElement.setAttribute('data-canvas',c);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',c==='black'?'#000000':'#020A1C')}})()`,
+          }}
+        />
         {/* Marks the document as JS-capable before first paint so reveal/mask styles only
             apply when something will actually reveal them. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.setAttribute('data-js','1')" }} />

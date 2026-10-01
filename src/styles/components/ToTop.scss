@@ -7,8 +7,10 @@
 // whichever footer it happens to sit on (light Paper footer vs. a dark/black one).
 .totop {
   position: fixed;
-  right: max(1rem, env(safe-area-inset-right));
-  bottom: calc(var(--footer-h, 0px) + max(1rem, env(safe-area-inset-bottom)));
+  right: calc(1rem + var(--sar));
+  // --footer-h already includes the footer's own bottom safe-area padding (Footer.scss);
+  // on a bare page with no footer (KVKK) the inset itself is the floor.
+  bottom: calc(var(--footer-h, var(--sab)) + 1rem);
   z-index: 125;                       // over the page and footer, under the page veil (150)
   width: 2.75rem;                     // ≥ 44px touch target
   height: 2.75rem;
