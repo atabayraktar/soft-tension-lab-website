@@ -120,14 +120,38 @@
   display: flex;
   flex-direction: column;
   // Lifted: while this card's expanded view (TeamModal) is open, the card itself is
-  // gone from the grid — the modal took off from its rect and lands back on it.
-  transition: opacity 120ms $ease-out-cubic;
-  .about__avatar[data-lifted] & { opacity: 0; }
+  // gone from the grid — the modal took off from its rect and lands back on it. The
+  // float is frozen so that rect holds still for the landing (TeamModal measures this
+  // element), and the card is parked at near-zero — not zero — opacity: at zero the
+  // compositor drops its layer, and painting the refraction glass back on the landing
+  // frame cost a visible stall. The fades in and out are TeamModal's own animations
+  // (on the animation clock, in step with the flight) — no CSS opacity transition here.
+  // It is also pinned to its rest pose with no transitions: the pointer that clicked it
+  // is still over it, and Chrome keeps that stale :hover under `inert` until the pointer
+  // moves — a card measured mid hover-lift would drift under the modal and the landing
+  // would miss by that lift.
+  .about__avatar[data-lifted] & {
+    opacity: .001;
+    animation-play-state: paused;
+    translate: none;
+    scale: none;
+    transition: none;
+    .lg__shine::before,
+    .lg__shine::after { opacity: 0; }
+  }
+  // Just landed: the pointer is often still parked over the slot (Escape / close badge).
+  // Hover stays off until it moves (TeamModal clears the attribute), so the landing is
+  // not followed by a hover lift.
+  .about__avatar[data-settled] &:hover {
+    translate: none;
+    scale: none;
+    .lg__shine::before,
+    .lg__shine::after { opacity: 0; }
+  }
   // Paused while the page scrolls (about.jsx toggles the attribute) — keeps scroll at 60fps.
   .about__cluster[data-scrolling] & { animation-play-state: paused; }
   @include fine-pointer {
     transition:
-      opacity 120ms $ease-out-cubic,
       translate $dur-base $ease-out-expo,
       scale var(--glass-dur) var(--glass-ease),
       box-shadow var(--glass-dur) var(--glass-ease);

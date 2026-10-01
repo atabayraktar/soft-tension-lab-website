@@ -7,14 +7,27 @@ import { lockScroll } from '../lib/scrollLock';
  * The About team card, expanded: the clicked card lifts off the grid, spins a few
  * degrees as it grows, glides to the centre and settles — then the bio reads inside the
  * same glass. Closing is the mirror: the content fades, the card lifts a touch, then
- * spins back down into its slot in the grid, which fades back in under it.
+ * spins back down into its slot in the grid and melts into the real card there.
  *
  * It is a FLIP: the modal is laid out at its final size and position (CSS), the source
- * card's rect is measured, and the wrapper animates from `translate·rotate·scale`
- * matching that rect to `none` (Web Animations API, transform + opacity only — never
- * layout). The source card is hidden (`data-lifted` on its <li>, about.scss) 80ms in, so
- * for the first frames the growing glass sits over the real card, blurring it through
- * its own backdrop — the content then sharpens into the new one. Same in reverse.
+ * card's rect is measured, and the wrapper animates between the pose matching that rect
+ * and identity (Web Animations API, transform + opacity only — never layout). The pose is
+ * three separate animations on the individual `translate` / `rotate` / `scale`
+ * properties (which always compose as translate·rotate·scale, so the spin never shears
+ * the non-uniform scale) — the spin runs on its own bell curve and is 0deg at BOTH ends,
+ * so the glass sits flat and pixel-exact on the small card at take-off and at landing.
+ *
+ * The hand-off is a dissolve the eye can't catch, timed on the animation clock (every
+ * animation here is created in one task, so they share a start frame — never
+ * setTimeout, which drifts from the compositor under load):
+ *   • open: the glass starts clear (effect + tint at 0) over the still-visible source,
+ *     darkens as it lifts; the source fades out under it (80→200ms).
+ *   • close: the content goes first (0→30%), the glass melts clear (45→90%) while the
+ *     source card fades back in beneath it (55→92%), then the last 12% dissolves the
+ *     empty rim into the real card. At every frame the two cards share one rect.
+ * The source card is measured as the glass root inside its <li> (about.scss pauses its
+ * idle float and parks it at near-zero — not zero — opacity while `data-lifted`, so it
+ * keeps its compositor layer and painting it back costs no frame at the landing).
  *
  * Mounted only while open; `onClose` fires once the close animation has landed, and the
  * parent unmounts it. Scroll lock, Escape, focus and `inert` on the page root follow the
@@ -22,14 +35,15 @@ import { lockScroll } from '../lib/scrollLock';
  */
 
 const OPEN_MS = 640;
-const CLOSE_MS = 520;
+const CLOSE_MS = 560;
 const RM_MS = 180;
-const LIFT_AT = 80;              // ms into the open before the source card hides
-const LAND_AT = 0.7;             // share of the close after which the source card returns
-const SPIN = 7;                  // degrees, at the source rect
+const SPIN = 7;                  // degrees, at the peak of the flight
+const DRIFT_Y = -8;              // px, the small lift the card settles from / takes off with
+const DRIFT_S = 1.012;
 const EASE_OUT_EXPO = 'cubic-bezier(.16, 1, .3, 1)';
 const EASE_OUT_CUBIC = 'cubic-bezier(.33, 1, .68, 1)';
-const EASE_IN_OUT = 'cubic-bezier(.64, 0, .36, 1)';
+const EASE_IN_OUT = 'cubic-bezier(.45, 0, .22, 1)';   // close flight: no dead stop, no kick
+const EASE_BELL = 'cubic-bezier(.4, 0, .6, 1)';       // the spin, symmetric
 const NAME_ID = 'team-modal-name';
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -39,25 +53,34 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
   const bodyRef = useRef(null);    // the content inside the glass (fades separately)
   const scrimRef = useRef(null);
   const closeRef = useRef(null);
-  const st = useRef({ closing: false, anims: [], timers: [], unlock: null });
+  const st = useRef({ closing: false, anims: [], unlock: null });
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
-  // The wrapper's transform at the source card's rect: rotation leans away from the
-  // viewport centre (a card on the left spins in counter-clockwise, on the right
-  // clockwise), the drift pose is the small overshoot it settles back from.
+  // The source card is the glass root in the <li> (the <li> owns the scroll-reveal; the
+  // card owns the idle float + hover lift, and it is what the eye lines the modal up with).
+  const sourceCard = () => sourceEl?.firstElementChild ?? null;
+  const glassLayers = () => {
+    const card = cardRef.current;
+    return card ? [card.querySelector('.lg__effect'), card.querySelector('.lg__tint')] : [];
+  };
+
+  // The wrapper's pose at the source card's rect. Rotation leans away from the viewport
+  // centre (a card on the left spins counter-clockwise, on the right clockwise).
   const pose = () => {
     const card = cardRef.current;
-    if (!sourceEl || !card) return null;
-    const s = sourceEl.getBoundingClientRect();
+    const src = sourceCard();
+    if (!src || !card) return null;
+    const s = src.getBoundingClientRect();
     const d = card.getBoundingClientRect();
     if (!s.width || !d.width) return null;
     const dir = s.left + s.width / 2 < window.innerWidth / 2 ? -1 : 1;
     const dx = s.left + s.width / 2 - (d.left + d.width / 2);
     const dy = s.top + s.height / 2 - (d.top + d.height / 2);
     return {
-      from: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) rotate(${SPIN * dir}deg) scale(${(s.width / d.width).toFixed(4)}, ${(s.height / d.height).toFixed(4)})`,
-      drift: `translate(0px, -8px) rotate(${(-SPIN * dir * 0.17).toFixed(2)}deg) scale(1.012)`,
+      translate: `${dx.toFixed(2)}px ${dy.toFixed(2)}px`,
+      scale: `${(s.width / d.width).toFixed(5)} ${(s.height / d.height).toFixed(5)}`,
+      spin: `${SPIN * dir}deg`,
     };
   };
 
@@ -67,7 +90,6 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
     st.current.anims.push(a);
     return a;
   };
-  const later = (fn, ms) => { st.current.timers.push(setTimeout(fn, ms)); };
 
   // Open — before first paint, so the first frame is already the source-sized pose.
   useLayoutEffect(() => {
@@ -76,13 +98,39 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
     s.unlock = lockScroll();
     const root = document.getElementById('__next');
     root?.setAttribute('inert', '');
+    // Pauses the float and parks the card (about.scss) — set before measuring.
+    sourceEl?.setAttribute('data-lifted', '');
 
     const p = reducedMotion() ? null : pose();
     if (p) {
+      const drift = `0px ${DRIFT_Y}px`;
       run(card, [
-        { transform: p.from, easing: EASE_OUT_EXPO },
-        { transform: p.drift, offset: 0.72, easing: EASE_OUT_CUBIC },
-        { transform: 'none' },
+        { translate: p.translate, easing: EASE_OUT_EXPO },
+        { translate: drift, offset: 0.72, easing: EASE_OUT_CUBIC },
+        { translate: '0px 0px' },
+      ], { duration: OPEN_MS });
+      run(card, [
+        { scale: p.scale, easing: EASE_OUT_EXPO },
+        { scale: String(DRIFT_S), offset: 0.72, easing: EASE_OUT_CUBIC },
+        { scale: '1' },
+      ], { duration: OPEN_MS });
+      run(card, [
+        { rotate: '0deg', easing: EASE_OUT_CUBIC },
+        { rotate: p.spin, offset: 0.14, easing: EASE_OUT_EXPO },
+        { rotate: `${-parseFloat(p.spin) * 0.17}deg`, offset: 0.72, easing: EASE_OUT_CUBIC },
+        { rotate: '0deg' },
+      ], { duration: OPEN_MS });
+      // The glass darkens as it lifts off the (still visible) source card.
+      glassLayers().forEach((el) => run(el, [
+        { opacity: 0, easing: EASE_OUT_CUBIC },
+        { opacity: 1, offset: 0.3 },
+        { opacity: 1 },
+      ], { duration: OPEN_MS }));
+      run(sourceCard(), [
+        { opacity: 1 },
+        { opacity: 1, offset: 0.125, easing: EASE_OUT_CUBIC },
+        { opacity: 0.001, offset: 0.31 },
+        { opacity: 0.001 },
       ], { duration: OPEN_MS });
       run(bodyRef.current, [
         { opacity: 0 },
@@ -90,10 +138,14 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
         { opacity: 1, offset: 0.7 },
         { opacity: 1 },
       ], { duration: OPEN_MS });
+      run(closeRef.current, [
+        { opacity: 0 },
+        { opacity: 0, offset: 0.2, easing: EASE_OUT_CUBIC },
+        { opacity: 1, offset: 0.7 },
+        { opacity: 1 },
+      ], { duration: OPEN_MS });
       run(scrimRef.current, [{ opacity: 0 }, { opacity: 1 }], { duration: 360, easing: EASE_OUT_CUBIC });
-      later(() => sourceEl?.setAttribute('data-lifted', ''), LIFT_AT);
     } else {
-      sourceEl?.setAttribute('data-lifted', '');
       run(card, [{ opacity: 0 }, { opacity: 1 }], { duration: RM_MS, easing: EASE_OUT_CUBIC });
       run(scrimRef.current, [{ opacity: 0 }, { opacity: 1 }], { duration: RM_MS, easing: EASE_OUT_CUBIC });
     }
@@ -101,14 +153,27 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
 
     return () => {
       s.anims.forEach((a) => a.cancel());
-      s.timers.forEach(clearTimeout);
-      s.anims = []; s.timers = [];
+      s.anims = [];
       root?.removeAttribute('inert');
       s.unlock?.();
       s.unlock = null;
-      sourceEl?.removeAttribute('data-lifted');
-      // Focus goes back to the card that opened it (no-op if the page has moved on).
-      sourceEl?.querySelector('button')?.focus({ preventScroll: true });
+      if (sourceEl) {
+        // Back in the grid, at full opacity, float resumed. The pointer is often still
+        // parked over the slot (Escape / close badge): hover stays off the landed card
+        // until the pointer actually moves, so the landing is not followed by a hover
+        // lift (and a tap's sticky hover never sets in).
+        sourceEl.removeAttribute('data-lifted');
+        sourceEl.setAttribute('data-settled', '');
+        const settle = () => {
+          sourceEl.removeAttribute('data-settled');
+          document.removeEventListener('pointermove', settle);
+          document.removeEventListener('pointerdown', settle);
+        };
+        document.addEventListener('pointermove', settle, { passive: true });
+        document.addEventListener('pointerdown', settle, { passive: true });
+        // Focus goes back to the card that opened it (no-op if the page has moved on).
+        sourceEl.querySelector('button')?.focus({ preventScroll: true });
+      }
     };
     // Mount/unmount only: the parent remounts (new key) for a different person.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,17 +184,52 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
     if (s.closing) return;
     s.closing = true;
     const card = cardRef.current;
+    // Escape is a key press, so Chrome would paint the dialog's :focus-visible ring on
+    // the card for the whole flight down. Focus leaves now; cleanup hands it to the
+    // source card's button.
+    if (card?.contains(document.activeElement)) document.activeElement.blur();
     const p = reducedMotion() ? null : pose();
     let a;
     if (p) {
+      const drift = `0px ${DRIFT_Y}px`;
       a = run(card, [
-        { transform: 'none', easing: EASE_OUT_CUBIC },
-        { transform: p.drift, offset: 0.25, easing: EASE_IN_OUT },
-        { transform: p.from },
+        { translate: '0px 0px', easing: EASE_OUT_CUBIC },
+        { translate: drift, offset: 0.2, easing: EASE_IN_OUT },
+        { translate: p.translate },
       ], { duration: CLOSE_MS });
-      run(bodyRef.current, [{ opacity: 1 }, { opacity: 0, offset: 0.3 }, { opacity: 0 }], { duration: CLOSE_MS, easing: EASE_OUT_CUBIC });
-      run(scrimRef.current, [{ opacity: 1 }, { opacity: 0 }], { duration: CLOSE_MS, easing: EASE_OUT_CUBIC });
-      later(() => sourceEl?.removeAttribute('data-lifted'), CLOSE_MS * LAND_AT);
+      run(card, [
+        { scale: '1', easing: EASE_OUT_CUBIC },
+        { scale: String(DRIFT_S), offset: 0.2, easing: EASE_IN_OUT },
+        { scale: p.scale },
+      ], { duration: CLOSE_MS });
+      run(card, [
+        { rotate: '0deg', easing: EASE_BELL },
+        { rotate: p.spin, offset: 0.58, easing: EASE_BELL },
+        { rotate: '0deg' },
+      ], { duration: CLOSE_MS });
+      // Content first, then the glass melts clear while the real card fades in beneath
+      // it, and the last stretch dissolves what is left (the rim) into that card.
+      [bodyRef.current, closeRef.current].forEach((el) => run(el, [
+        { opacity: 1, easing: EASE_OUT_CUBIC },
+        { opacity: 0, offset: 0.3 },
+        { opacity: 0 },
+      ], { duration: CLOSE_MS }));
+      glassLayers().forEach((el) => run(el, [
+        { opacity: 1 },
+        { opacity: 1, offset: 0.45, easing: EASE_BELL },
+        { opacity: 0, offset: 0.9 },
+        { opacity: 0 },
+      ], { duration: CLOSE_MS }));
+      run(sourceCard(), [
+        { opacity: 0.001 },
+        { opacity: 0.001, offset: 0.55, easing: EASE_OUT_CUBIC },
+        { opacity: 1, offset: 0.92 },
+        { opacity: 1 },
+      ], { duration: CLOSE_MS });
+      run(card, [{ opacity: 1 }, { opacity: 1, offset: 0.88 }, { opacity: 0 }], { duration: CLOSE_MS, easing: 'linear' });
+      // The scrim is visually gone well before the landing; reaching 0 early lets the
+      // compositor drop its full-screen blur for the frames that matter most.
+      run(scrimRef.current, [{ opacity: 1 }, { opacity: 0 }], { duration: CLOSE_MS * 0.7, easing: EASE_OUT_CUBIC });
     } else {
       sourceEl?.removeAttribute('data-lifted');
       a = run(card, [{ opacity: 1 }, { opacity: 0 }], { duration: RM_MS, easing: EASE_OUT_CUBIC });

@@ -46,7 +46,7 @@
   border-radius: 50%;
   background: $signal;
   flex-shrink: 0;
-  transform: translateY(-.32em);            // lifts it from the baseline to x-height mid
+  transform: translateY(-.17em);            // centre sits ~.31em above the baseline: midway between x-height mid (.27em) and cap-height mid (.36em)
 }
 
 @keyframes marquee {
