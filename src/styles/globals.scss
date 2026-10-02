@@ -303,7 +303,7 @@ html[data-js] .mask--3 > * { transition-delay: 240ms; }
   padding-top: calc(var(--nav-top) + var(--nav-h));
   // Page + footer fill one screen when the content is short (--footer-h is set by Footer);
   // a long page just grows and scrolls as usual.
-  min-height: calc(100dvh - var(--footer-h, 0px));
+  min-height: calc(100dvh - var(--footer-h, 16rem));
   background: $paper;   // the page paints its own ground (body is the canvas, see above)
 }
 .page--dark {
