@@ -64,6 +64,7 @@ export default function Services() {
     // data-land-with: the nav lands on this section together with the two marquee bands
     // around it (Nav.jsx scrollToSection), so both bands are on screen on arrival.
     <section id={SERVICES_ID} className="services" aria-label="Hizmetler" data-land-with="siblings">
+      <h2 className="sr-only">Hizmetler</h2>
       <div className="services__reveal" data-reveal>
         <ul ref={listRef} className="services__list" onPointerLeave={onLeave} onBlur={onBlur}>
           {SERVICES.map((title, i) => {

@@ -21,8 +21,8 @@ const BASE_GRAPH = [
       logo: `${SITE.url}/logos/logo-ana.svg`,
       image: `${SITE.url}${SITE.ogImage}`,
       founder: [
-        { '@type': 'Person', name: 'Ömer' },
-        { '@type': 'Person', name: 'Cemre' },
+        { '@type': 'Person', name: 'Ömer Akbaş', jobTitle: 'Kurucu Ortak' },
+        { '@type': 'Person', name: 'Cemre Ece Kurtman', jobTitle: 'Kurucu Ortak' },
       ],
       contactPoint: {
         '@type': 'ContactPoint',
@@ -30,7 +30,7 @@ const BASE_GRAPH = [
         contactType: 'customer service',
         availableLanguage: ['tr', 'en'],
       },
-      sameAs: [SITE.instagram, SITE.behance],
+      sameAs: [SITE.instagram, SITE.behance, SITE.youtube, SITE.tiktok],
       areaServed: 'TR',
       knowsAbout: [
         'Marka Kimliği',
