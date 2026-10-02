@@ -6,11 +6,12 @@ import { SITE } from '../lib/site';
 export const ORG_ID = `${SITE.url}/#organization`;
 export const WEBSITE_ID = `${SITE.url}/#website`;
 
-// Organization + LocalBusiness for the studio. No street address or phone by design —
-// the brief forbids location/phone anywhere on the site.
+// Organization for the studio. Deliberately NOT LocalBusiness: Google's rich-results test
+// requires an address for it, and the brief forbids a street address or phone anywhere on
+// the site.
 const BASE_GRAPH = [
     {
-      '@type': ['Organization', 'LocalBusiness'],
+      '@type': 'Organization',
       '@id': ORG_ID,
       name: SITE.name,
       alternateName: SITE.shortName,
