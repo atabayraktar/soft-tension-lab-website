@@ -130,8 +130,13 @@
   // is still over it, and Chrome keeps that stale :hover under `inert` until the pointer
   // moves — a card measured mid hover-lift would drift under the modal and the landing
   // would miss by that lift.
+  // The card root stays at opacity 1 (an opacity < 1 root would blank its backdrop blur,
+  // then pop it in on release); its four layers are what park at .001.
   .about__avatar[data-lifted] & {
-    opacity: .001;
+    > .lg__effect,
+    > .lg__tint,
+    > .lg__shine,
+    > .lg__content { opacity: .001; }
     animation-play-state: paused;
     translate: none;
     scale: none;

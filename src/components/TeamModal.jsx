@@ -60,6 +60,15 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
   // The source card is the glass root in the <li> (the <li> owns the scroll-reveal; the
   // card owns the idle float + hover lift, and it is what the eye lines the modal up with).
   const sourceCard = () => sourceEl?.firstElementChild ?? null;
+  // The source card's four layers, faded individually. Fading the card root instead would
+  // make it a Backdrop Root (opacity < 1): its backdrop-filter would sample only its own
+  // empty content, then jump to the real page (the "2026" numeral behind it) in one frame
+  // when the animation is cancelled — a blink. A layer's own opacity scales its blur output,
+  // so the blur ramps in smoothly.
+  const sourceLayers = () => {
+    const src = sourceCard();
+    return src ? [...src.querySelectorAll(':scope > .lg__effect, :scope > .lg__tint, :scope > .lg__shine, :scope > .lg__content')] : [];
+  };
   const glassLayers = () => {
     const card = cardRef.current;
     return card ? [card.querySelector('.lg__effect'), card.querySelector('.lg__tint')] : [];
@@ -126,12 +135,12 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
         { opacity: 1, offset: 0.3 },
         { opacity: 1 },
       ], { duration: OPEN_MS }));
-      run(sourceCard(), [
+      sourceLayers().forEach((el) => run(el, [
         { opacity: 1 },
         { opacity: 1, offset: 0.125, easing: EASE_OUT_CUBIC },
         { opacity: 0.001, offset: 0.31 },
         { opacity: 0.001 },
-      ], { duration: OPEN_MS });
+      ], { duration: OPEN_MS }));
       run(bodyRef.current, [
         { opacity: 0 },
         { opacity: 0, offset: 0.2, easing: EASE_OUT_CUBIC },
@@ -220,12 +229,12 @@ export default function TeamModal({ person, index, sourceEl, onClose }) {
         { opacity: 0, offset: 0.9 },
         { opacity: 0 },
       ], { duration: CLOSE_MS }));
-      run(sourceCard(), [
+      sourceLayers().forEach((el) => run(el, [
         { opacity: 0.001 },
         { opacity: 0.001, offset: 0.55, easing: EASE_OUT_CUBIC },
         { opacity: 1, offset: 0.92 },
         { opacity: 1 },
-      ], { duration: CLOSE_MS });
+      ], { duration: CLOSE_MS }));
       run(card, [{ opacity: 1 }, { opacity: 1, offset: 0.88 }, { opacity: 0 }], { duration: CLOSE_MS, easing: 'linear' });
       // The scrim is visually gone well before the landing; reaching 0 early lets the
       // compositor drop its full-screen blur for the frames that matter most.
