@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import GlassCard from './GlassCard';
 import TopplingText from './TopplingText';
 import { HERO_LINES } from '../lib/site';
@@ -12,10 +13,28 @@ import { HERO_LINES } from '../lib/site';
  * own colour stays as its poster, nothing else changes.
  */
 export default function Hero() {
+  const pinRef = useRef(null);
+  // iOS 26 Safari keeps the LAST fixed/sticky element it sampled as the source of its bar
+  // colour for as long as that element has a visible renderer (WebKit
+  // Page::updateFixedContainerEdges), so once the sticky black hero has been sampled both
+  // bars stay black for the rest of the page. Hiding it while it is well out of view ends the
+  // carry-over; the bars follow the page again. Visually inert: nothing of the hero is on
+  // screen while it is hidden, and it is restored a little before the pin re-enters.
+  useEffect(() => {
+    const pin = pinRef.current;
+    const hero = pin && pin.firstElementChild;
+    if (!hero || !('IntersectionObserver' in window)) return undefined;
+    const io = new IntersectionObserver(
+      ([e]) => { hero.style.visibility = e.isIntersecting ? '' : 'hidden'; },
+      { rootMargin: '200px 0px' },
+    );
+    io.observe(pin);
+    return () => { io.disconnect(); hero.style.visibility = ''; };
+  }, []);
   return (
     // The spacer is the pin: on desktop it is `--hero-pin` taller than the hero, and the
     // hero sticks inside it while the scroll through that extra height drives the burst.
-    <div className="hero-pin" data-topple-pin>
+    <div ref={pinRef} className="hero-pin" data-topple-pin>
     <section className="hero" data-topple-scope data-nav-invert aria-labelledby="hero-title">
       <div className="hero__bg" aria-hidden="true" />
 

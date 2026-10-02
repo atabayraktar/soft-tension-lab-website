@@ -12,7 +12,7 @@ import useGlassMode from '../lib/useGlassMode';
 import useSmoothScroll from '../lib/useSmoothScroll';
 import useInputModality from '../lib/useInputModality';
 import { IS_HOLDING } from '../lib/site';
-import { applyCanvas, watchCanvas } from '../lib/canvas';
+import { applyCanvas } from '../lib/canvas';
 import 'lenis/dist/lenis.css';
 import '../styles/main.scss';
 
@@ -28,9 +28,7 @@ export default function App({ Component, pageProps }) {
   // runs against the incoming page's ground; this is the authority for everything else
   // (back/forward, reduced motion, a direct visit after hydration).
   useEffect(() => {
-    const p = IS_HOLDING ? '/holding' : router.pathname;
-    applyCanvas(p);
-    return IS_HOLDING ? undefined : watchCanvas(p);   // Home only: the canvas follows the section under the status bar
+    applyCanvas(IS_HOLDING ? '/holding' : router.pathname);
   }, [router.pathname]);
 
   // Pre-launch: NEXT_PUBLIC_HOLDING=1 serves the holding page for every route.
