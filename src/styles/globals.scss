@@ -196,6 +196,9 @@ p { max-width: 68ch; }
   outline: 2px solid $signal;
   outline-offset: 3px;
 }
+// Touch / mouse: no ring (useInputModality sets html[data-input]). Keyboard keeps every ring.
+// !important because a few components draw their own ring on a parent via :has().
+html[data-input='pointer'] * { outline: none !important; }
 
 // Custom cursor is active only on fine pointers, only once JS has mounted it.
 @include fine-pointer {

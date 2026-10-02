@@ -10,6 +10,7 @@ import HoldingPage from '../components/HoldingPage';
 import useReveal from '../lib/useReveal';
 import useGlassMode from '../lib/useGlassMode';
 import useSmoothScroll from '../lib/useSmoothScroll';
+import useInputModality from '../lib/useInputModality';
 import { IS_HOLDING } from '../lib/site';
 import { applyCanvas } from '../lib/canvas';
 import 'lenis/dist/lenis.css';
@@ -20,6 +21,7 @@ export default function App({ Component, pageProps }) {
   useGlassMode();
   useReveal(router.asPath);
   useSmoothScroll();
+  useInputModality();
 
   // The canvas behind the page (html/body colour, theme-color) follows the route — see
   // lib/canvas.js. PageVeil already switches it as a veiled navigation starts, so the fade
