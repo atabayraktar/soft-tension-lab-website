@@ -432,24 +432,34 @@ export default function TopplingText({ text, lines, as: Tag = 'span', mode = 'sc
       blow(t.clientX, t.clientY);
     };
     const onTouchEnd = () => { touchClaimed = false; touchDecided = false; touchOnLetter = false; };
+    // A touch that began outside the hero can only ever stir (never be claimed): passive,
+    // so iOS keeps scrolling asynchronously everywhere else on the page. The one non-passive
+    // listener lives on the hero, where a gesture that starts on a letter can be claimed.
+    const onTouchMoveOutside = (e) => {
+      if (section.contains(e.target)) return;
+      const t = e.touches[0];
+      if (t) blow(t.clientX, t.clientY);
+    };
     const attachBlow = () => {
       if (blowing) return;
       blowing = true;
       window.addEventListener('mousemove', onMouseMove, { passive: true });
-      window.addEventListener('touchstart', onTouchStart, { passive: true });
-      window.addEventListener('touchmove', onTouchMove, { passive: false });
-      window.addEventListener('touchend', onTouchEnd, { passive: true });
-      window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+      section.addEventListener('touchstart', onTouchStart, { passive: true });
+      section.addEventListener('touchmove', onTouchMove, { passive: false });
+      section.addEventListener('touchend', onTouchEnd, { passive: true });
+      section.addEventListener('touchcancel', onTouchEnd, { passive: true });
+      window.addEventListener('touchmove', onTouchMoveOutside, { passive: true });
     };
     const detachBlow = () => {
       if (!blowing) return;
       blowing = false;
       touchClaimed = false; touchDecided = false; touchOnLetter = false;
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
-      window.removeEventListener('touchcancel', onTouchEnd);
+      section.removeEventListener('touchstart', onTouchStart);
+      section.removeEventListener('touchmove', onTouchMove);
+      section.removeEventListener('touchend', onTouchEnd);
+      section.removeEventListener('touchcancel', onTouchEnd);
+      window.removeEventListener('touchmove', onTouchMoveOutside);
     };
 
     // ---- the trigger. Scrolling down past the line: freeze the sentence at home, and a
