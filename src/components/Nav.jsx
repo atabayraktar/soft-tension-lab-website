@@ -25,7 +25,8 @@ function sectionTarget(id) {
   // below is centred in the area under the bar — so both bands show at least their inner
   // halves (more when there is room). If even that span is taller than the area, the band
   // above keeps its lower half under the bar and the section's head with it; the band
-  // below shows what is left.
+  // below shows what is left — unless the section itself fits the area, then it alone is
+  // centred (see below).
   let { top: spanTop, bottom: spanBottom } = el.getBoundingClientRect();
   if (el.dataset.landWith === 'siblings') {
     const prev = el.previousElementSibling, nextEl = el.nextElementSibling;
@@ -33,6 +34,13 @@ function sectionTarget(id) {
     if (nextEl) { const r = nextEl.getBoundingClientRect(); spanBottom = Math.max(spanBottom, r.bottom - r.height / 2); }
   }
   const avail = window.innerHeight - offset;
+  // Too tall for the bands to share the screen (a phone): centre the section alone instead
+  // of parking its head under the bar and letting its tail run off the bottom.
+  const own = el.getBoundingClientRect();
+  if (spanBottom - spanTop > avail && own.height <= avail) {
+    spanTop = own.top;
+    spanBottom = own.bottom;
+  }
   const spanH = spanBottom - spanTop;
   const centre0 = spanH <= avail ? (avail - spanH) / 2 : 0;
   // Desktop only: sits a touch lower than centred so the band below shows more of itself.
