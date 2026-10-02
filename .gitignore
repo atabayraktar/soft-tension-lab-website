@@ -18,5 +18,5 @@ firebase-debug.log
 # raw archive sources (multi-MB PNGs) — the optimized WebP derivatives are committed
 /public/images/archive/src/
 
-# working screenshots
-/.claude/temporary screenshots/
+# claude
+/.claude
