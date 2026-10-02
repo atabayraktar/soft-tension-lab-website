@@ -17,16 +17,17 @@ export default function Hero() {
   // iOS 26 Safari keeps the LAST fixed/sticky element it sampled as the source of its bar
   // colour for as long as that element has a visible renderer (WebKit
   // Page::updateFixedContainerEdges), so once the sticky black hero has been sampled both
-  // bars stay black for the rest of the page. Hiding it while it is well out of view ends the
-  // carry-over; the bars follow the page again. Visually inert: nothing of the hero is on
-  // screen while it is hidden, and it is restored a little before the pin re-enters.
+  // bars stay black for the rest of the page. Hiding it the moment it has left the top edge
+  // (its last 8px) ends the carry-over at once, so the bars are glass over the first Paper
+  // sections, not only further down. Visually inert: all that is left of the hero on screen
+  // is that 8px sliver, and what shows through is Home's own black ground (html/body).
   useEffect(() => {
     const pin = pinRef.current;
     const hero = pin && pin.firstElementChild;
     if (!hero || !('IntersectionObserver' in window)) return undefined;
     const io = new IntersectionObserver(
       ([e]) => { hero.style.visibility = e.isIntersecting ? '' : 'hidden'; },
-      { rootMargin: '200px 0px' },
+      { rootMargin: '-8px 0px 0px 0px' },
     );
     io.observe(pin);
     return () => { io.disconnect(); hero.style.visibility = ''; };
