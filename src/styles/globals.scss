@@ -155,7 +155,12 @@
 * { margin: 0; padding: 0; }
 
 html {
-  background: var(--canvas);
+  // No background-COLOR on html or body: iOS 26 Safari paints its status bar and toolbar as an
+  // OPAQUE fill of the root colour whenever one is set, and as see-through glass (the page
+  // showing through, like google.com) only when the root colour is transparent/default. The
+  // canvas colour stays as a background-IMAGE — Safari does not sample images — so the
+  // overscroll / PageVeil fade ground is unchanged.
+  background-image: linear-gradient(var(--canvas), var(--canvas));
   scroll-behavior: smooth;
   // No scroll anchoring for the document. On a page swap behind PageVeil the footer is the
   // one node React keeps (same element in the same slot), so the browser picked it as its
@@ -171,7 +176,6 @@ html {
 
 body {
   min-height: 100dvh;
-  background: var(--canvas);   // same as the canvas — the page surface is .page / .home
   color: $ink;
   font-family: $font-display;
   font-size: 1.0625rem;
